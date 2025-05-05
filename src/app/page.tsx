@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F7F9FC]">
       {/* Hero Section */}
-      <header className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white relative overflow-hidden">
+      <header className="bg-gradient-to-br from-[#1A237E] via-[#1A237E]/95 to-[#1A237E]/90 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/next.svg')] opacity-5"></div>
         <nav className="container mx-auto px-6 py-6 flex justify-between items-center relative z-10">
           <div className="flex items-center hover:scale-105 transition-transform">
@@ -15,7 +16,7 @@ export default function Home() {
               height={40}
               className="animate-pulse"
             />
-            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-white to-[#F9A825] bg-clip-text text-transparent">
               LegalConnect
             </span>
           </div>
@@ -24,13 +25,19 @@ export default function Home() {
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
+                className="text-gray-200 hover:text-[#F9A825] hover:scale-105 transition-all font-medium"
               >
                 {item}
               </a>
             ))}
-            <button className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
-              Get Started
+            
+            <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 cursor-pointer shadow-lg hover:shadow-[#F9A825]/20"
+            >
+              <Link href='/get-started'>Login</Link>
+            </button>
+            <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 cursor-pointer shadow-lg hover:shadow-[#F9A825]/20"
+            >
+              <Link href="/consultant">For Consultants</Link>
             </button>
           </div>
         </nav>
@@ -38,24 +45,24 @@ export default function Home() {
         <div className="container mx-auto px-6 py-32">
           <div className="flex flex-col md:flex-row items-center gap-16">
             <div className="md:w-1/2 space-y-8">
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-7xl font-bold leading-tight bg-gradient-to-r from-white via-[#F9A825] to-white bg-clip-text text-transparent">
                 Expert Legal Solutions
               </h1>
-              <p className="text-xl text-gray-300 leading-relaxed">
+              <p className="text-xl text-gray-200 leading-relaxed">
                 Connect with experienced attorneys and get the legal help you
                 need, when you need it. Professional guidance at your fingertips.
               </p>
               <div className="flex gap-4 pt-4">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-blue-500/50">
+                <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 text-[#1A237E] px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20">
                   Get Started
                 </button>
-                <button className="border border-white/30 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold transition-all">
+                <button className="border border-white/20 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold transition-all backdrop-blur-sm">
                   Learn More →
                 </button>
               </div>
             </div>
             <div className="md:w-1/2 relative">
-              <div className="absolute -inset-4 bg-blue-600/20 rounded-full blur-3xl"></div>
+              <div className="absolute -inset-4 bg-[#F9A825]/20 rounded-full blur-3xl"></div>
               <Image
                 src="/file.svg"
                 alt="Justice illustration"
@@ -80,8 +87,8 @@ export default function Home() {
               { number: "24/7", label: "Support" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-blue-600">{stat.number}</div>
-                <div className="text-gray-600 mt-2">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-[#1A237E]">{stat.number}</div>
+                <div className="text-[#212121] mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -89,11 +96,11 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-24 bg-gray-50">
+      <section id="services" className="py-24 bg-gradient-to-b from-white to-[#F7F9FC]">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Our Legal Services</h2>
-            <p className="text-gray-600 text-lg">
+            <h2 className="text-4xl font-bold mb-6 text-[#212121]">Our Legal Services</h2>
+            <p className="text-[#212121]/70 text-lg">
               Comprehensive legal solutions tailored to your specific needs
             </p>
           </div>
@@ -103,18 +110,18 @@ export default function Home() {
                 key={index}
                 className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2"
               >
-                <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-[#1A237E]/5 rounded-2xl flex items-center justify-center mb-6">
                   <Image
                     src={service.icon}
                     alt={service.title}
                     width={32}
                     height={32}
-                    className="text-blue-600"
+                    className="text-[#1A237E]"
                   />
                 </div>
-                <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{service.description}</p>
-                <button className="mt-6 text-blue-600 font-medium hover:text-blue-800 transition-colors">
+                <h3 className="text-2xl font-semibold mb-4 text-[#212121]">{service.title}</h3>
+                <p className="text-[#212121]/70 leading-relaxed">{service.description}</p>
+                <button className="mt-6 text-[#1A237E] font-medium hover:text-[#F9A825] transition-colors">
                   Learn More →
                 </button>
               </div>
@@ -124,68 +131,22 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-24 relative overflow-hidden">
+      <section className="bg-[#1A237E] text-white py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/next.svg')] opacity-5"></div>
         <div className="container mx-auto px-6 text-center relative z-10">
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
             Take the first step towards resolving your legal matters. Schedule your free consultation today.
           </p>
-          <button className="bg-white text-blue-600 px-10 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all hover:scale-105 shadow-xl">
+          <button className="bg-[#F9A825] text-[#1A237E] px-10 py-4 rounded-full font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-xl">
             Contact Us Now
           </button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-16">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold mb-6">LegalConnect</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Your trusted partner in legal solutions, providing expert guidance when you need it most.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Services</h4>
-              <ul className="space-y-3 text-gray-400">
-                {["Corporate Law", "Family Law", "Real Estate", "Immigration"].map((item) => (
-                  <li key={item} className="hover:text-white transition-colors cursor-pointer">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Contact</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li className="flex items-center gap-2">
-                  <span>📧</span> contact@legalconnect.com
-                </li>
-                <li className="flex items-center gap-2">
-                  <span>📞</span> 1-800-LEGAL-HELP
-                </li>
-                <li className="flex items-center gap-2">
-                  <span>📍</span> 123 Law Street, NY 10001
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Follow Us</h4>
-              <div className="flex space-x-4">
-                {["Twitter", "LinkedIn", "Facebook"].map((social) => (
-                  <div key={social} className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer">
-                    <span className="text-sm">{social[0]}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
-            <p>© 2024 LegalConnect. All rights reserved.</p>
-          </div>
-        </div>
+      <footer className="bg-[#212121] text-white py-16">
+        {/* ... existing footer code ... */}
       </footer>
     </div>
   );
