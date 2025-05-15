@@ -6,7 +6,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#F7F9FC]">
       {/* Hero Section */}
       <header className="bg-gradient-to-br from-[#1A237E] via-[#1A237E]/95 to-[#1A237E]/90 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/next.svg')] opacity-5"></div>
+        <div className="absolute inset-0 bg-[url('/Legalhammer.webp')] opacity-5"></div>
         <nav className="container mx-auto px-6 py-6 flex justify-between items-center relative z-10">
           <div className="flex items-center hover:scale-105 transition-transform">
             <Image
@@ -150,7 +150,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="bg-[#1A237E] text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/next.svg')] opacity-5"></div>
+        <div className="absolute inset-0 bg-[url('/Legalhammer.webp')] opacity-5"></div>
         <div className="container mx-auto px-6 text-center relative z-10">
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
@@ -239,7 +239,7 @@ const services = [
     title: "Family Law",
     description:
       "Compassionate support for family matters including divorce, custody, and estate planning with a focus on your needs.",
-    icon: "/next.svg",
+    icon: "/legalb.jpg",
   },
   {
     title: "Real Estate",
