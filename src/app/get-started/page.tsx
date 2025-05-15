@@ -51,8 +51,8 @@ export default function AuthPage() {
       <div className="flex items-center justify-center p-8 bg-[#F7F9FC]">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2 text-[#212121]">Welcome back</h2>
-            <p className="text-[#212121]/70">Please sign in to continue</p>
+            <h2 className="text-3xl font-bold mb-2 text-[#212121]">Welcome </h2>
+            <p className="text-[#212121]/70">Please sign up to continue</p>
           </div>
 
           <form className="space-y-6">
@@ -87,7 +87,7 @@ export default function AuthPage() {
               type="submit"
               className="w-full bg-[#F9A825] text-[#1A237E] py-3 rounded-lg font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
-              Sign in
+              Sign up
             </button>
 
             <div className="relative my-6">

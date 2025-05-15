@@ -18,7 +18,7 @@ const LawyerDashboard: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
       <div
-        className={`bg-blue-800 text-white w-64 p-4 fixed inset-y-0 left-0 transform ${
+        className={`bg-blue-800 text-blue w-64 p-4 fixed inset-y-0 left-0 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:static md:translate-x-0 transition-transform duration-200 ease-in-out`}
       >
@@ -80,11 +80,12 @@ const LawyerDashboard: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 p-6">
         <header className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-bold text-[#000814]">
+            {/* Updated color */}
             Welcome, Lawyer {user.displayName}
           </h1>
           <div className="space-x-4">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button className="bg-blue-500 text-blue px-4 py-2 rounded">
               Settings
             </button>
             <button className="bg-red-500 text-white px-4 py-2 rounded">
@@ -96,16 +97,16 @@ const LawyerDashboard: React.FC = () => {
         {/* Example Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white p-4 rounded shadow">
-            <h3 className="text-lg font-semibold">Active Clients</h3>
-            <p className="text-2xl">5</p>
+            <h3 className="text-lg font-semibold text-[#000814]">Active Clients</h3> {/* Updated color */}
+            <p className="text-2xl text-[#000814]">5</p> {/* Updated color */}
           </div>
           <div className="bg-white p-4 rounded shadow">
-            <h3 className="text-lg font-semibold">Upcoming Meetings</h3>
-            <p className="text-2xl">2</p>
+            <h3 className="text-lg font-semibold text-[#000814]">Upcoming Meetings</h3> {/* Updated color */}
+            <p className="text-2xl text-[#000814]">2</p> {/* Updated color */}
           </div>
           <div className="bg-white p-4 rounded shadow">
-            <h3 className="text-lg font-semibold">Recent Messages</h3>
-            <p className="text-2xl">3</p>
+            <h3 className="text-lg font-semibold text-[#000814]">Recent Messages</h3> {/* Updated color */}
+            <p className="text-2xl text-[#000814]">3</p> {/* Updated color */}
           </div>
         </div>
 
