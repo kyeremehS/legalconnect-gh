@@ -112,7 +112,7 @@ const LawyerDashboard: React.FC = () => {
 
         {/* Quick Actions */}
         <div className="mb-6">
-          <h2 className="text-xl font-bold mb-2">Quick Actions</h2>
+          <h2 className="text-xl font-bold mb-2 text-[#000814]">Quick Actions</h2>
           <div className="space-x-4">
             <button className="bg-green-500 text-white px-4 py-2 rounded">
               Go Online
@@ -134,10 +134,10 @@ const LawyerDashboard: React.FC = () => {
 
         {/* Notifications */}
         <div>
-          <h2 className="text-xl font-bold mb-2">Notifications</h2>
+          <h2 className="text-xl font-bold mb-2 text-[#000814]">Notifications</h2>
           <ul className="bg-white p-4 rounded shadow space-y-2">
-            <li>New client request (10 min ago)</li>
-            <li>Schedule updated (Tomorrow, 2 PM)</li>
+            <li className="text-[#000814]">New client request (10 min ago)</li>
+            <li className="text-[#000814]">Schedule updated (Tomorrow, 2 PM)</li>
           </ul>
         </div>
       </div>
