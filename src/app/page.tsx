@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Link from "next/link";
 
 export default function Home() {
   return (
@@ -25,23 +24,24 @@ export default function Home() {
             {["Services", "About", "Contact", "Lawyer Dashboard"].map((item) => (
               <Link
                 key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-gray-200 hover:text-[#F9A825] hover:scale-105 transition-all font-medium"
                 href={item === "Lawyer Dashboard" ? "/Lawyer" : `#${item.toLowerCase()}`}
                 className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
               >
                 {item}
               </Link>
             ))}
-            
-            <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 cursor-pointer shadow-lg hover:shadow-[#F9A825]/20"
+            <Link
+              href="/get-started"
+              className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
-              <Link href='/get-started'>Login</Link>
-            </button>
-            <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 cursor-pointer shadow-lg hover:shadow-[#F9A825]/20"
+              Login
+            </Link>
+            <Link
+              href="/consultant"
+              className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
-              <Link href="/consultant">For Consultants</Link>
-            </button>
+              For Consultants
+            </Link>
             <Link
               href="/get-started"
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
@@ -62,14 +62,11 @@ export default function Home() {
                 need, when you need it. Professional guidance at your fingertips.
               </p>
               <div className="flex gap-4 pt-4">
-                <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 text-[#1A237E] px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20">
                 <Link
                   href="/get-started"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-blue-500/50"
+                  className="bg-[#F9A825] hover:bg-[#F9A825]/90 text-[#1A237E] px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
                 >
                   Get Started
-                </button>
-                <button className="border border-white/20 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold transition-all backdrop-blur-sm">
                 </Link>
                 <Link
                   href="/learn-more"
@@ -107,10 +104,6 @@ export default function Home() {
               <div key={stat.label} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-[#1A237E]">{stat.number}</div>
                 <div className="text-[#212121] mt-2">{stat.label}</div>
-                <div className="text-3xl md:text-4xl font-bold text-blue-600">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -143,14 +136,9 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-semibold mb-4 text-[#212121]">{service.title}</h3>
                 <p className="text-[#212121]/70 leading-relaxed">{service.description}</p>
-                <button className="mt-6 text-[#1A237E] font-medium hover:text-[#F9A825] transition-colors">
-                <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {service.description}
-                </p>
                 <Link
                   href="/learn-more"
-                  className="mt-6 text-blue-600 font-medium hover:text-blue-800 transition-colors"
+                  className="mt-6 text-[#1A237E] font-medium hover:text-[#F9A825] transition-colors"
                 >
                   Learn More →
                 </Link>
@@ -167,14 +155,10 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
             Take the first step towards resolving your legal matters. Schedule your free consultation today.
-          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
-            Take the first step towards resolving your legal matters. Schedule
-            your free consultation today.
           </p>
-          <button className="bg-[#F9A825] text-[#1A237E] px-10 py-4 rounded-full font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-xl">
           <Link
             href="/contact"
-            className="bg-white text-blue-600 px-10 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all hover:scale-105 shadow-xl"
+            className="bg-[#F9A825] text-[#1A237E] px-10 py-4 rounded-full font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-xl"
           >
             Contact Us Now
           </Link>
@@ -183,8 +167,6 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-[#212121] text-white py-16">
-        {/* ... existing footer code ... */}
-      <footer className="bg-slate-900 text-white py-16">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12">
             <div className="space-y-4">
