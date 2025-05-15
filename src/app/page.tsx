@@ -10,7 +10,7 @@ export default function Home() {
         <nav className="container mx-auto px-6 py-6 flex justify-between items-center relative z-10">
           <div className="flex items-center hover:scale-105 transition-transform">
             <Image
-              src="/next.svg"
+              src="/legalb.jpg"
               alt="LegalConnect Logo"
               width={40}
               height={40}
@@ -79,7 +79,7 @@ export default function Home() {
             <div className="md:w-1/2 relative">
               <div className="absolute -inset-4 bg-[#F9A825]/20 rounded-full blur-3xl"></div>
               <Image
-                src="/file.svg"
+                src="/law image.jpeg"
                 alt="Justice illustration"
                 width={500}
                 height={400}
