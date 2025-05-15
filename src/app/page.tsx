@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -21,14 +22,16 @@ export default function Home() {
             </span>
           </div>
           <div className="hidden md:flex space-x-10">
-            {["Services", "About", "Contact"].map((item) => (
-              <a
+            {["Services", "About", "Contact", "Lawyer Dashboard"].map((item) => (
+              <Link
                 key={item}
                 href={`#${item.toLowerCase()}`}
                 className="text-gray-200 hover:text-[#F9A825] hover:scale-105 transition-all font-medium"
+                href={item === "Lawyer Dashboard" ? "/Lawyer" : `#${item.toLowerCase()}`}
+                className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
               >
                 {item}
-              </a>
+              </Link>
             ))}
             
             <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 cursor-pointer shadow-lg hover:shadow-[#F9A825]/20"
@@ -39,6 +42,12 @@ export default function Home() {
             >
               <Link href="/consultant">For Consultants</Link>
             </button>
+            <Link
+              href="/get-started"
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
+            >
+              Get Started
+            </Link>
           </div>
         </nav>
 
@@ -54,11 +63,20 @@ export default function Home() {
               </p>
               <div className="flex gap-4 pt-4">
                 <button className="bg-[#F9A825] hover:bg-[#F9A825]/90 text-[#1A237E] px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20">
+                <Link
+                  href="/get-started"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-blue-500/50"
+                >
                   Get Started
                 </button>
                 <button className="border border-white/20 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold transition-all backdrop-blur-sm">
+                </Link>
+                <Link
+                  href="/learn-more"
+                  className="border border-white/30 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold transition-all"
+                >
                   Learn More →
-                </button>
+                </Link>
               </div>
             </div>
             <div className="md:w-1/2 relative">
@@ -89,6 +107,10 @@ export default function Home() {
               <div key={stat.label} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-[#1A237E]">{stat.number}</div>
                 <div className="text-[#212121] mt-2">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-blue-600">
+                  {stat.number}
+                </div>
+                <div className="text-gray-600 mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -122,8 +144,16 @@ export default function Home() {
                 <h3 className="text-2xl font-semibold mb-4 text-[#212121]">{service.title}</h3>
                 <p className="text-[#212121]/70 leading-relaxed">{service.description}</p>
                 <button className="mt-6 text-[#1A237E] font-medium hover:text-[#F9A825] transition-colors">
+                <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {service.description}
+                </p>
+                <Link
+                  href="/learn-more"
+                  className="mt-6 text-blue-600 font-medium hover:text-blue-800 transition-colors"
+                >
                   Learn More →
-                </button>
+                </Link>
               </div>
             ))}
           </div>
@@ -137,16 +167,80 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
             Take the first step towards resolving your legal matters. Schedule your free consultation today.
+          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+            Take the first step towards resolving your legal matters. Schedule
+            your free consultation today.
           </p>
           <button className="bg-[#F9A825] text-[#1A237E] px-10 py-4 rounded-full font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-xl">
+          <Link
+            href="/contact"
+            className="bg-white text-blue-600 px-10 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all hover:scale-105 shadow-xl"
+          >
             Contact Us Now
-          </button>
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-[#212121] text-white py-16">
         {/* ... existing footer code ... */}
+      <footer className="bg-slate-900 text-white py-16">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-12">
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold mb-6">LegalConnect</h3>
+              <p className="text-gray-400 leading-relaxed">
+                Your trusted partner in legal solutions, providing expert guidance
+                when you need it most.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-lg mb-6">Services</h4>
+              <ul className="space-y-3 text-gray-400">
+                {["Corporate Law", "Family Law", "Real Estate", "Immigration"].map(
+                  (item) => (
+                    <li
+                      key={item}
+                      className="hover:text-white transition-colors cursor-pointer"
+                    >
+                      {item}
+                    </li>
+                  )
+                )}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-lg mb-6">Contact</h4>
+              <ul className="space-y-3 text-gray-400">
+                <li className="flex items-center gap-2">
+                  <span>📧</span> contact@legalconnect.com
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>📞</span> 1-800-LEGAL-HELP
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>📍</span> 123 Law Street, NY 10001
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-lg mb-6">Follow Us</h4>
+              <div className="flex space-x-4">
+                {["Twitter", "LinkedIn", "Facebook"].map((social) => (
+                  <div
+                    key={social}
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer"
+                  >
+                    <span className="text-sm">{social[0]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
+            <p>© 2024 LegalConnect. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
@@ -155,17 +249,20 @@ export default function Home() {
 const services = [
   {
     title: "Corporate Law",
-    description: "Expert guidance for businesses of all sizes, from startups to enterprises. We handle incorporation, contracts, and compliance.",
+    description:
+      "Expert guidance for businesses of all sizes, from startups to enterprises. We handle incorporation, contracts, and compliance.",
     icon: "/globe.svg",
   },
   {
     title: "Family Law",
-    description: "Compassionate support for family matters including divorce, custody, and estate planning with a focus on your needs.",
+    description:
+      "Compassionate support for family matters including divorce, custody, and estate planning with a focus on your needs.",
     icon: "/next.svg",
   },
   {
     title: "Real Estate",
-    description: "Professional assistance in property transactions, ensuring smooth closings and protecting your interests.",
+    description:
+      "Professional assistance in property transactions, ensuring smooth closings and protecting your interests.",
     icon: "/vercel.svg",
   },
 ];
