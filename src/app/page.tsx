@@ -79,10 +79,10 @@ export default function Home() {
             <div className="md:w-1/2 relative">
               <div className="absolute -inset-4 bg-[#F9A825]/20 rounded-full blur-3xl"></div>
               <Image
-                src="/law image.jpeg"
+                src="/lawyer-in-ghana-legal-empire-hs3.jpg"
                 alt="Justice illustration"
-                width={500}
-                height={400}
+                width={600}
+                height={700}
                 priority
                 className="relative hover:scale-105 transition-transform duration-500"
               />
