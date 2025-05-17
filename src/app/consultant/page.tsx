@@ -81,7 +81,7 @@ export default function Page() {
               <input
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
                 placeholder="Enter your work email"
               />
             </div>
@@ -93,7 +93,7 @@ export default function Page() {
               <input
                 type="password"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
                 placeholder="Create a strong password"
               />
             </div>
