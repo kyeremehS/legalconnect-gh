@@ -21,10 +21,16 @@ export default function Home() {
             </span>
           </div>
           <div className="hidden md:flex space-x-10">
-            {["Services", "About", "Contact", "Lawyer Dashboard"].map((item) => (
+            {["Services", "About", "Contact", "Lawyer Dashboard", "User Dashboard"].map((item) => (
               <Link
                 key={item}
-                href={item === "Lawyer Dashboard" ? "/Lawyer" : `#${item.toLowerCase()}`}
+                href={
+                  item === "Lawyer Dashboard"
+                    ? "/Lawyer"
+                    : item === "User Dashboard"
+                    ? "/User-landing" // <-- Update this to your actual route
+                    : `#${item.toLowerCase()}`
+                }
                 className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
               >
                 {item}
