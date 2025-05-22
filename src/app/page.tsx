@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -96,6 +96,27 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Explore Legal Resources Section (moved up) */}
+      <section className="py-16 bg-white text-[#212121]">
+        <div className="container mx-auto px-6">
+          <h2 className="text-2xl font-bold text-center mb-8 text-[#1A237E]">Explore Legal Resources</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Watch Legal Content Card */}
+            <Link href="/legal-content" className="block bg-blue-50 rounded-xl shadow hover:shadow-lg p-8 text-center transition">
+              <Image src="/video.png" alt="Watch Legal Content" width={60} height={60} className="mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-[#1A237E]">Watch Legal Content</h3>
+              <p className="text-gray-600">Browse and watch legal education videos for free.</p>
+            </Link>
+            {/* Legal AI Card */}
+            <Link href="/legal-chatbot" className="block bg-indigo-50 rounded-xl shadow hover:shadow-lg p-8 text-center transition">
+              <Image src="/chat-bot.png" alt="Legal AI Chatbot" width={60} height={60} className="mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-[#1A237E]">Legal AI</h3>
+              <p className="text-gray-600">Ask legal questions and get instant answers from our AI chatbot.</p>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Stats Section */}
       <section className="py-12 bg-white">

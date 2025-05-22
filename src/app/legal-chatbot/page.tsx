@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import SidebarLayout from "@/components/SidebarLayout";
 
 // Mock user and chat data
 const mockUser = { displayName: 'Kofi Mensah' };
@@ -11,21 +12,20 @@ const mockChat = [
   { id: 3, sender: 'chatbot', text: 'A power of attorney is a legal document that allows someone to act on your behalf in legal or financial matters. Would you like more details?', time: '10:57 PM' },
 ];
 
+const navItems = [
+  { name: "Dashboard", href: "/User-landing" },
+  { name: "Videos", href: "/user/videos" },
+  { name: "Appointments", href: "/user/appointments" },
+  { name: "Messages", href: "/user/messages" },
+  { name: "Education", href: "/user/education" },
+  { name: "Chatbot", href: "/legal-chatbot" },
+  { name: "Settings", href: "/user/settings" },
+];
+
 const LegalChatbot: React.FC = () => {
   // State for mobile sidebar toggle and chat input
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [input, setInput] = useState('');
-
-  // Navigation items (same as user dashboard)
-  const navItems = [
-    { name: 'Dashboard', href: '/User-landing', available: true },
-    { name: 'Videos', href: '/user/videos', available: true },
-    { name: 'Appointments', href: '/user/appointments', available: true },
-    { name: 'Messages', href: '/user/messages', available: true },
-    { name: 'Education', href: '/user/education', available: true },
-    { name: 'Chatbot', href: '/legal-chatbot', available: true },
-    { name: 'Settings', href: '/user/settings', available: true },
-  ];
 
   // Mock send function (logs input to console)
   const handleSend = () => {
@@ -36,45 +36,7 @@ const LegalChatbot: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <div
-        className={`bg-blue-800 text-white w-64 p-4 fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } md:static md:translate-x-0 transition-transform duration-200 ease-in-out z-50`}
-      >
-        <div className="flex items-center gap-2 mb-6">
-          <Image
-            src="/legalb.jpg"
-            alt="Ghana Legal AI Logo"
-            width={32}
-            height={32}
-            className="animate-pulse"
-          />
-          <h2 className="text-xl font-bold">Ghana Legal AI</h2>
-        </div>
-        <nav className="space-y-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.available ? item.href : '#'}
-              className={`block p-2 rounded ${item.name === 'Chatbot' ? 'bg-blue-700' : item.available ? 'hover:bg-blue-700' : 'opacity-70 cursor-not-allowed'
-                }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      {/* Mobile sidebar toggle */}
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="md:hidden bg-blue-800 text-white p-2 fixed top-4 left-4 z-50"
-      >
-        {isSidebarOpen ? '✕' : '☰'}
-      </button>
-
-      {/* Main content */}
+    <SidebarLayout navItems={navItems} active="Chatbot">
       <div className="flex-1 p-6 md:ml-0 ml-0">
         {/* Header */}
         <header className="flex justify-between items-center mb-6">
@@ -150,7 +112,7 @@ const LegalChatbot: React.FC = () => {
           </form>
         </div>
       </div>
-    </div>
+    </SidebarLayout>
   );
 };
 

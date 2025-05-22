@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import SidebarLayout from "@/components/SidebarLayout";
 
 export default function Page() {
   return (
