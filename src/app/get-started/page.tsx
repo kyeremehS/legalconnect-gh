@@ -1,18 +1,21 @@
+'use client';
+
+
 import Image from "next/image";
 import Link from "next/link";
 
-'use client';
+
 
 export default function AuthPage() {
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       {/* Left Section - Indigo Background with Content */}
       <div className="bg-gradient-to-br from-[#1A237E] via-[#1A237E]/95 to-[#1A237E]/90 p-12 text-white relative hidden md:block">
-        <div className="absolute inset-0 bg-[url('/next.svg')] opacity-5"></div>
+        <div className="absolute inset-0 bg-[url('/Legalhammer.webp')] opacity-5"></div>
         <div className="relative z-10">
           <div className="flex items-center mb-16">
             <Image
-              src="/next.svg"
+              src="/legalb.jpg"
               alt="LegalConnect Logo"
               width={40}
               height={40}
@@ -26,14 +29,14 @@ export default function AuthPage() {
           {/* <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-white via-[#F9A825] to-white bg-clip-text text-transparent">
             Hello Captain 👋
           </h1> */}
-          <p className="text-xl text-gray-200 mb-8">
+          <p className="text-xl text-gray-200 mb-8 text-center">
 
-            The platform where clients and legal consultants succeed. Together.
+            The platform where clients and legal consultants succeed together.
           </p>
           
           <div className="mt-12">
             <Image
-              src="/file.svg"
+              src="/Coat_of_arms_of_Ghana.svg"
               alt="Legal Illustration"
               width={400}
               height={300}
@@ -48,8 +51,8 @@ export default function AuthPage() {
       <div className="flex items-center justify-center p-8 bg-[#F7F9FC]">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2 text-[#212121]">Welcome back</h2>
-            <p className="text-[#212121]/70">Please sign in to continue</p>
+            <h2 className="text-3xl font-bold mb-2 text-[#212121]">Welcome </h2>
+            <p className="text-[#212121]/70">Please sign up to continue</p>
           </div>
 
           <form className="space-y-6">
@@ -60,7 +63,7 @@ export default function AuthPage() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
               />
             </div>
 
@@ -71,7 +74,7 @@ export default function AuthPage() {
               <input
                 type="password"
                 placeholder="Enter your password"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
               />
               <div className="text-right mt-2">
                 <a href="#" className="text-sm text-[#1A237E] hover:text-[#F9A825] transition-colors">
@@ -84,7 +87,7 @@ export default function AuthPage() {
               type="submit"
               className="w-full bg-[#F9A825] text-[#1A237E] py-3 rounded-lg font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
-              Sign in
+              Sign up
             </button>
 
             <div className="relative my-6">
