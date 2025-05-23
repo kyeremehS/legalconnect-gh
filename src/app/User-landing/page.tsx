@@ -6,7 +6,7 @@ const features = [
   {
     name: "Watch Legal Videos",
     description: "Browse and watch legal education videos.",
-    href: "/user/videos",
+    href: "/legal-content",
     icon: "/video.png",
     color: "bg-blue-100 text-blue-800",
   },
@@ -77,7 +77,7 @@ export default function UserDashboard() {
             Dashboard
           </Link>
           <Link
-            href="/user/videos"
+            href="/legal-content"
             className="hover:bg-[#283593] px-4 py-2 rounded transition"
           >
             Legal Videos
