@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import "./legal-content.css";
 
 export default function LegalContent() {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -38,11 +39,9 @@ export default function LegalContent() {
             src="https://www.tiktok.com/@thelaw_gh/video/7470121358928727302"
             title="Legal Video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
             className={`rounded-lg shadow ${
-              isFullScreen ? "h-full" : ""
+              isFullScreen ? "h-full min-h-legalcontent-iframe" : ""
             }`}
-            style={isFullScreen ? { minHeight: "80vh" } : {}}
           ></iframe>
           <div className="flex justify-center mt-4">
             <button
