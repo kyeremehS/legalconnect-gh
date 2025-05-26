@@ -69,19 +69,29 @@ export default function AuthPage() {
 
             <div>
               <label className="block text-sm font-medium text-[#212121] mb-2">
-                Password
+                create a password
               </label>
               <input
                 type="password"
                 placeholder="Enter your password"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
               />
+            </div>
+
+               <div>
+              <label className="block text-sm font-medium text-[#212121] mb-2">
+                confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="confirm password"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
+              />
               <div className="text-right mt-2">
-                <a href="/" className="text-sm text-[#1A237E] hover:text-[#F9A825] transition-colors">
-                  forgot password?
-                </a>
+                
               </div>
             </div>
+            
 
             <button
               type="submit"

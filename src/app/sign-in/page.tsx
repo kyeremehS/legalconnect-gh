@@ -110,7 +110,7 @@ export default function AuthPage() {
             <div className="text-center text-sm text-[#212121]/70">
               <p>
                 Sing in as a consultant?{" "}
-                <Link href="/consultant" target="_blank" className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors">
+                <Link href="/consultant/sign-in" target="_blank" className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors">
                   Sign in as consultant
                 </Link>
                 {" "}or{" "}
