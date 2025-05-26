@@ -37,7 +37,7 @@ export default function Home() {
               </Link>
             ))}
             <Link
-              href="/get-started"
+              href="/sign-in"
               className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
               Login

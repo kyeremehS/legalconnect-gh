@@ -1,7 +1,10 @@
 'use client';
 import { use, useState } from 'react';
 import Link from 'next/link';
-import { SearchIcon, ChatIcon, PhoneIcon } from '@heroicons/react/outline';
+import { MagnifyingGlassIcon, ChatBubbleLeftRightIcon, PhoneIcon } from '@heroicons/react/24/outline';
+
+ 
+
 
 export default function Messages() {
   type Message = {
@@ -67,7 +70,7 @@ export default function Messages() {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-      <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex">
       {/* Hamburger Menu (Mobile) */}
       <div
         className={`fixed top-0 left-0 w-64 h-full bg-blue-800 text-white p-4 transform ${
@@ -89,7 +92,9 @@ export default function Messages() {
           >
             Dashboard
           </Link>
-          <Link href="/lawyer/appointments"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Appointments</a></Link>
+          <Link href="/lawyer/appointments" onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">
+            Appointments
+          </Link>
           <Link href="/lawyer/messages"><a onClick={toggleMenu} className="block p-2 bg-blue-700 rounded">Messages & Calls</a></Link>
           <Link href="/lawyer/videos"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Videos</a></Link>
           <Link href="/lawyer/engagement"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Engagement</a></Link>
@@ -123,11 +128,11 @@ export default function Messages() {
             {/* Messages List (Sidebar) */}
             <div className={`bg-white rounded shadow p-4 ${isMobileMessageView ? 'hidden md:block' : 'block'}`}>
               <h2 className="text-lg font-semibold mb-4 flex items-center">
-                <ChatIcon className="h-5 w-5 mr-2 text-blue-500" /> Messages
+                <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2 text-blue-500" /> Messages
               </h2>
               <div className="mb-4">
                 <div className="relative">
-                  <SearchIcon className="h-5 w-5 absolute left-3 top-3 text-gray-400" />
+                  <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-3 text-gray-400" />
                   <input
                     type="text"
                     placeholder="Search messages..."

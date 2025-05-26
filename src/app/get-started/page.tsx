@@ -77,7 +77,7 @@ export default function AuthPage() {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
               />
               <div className="text-right mt-2">
-                <a href="#" className="text-sm text-[#1A237E] hover:text-[#F9A825] transition-colors">
+                <a href="/" className="text-sm text-[#1A237E] hover:text-[#F9A825] transition-colors">
                   forgot password?
                 </a>
               </div>
@@ -104,13 +104,13 @@ export default function AuthPage() {
               className="w-full bg-white border border-gray-300 text-[#212121] py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all hover:scale-105 shadow-lg flex items-center justify-center gap-2"
             >
               <Image src="/google.png" alt="Google" width={20} height={20} />
-              Sign in with Google
+              Sign up with Google
             </button>
 
             <div className="text-center text-sm text-[#212121]/70">
               <p>
-                Not a member yet?{" "}
-                <Link href="/signup" className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors">
+                Sing up as a consultant?{" "}
+                <Link href="/consultant" target="_blank" className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors">
                   Sign up as consultant
                 </Link>
                 {" "}or{" "}

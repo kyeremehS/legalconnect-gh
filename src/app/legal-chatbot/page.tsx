@@ -14,7 +14,7 @@ const mockChat = [
 
 const navItems = [
   { name: "Dashboard", href: "/User-landing" },
-  { name: "Videos", href: "/user/videos" },
+  { name: "Videos", href: "/legal-content" },
   { name: "Appointments", href: "/user/appointments" },
   { name: "Messages", href: "/user/messages" },
   { name: "Education", href: "/user/education" },
