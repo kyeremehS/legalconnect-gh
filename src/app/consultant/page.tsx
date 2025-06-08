@@ -2,17 +2,54 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import SidebarLayout from "@/components/SidebarLayout";
 
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F7F9FC] flex">
-      {/* Left Section - Registration Form */}
+
+
+
+      {/*Left section- Info */}
+      <div className="hidden lg:flex flex-1 bg-[#1A237E] text-white p-16">
+        <div className="max-w-lg">
+          <h2 className="text-3xl font-bold mb-8">
+            The #1 platform for legal consultants
+          </h2>
+          
+          <p className="text-lg text-white/80 mb-12">
+            Join our network to get access to exciting legal projects that fit your
+            expertise. Your profile is not public and is only shared once you
+            explicitly pitch on a project.
+          </p>
+
+          <div className="space-y-8">
+            <h3 className="text-xl font-semibold mb-4">Why Should You Apply?</h3>
+            {[
+              "Interesting legal projects",
+              "Attractive consultation rates",
+              "Flexibility in time and location",
+              "Continuous support and resources"
+            ].map((benefit, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#F9A825] flex items-center justify-center">
+                  <svg className="w-3 h-3 text-[#1A237E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span>{benefit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* Right section - Registration Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
           {/* Logo Section */}
           <div className="flex items-center justify-center mb-8">
             <Image
-              src="/next.svg"
+              src="/legalb.jpg"
               alt="LegalConnect Logo"
               width={40}
               height={40}
@@ -45,7 +82,7 @@ export default function Page() {
               <input
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
                 placeholder="Enter your work email"
               />
             </div>
@@ -57,7 +94,7 @@ export default function Page() {
               <input
                 type="password"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
                 placeholder="Create a strong password"
               />
             </div>
@@ -103,39 +140,7 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Right Section - Info */}
-      <div className="hidden lg:flex flex-1 bg-[#1A237E] text-white p-16">
-        <div className="max-w-lg">
-          <h2 className="text-3xl font-bold mb-8">
-            The #1 platform for legal consultants
-          </h2>
-          
-          <p className="text-lg text-white/80 mb-12">
-            Join our network to get access to exciting legal projects that fit your
-            expertise. Your profile is not public and is only shared once you
-            explicitly pitch on a project.
-          </p>
-
-          <div className="space-y-8">
-            <h3 className="text-xl font-semibold mb-4">Why Should You Apply?</h3>
-            {[
-              "Interesting legal projects",
-              "Attractive consultation rates",
-              "Flexibility in time and location",
-              "Continuous support and resources"
-            ].map((benefit, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#F9A825] flex items-center justify-center">
-                  <svg className="w-3 h-3 text-[#1A237E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span>{benefit}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 }
