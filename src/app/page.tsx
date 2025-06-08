@@ -1,5 +1,8 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
+import ChatButton from "./components/ChatButton";
 
 export default function Home() {
   return (
@@ -148,6 +151,9 @@ export default function Home() {
       <footer className="bg-[#212121] text-white py-16">
         {/* ... existing footer code ... */}
       </footer>
+      
+      {/* Chat Button */}
+      <ChatButton />
     </div>
   );
 }
