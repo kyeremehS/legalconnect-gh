@@ -108,7 +108,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-gray-700" />
           </button>
         </div>
 
