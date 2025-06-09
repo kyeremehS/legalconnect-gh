@@ -95,11 +95,29 @@ export default function Messages() {
           <Link href="/lawyer/appointments" onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">
             Appointments
           </Link>
-          <Link href="/lawyer/messages"><a onClick={toggleMenu} className="block p-2 bg-blue-700 rounded">Messages & Calls</a></Link>
-          <Link href="/lawyer/videos"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Videos</a></Link>
-          <Link href="/lawyer/engagement"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Engagement</a></Link>
-          <Link href="/lawyer/profile"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Profile</a></Link>
-          <Link href="/lawyer/settings"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Settings</a></Link>
+          <Link
+            href="/lawyer/messages"
+            onClick={toggleMenu}
+            className="block p-2 bg-blue-700 rounded"
+          >
+            Messages & Calls
+          </Link>
+          <Link
+            href="/lawyer/videos"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Videos
+          </Link>
+          <Link href="/lawyer/engagement" onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">
+            Engagement
+          </Link>
+          <Link href="/lawyer/profile" onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">
+            Profile
+          </Link>
+          <Link href="/lawyer/settings" onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">
+            Settings
+          </Link>
         </nav>
       </div>
 
@@ -117,8 +135,8 @@ export default function Messages() {
             </button>
             <h1 className="text-2xl font-bold text-blue-800">Messages & Calls</h1>
           </div>
-          <Link href="/Lawyer">
-            <a className="text-blue-500 hover:underline">Back to Dashboard</a>
+          <Link href="/Lawyer" className="text-blue-500 hover:underline">
+            Back to Dashboard
           </Link>
         </header>
 
@@ -164,7 +182,7 @@ export default function Messages() {
                       </div>
                     </li>
                   ))
-                )}
+                }
               </ul>
             </div>
 
@@ -247,8 +265,8 @@ export default function Messages() {
 
         {/* Footer */}
         <footer className="p-6 text-center">
-          <Link href="/help">
-            <a className="text-blue-500 hover:underline">Messaging Guidelines</a>
+          <Link href="/help" className="text-blue-500 hover:underline">
+            Messaging Guidelines
           </Link>
         </footer>
       </div>
