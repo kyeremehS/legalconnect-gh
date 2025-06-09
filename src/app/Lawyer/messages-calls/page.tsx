@@ -95,7 +95,13 @@ export default function Messages() {
           <Link href="/lawyer/appointments" onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">
             Appointments
           </Link>
-          <Link href="/lawyer/messages"><a onClick={toggleMenu} className="block p-2 bg-blue-700 rounded">Messages & Calls</a></Link>
+          <Link
+            href="/lawyer/messages"
+            onClick={toggleMenu}
+            className="block p-2 bg-blue-700 rounded"
+          >
+            Messages & Calls
+          </Link>
           <Link href="/lawyer/videos"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Videos</a></Link>
           <Link href="/lawyer/engagement"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Engagement</a></Link>
           <Link href="/lawyer/profile"><a onClick={toggleMenu} className="block p-2 hover:bg-blue-700 rounded">Profile</a></Link>
@@ -247,8 +253,8 @@ export default function Messages() {
 
         {/* Footer */}
         <footer className="p-6 text-center">
-          <Link href="/help">
-            <a className="text-blue-500 hover:underline">Messaging Guidelines</a>
+          <Link href="/help" className="text-blue-500 hover:underline">
+            Messaging Guidelines
           </Link>
         </footer>
       </div>

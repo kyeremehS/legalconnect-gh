@@ -8,7 +8,7 @@ export default function ConsultantSignIn() {
       {/* Left side (illustration or branding) */}
       <div className="hidden md:flex items-center justify-center bg-[#1A237E]">
         <Image
-          src="/consultant-illustration.png"
+          src="/africa-legal-associates-85-scaled.webp"
           alt="Consultant Illustration"
           width={400}
           height={400}

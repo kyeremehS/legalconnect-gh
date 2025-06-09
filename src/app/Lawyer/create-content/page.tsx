@@ -1,15 +1,15 @@
 "use client";
-import { useState, useRef } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useState, useRef } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function VideoCreate() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [fileName, setFileName] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [fileName, setFileName] = useState("");
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
 
@@ -17,14 +17,14 @@ export default function VideoCreate() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) {
-      alert('Please select a valid video file (MP4 or WebM).');
+      alert("Please select a valid video file (MP4 or WebM).");
       return;
     }
     const file = files[0];
-    if (file && (file.type === 'video/mp4' || file.type === 'video/webm')) {
+    if (file && (file.type === "video/mp4" || file.type === "video/webm")) {
       // Validate file size (<50MB)
       if (file.size > 50 * 1024 * 1024) {
-        alert('Video file must be under 50MB.');
+        alert("Video file must be under 50MB.");
         return;
       }
       setVideoFile(file);
@@ -33,25 +33,25 @@ export default function VideoCreate() {
       setPreviewUrl(url);
 
       // Validate duration (<60 seconds)
-      const video = document.createElement('video');
+      const video = document.createElement("video");
       video.src = url;
       video.onloadedmetadata = () => {
         if (video.duration > 60) {
-          alert('Video must be 60 seconds or shorter.');
+          alert("Video must be 60 seconds or shorter.");
           setVideoFile(null);
-          setPreviewUrl('');
-          setFileName('');
+          setPreviewUrl("");
+          setFileName("");
           URL.revokeObjectURL(url);
         }
       };
     } else {
-      alert('Please select a valid video file (MP4 or WebM).');
+      alert("Please select a valid video file (MP4 or WebM).");
     }
   };
 
   // Dummy publish handler (frontend only)
   const handlePublish = () => {
-    alert('This is a frontend-only demo. No video will be uploaded.');
+    alert("This is a frontend-only demo. No video will be uploaded.");
   };
 
   return (
@@ -69,8 +69,12 @@ export default function VideoCreate() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Video Upload Section */}
           <div>
-            <h2 className="text-xl font-semibold mb-2">Choose Video from Your Computer</h2>
-            <p className="text-sm text-gray-500 mb-2">Max 60 seconds, MP4 or WebM, under 50MB</p>
+            <h2 className="text-xl font-semibold  text-[#000814] mb-2">
+              Choose Video from Your Computer
+            </h2>
+            <p className="text-sm text-[#000814] text-500 mb-2">
+              Max 60 seconds, MP4 or WebM, under 50MB
+            </p>
             <input
               type="file"
               accept="video/mp4,video/webm"
@@ -93,13 +97,16 @@ export default function VideoCreate() {
               </div>
             )}
           </div>
-
           {/* Editing Section */}
           <div>
-            <h2 className="text-xl font-semibold mb-2">Video Details</h2>
+            <h2 className="text-xl text-[#000814] font-semibold mb-2">
+              Video Details
+            </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Title *</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Title
+                </label>
                 <input
                   type="text"
                   value={title}
@@ -110,7 +117,9 @@ export default function VideoCreate() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <label className="block text-sm  text-[#000814] font-medium text-gray-700">
+                  Description
+                </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -120,7 +129,12 @@ export default function VideoCreate() {
                 />
               </div>
               <div>
-                <label htmlFor="category-select" className="block text-sm font-medium text-gray-700">Category *</label>
+                <label
+                  htmlFor="category-select"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Category
+                </label>
                 <select
                   id="category-select"
                   value={category}
@@ -128,11 +142,15 @@ export default function VideoCreate() {
                   className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
-                  <option value="">Select a category</option>
-                  <option value="family-law">Family Law</option>
-                  <option value="corporate-law">Corporate Law</option>
-                  <option value="criminal-law">Criminal Law</option>
-                  <option value="land-law">Land Law</option>
+                  <option value="text-[#000814]">Select a category</option>
+                  <option value="family-law text-[#000814]">Family Law</option>
+                  <option value="corporate-law text-[#000814]">
+                    Corporate Law
+                  </option>
+                  <option value="criminal-law text-[#000814]">
+                    Criminal Law
+                  </option>
+                  <option value="land-law text-[#000814]">Land Law</option>
                 </select>
               </div>
             </div>
@@ -148,7 +166,7 @@ export default function VideoCreate() {
             Publish
           </button>
           <button
-            onClick={() => router.push('/lawyer/videos')}
+            onClick={() => router.push("/lawyer/videos")}
             className="bg-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-400"
           >
             Cancel
