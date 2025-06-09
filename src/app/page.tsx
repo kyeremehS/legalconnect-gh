@@ -46,7 +46,7 @@ export default function Home() {
               </Link>
             ))}
             <Link
-              href="/get-started"
+              href="/sign-in"
               className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
               Login
@@ -92,15 +92,27 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="md:w-1/2 relative">
-              <div className="absolute -inset-4 bg-[#F9A825]/20 rounded-full blur-3xl"></div>
+            <div className="md:w-1/2 relative flex items-center justify-center">
+              {/* Blurred background image */}
+              <Image
+                src="/lawyer-in-ghana-legal-empire-hs3.jpg"
+                alt=""
+                width={650}
+                height={750}
+                aria-hidden="true"
+                className="absolute inset-0 w-[650px] h-[750px] blur-3xl scale-110 opacity-60 z-0"
+                style={{ objectFit: "cover" }}
+                priority
+              />
+              {/* Main sharp image */}
               <Image
                 src="/lawyer-in-ghana-legal-empire-hs3.jpg"
                 alt="Justice illustration"
                 width={600}
                 height={700}
                 priority
-                className="relative hover:scale-105 transition-transform duration-500"
+                className="relative hover:scale-105 transition-transform duration-500 z-10"
+                style={{ objectFit: "cover" }}
               />
             </div>
           </div>
