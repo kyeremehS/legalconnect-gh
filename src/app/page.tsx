@@ -1,5 +1,8 @@
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
+import ChatButton from "./components/ChatButton";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -21,15 +24,21 @@ export default function Home() {
             </span>
           </div>
           <div className="hidden md:flex space-x-10">
-            {["Services", "About", "Contact", "Lawyer Dashboard", "User Dashboard"].map((item) => (
+            {[
+              "Services",
+              "About",
+              "Contact",
+              "Lawyer Dashboard",
+              "User Dashboard",
+            ].map((item) => (
               <Link
                 key={item}
                 href={
                   item === "Lawyer Dashboard"
                     ? "/Lawyer"
                     : item === "User Dashboard"
-                    ? "/User-landing" // <-- Update this to your actual route
-                    : `#${item.toLowerCase()}`
+                      ? "/User-landing" // <-- Update this to your actual route
+                      : `#${item.toLowerCase()}`
                 }
                 className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
               >
@@ -65,7 +74,8 @@ export default function Home() {
               </h1>
               <p className="text-xl text-gray-200 leading-relaxed">
                 Connect with experienced attorneys and get the legal help you
-                need, when you need it. Professional guidance at your fingertips.
+                need, when you need it. Professional guidance at your
+                fingertips.
               </p>
               <div className="flex gap-4 pt-4">
                 <Link
@@ -112,19 +122,47 @@ export default function Home() {
       {/* Explore Legal Resources Section (moved up) */}
       <section className="py-16 bg-white text-[#212121]">
         <div className="container mx-auto px-6">
-          <h2 className="text-2xl font-bold text-center mb-8 text-[#1A237E]">Explore Legal Resources</h2>
+          <h2 className="text-2xl font-bold text-center mb-8 text-[#1A237E]">
+            Explore Legal Resources
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Watch Legal Content Card */}
-            <Link href="/legal-content" className="block bg-blue-50 rounded-xl shadow hover:shadow-lg p-8 text-center transition">
-              <Image src="/video.png" alt="Watch Legal Content" width={60} height={60} className="mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-[#1A237E]">Watch Legal Content</h3>
-              <p className="text-gray-600">Browse and watch legal education videos for free.</p>
+            <Link
+              href="/legal-content"
+              className="block bg-blue-50 rounded-xl shadow hover:shadow-lg p-8 text-center transition"
+            >
+              <Image
+                src="/video.png"
+                alt="Watch Legal Content"
+                width={60}
+                height={60}
+                className="mx-auto mb-4"
+              />
+              <h3 className="text-xl font-semibold mb-2 text-[#1A237E]">
+                Watch Legal Content
+              </h3>
+              <p className="text-gray-600">
+                Browse and watch legal education videos for free.
+              </p>
             </Link>
             {/* Legal AI Card */}
-            <Link href="/legal-chatbot" className="block bg-indigo-50 rounded-xl shadow hover:shadow-lg p-8 text-center transition">
-              <Image src="/chat-bot.png" alt="Legal AI Chatbot" width={60} height={60} className="mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-[#1A237E]">Legal AI</h3>
-              <p className="text-gray-600">Ask legal questions and get instant answers from our AI chatbot.</p>
+            <Link
+              href="/legal-chatbot"
+              className="block bg-indigo-50 rounded-xl shadow hover:shadow-lg p-8 text-center transition"
+            >
+              <Image
+                src="/chat-bot.png"
+                alt="Legal AI Chatbot"
+                width={60}
+                height={60}
+                className="mx-auto mb-4"
+              />
+              <h3 className="text-xl font-semibold mb-2 text-[#1A237E]">
+                Legal AI
+              </h3>
+              <p className="text-gray-600">
+                Ask legal questions and get instant answers from our AI chatbot.
+              </p>
             </Link>
           </div>
         </div>
@@ -141,7 +179,9 @@ export default function Home() {
               { number: "24/7", label: "Support" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-[#1A237E]">{stat.number}</div>
+                <div className="text-3xl md:text-4xl font-bold text-[#1A237E]">
+                  {stat.number}
+                </div>
                 <div className="text-[#212121] mt-2">{stat.label}</div>
               </div>
             ))}
@@ -150,10 +190,15 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-24 bg-gradient-to-b from-white to-[#F7F9FC]">
+      <section
+        id="services"
+        className="py-24 bg-gradient-to-b from-white to-[#F7F9FC]"
+      >
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6 text-[#212121]">Our Legal Services</h2>
+            <h2 className="text-4xl font-bold mb-6 text-[#212121]">
+              Our Legal Services
+            </h2>
             <p className="text-[#212121]/70 text-lg">
               Comprehensive legal solutions tailored to your specific needs
             </p>
@@ -173,8 +218,12 @@ export default function Home() {
                     className="text-[#1A237E]"
                   />
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 text-[#212121]">{service.title}</h3>
-                <p className="text-[#212121]/70 leading-relaxed">{service.description}</p>
+                <h3 className="text-2xl font-semibold mb-4 text-[#212121]">
+                  {service.title}
+                </h3>
+                <p className="text-[#212121]/70 leading-relaxed">
+                  {service.description}
+                </p>
                 <Link
                   href="/learn-more"
                   className="mt-6 text-[#1A237E] font-medium hover:text-[#F9A825] transition-colors"
@@ -193,7 +242,8 @@ export default function Home() {
         <div className="container mx-auto px-6 text-center relative z-10">
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
-            Take the first step towards resolving your legal matters. Schedule your free consultation today.
+            Take the first step towards resolving your legal matters. Schedule
+            your free consultation today.
           </p>
           <Link
             href="/contact"
@@ -211,23 +261,26 @@ export default function Home() {
             <div className="space-y-4">
               <h3 className="text-2xl font-bold mb-6">LegalConnect</h3>
               <p className="text-gray-400 leading-relaxed">
-                Your trusted partner in legal solutions, providing expert guidance
-                when you need it most.
+                Your trusted partner in legal solutions, providing expert
+                guidance when you need it most.
               </p>
             </div>
             <div>
               <h4 className="font-semibold text-lg mb-6">Services</h4>
               <ul className="space-y-3 text-gray-400">
-                {["Corporate Law", "Family Law", "Real Estate", "Immigration"].map(
-                  (item) => (
-                    <li
-                      key={item}
-                      className="hover:text-white transition-colors cursor-pointer"
-                    >
-                      {item}
-                    </li>
-                  )
-                )}
+                {[
+                  "Corporate Law",
+                  "Family Law",
+                  "Real Estate",
+                  "Immigration",
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="hover:text-white transition-colors cursor-pointer"
+                  >
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
@@ -263,6 +316,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Chat Button */}
+      <ChatButton />
     </div>
   );
 }

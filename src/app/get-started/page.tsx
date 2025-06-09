@@ -1,12 +1,16 @@
-'use client';
-
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-
-
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
+  const router = useRouter();
+  const handleSignIn = () => {
+    // Handle sign-in logic here
+    // For example, you can use router.push('/dashboard') to redirect after successful sign-in
+    router.push("/user-page");
+  };
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       {/* Left Section - Indigo Background with Content */}
@@ -25,15 +29,13 @@ export default function AuthPage() {
               LegalConnect
             </span>
           </div>
-          
+          ~
           {/* <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-white via-[#F9A825] to-white bg-clip-text text-transparent">
             Hello Captain 👋
           </h1> */}
-          <p className="text-xl text-gray-200 mb-8 text-center">
-
-            The platform where clients and legal consultants succeed together.
+          <p className="text-xl text-gray-200 mb-8">
+            The platform where clients and legal consultants succeed. Together.
           </p>
-          
           <div className="mt-12">
             <Image
               src="/Coat_of_arms_of_Ghana.svg"
@@ -51,8 +53,10 @@ export default function AuthPage() {
       <div className="flex items-center justify-center p-8 bg-[#F7F9FC]">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2 text-[#212121]">Welcome </h2>
-            <p className="text-[#212121]/70">Please sign up to continue</p>
+            <h2 className="text-3xl font-bold mb-2 text-[#212121]">
+              Welcome back
+            </h2>
+            <p className="text-[#212121]/70">Please sign in to continue</p>
           </div>
 
           <form className="space-y-6">
@@ -88,7 +92,15 @@ export default function AuthPage() {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
               />
               <div className="text-right mt-2">
+
                 
+
+                <a
+                  href="#"
+                  className="text-sm text-[#1A237E] hover:text-[#F9A825] transition-colors"
+                >
+                  forgot password?
+             
               </div>
             </div>
             
@@ -97,7 +109,7 @@ export default function AuthPage() {
               type="submit"
               className="w-full bg-[#F9A825] text-[#1A237E] py-3 rounded-lg font-semibold hover:bg-[#F9A825]/90 transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
-              Sign up
+              <Link href="/user-page">Sign in</Link>
             </button>
 
             <div className="relative my-6">
@@ -119,12 +131,16 @@ export default function AuthPage() {
 
             <div className="text-center text-sm text-[#212121]/70">
               <p>
+
                 Sing up as a consultant?{" "}
                 <Link href="/consultant" target="_blank" className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors">
-                  Sign up as consultant
-                </Link>
-                {" "}or{" "}
-                <Link href="/company-signup" className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors">
+
+                Not a member yet?{" "}
+                <Link
+                  href="/signup"
+                  className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors"
+            
+               
                   company
                 </Link>
               </p>
