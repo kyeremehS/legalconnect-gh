@@ -1,9 +1,29 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useMemo } from "react";
+
+// List your video filenames here
+const VIDEO_FILES = [
+  "Already-used-underpants.mp4",
+  "tenant-and-landlord.mp4",
+  "AMA-vs-traders.mp4",
+  "Child-labour.mp4",
+  "Water-closet-Hall.mp4",
+  "teacher-and-student.mp4",
+  "GFA-and-footballer.mp4",
+  // Add more as needed
+];
+
+// Helper to get N random videos
+function getRandomVideos(arr: string[], n: number) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, n);
+}
 
 export default function LegalContent() {
   const [isFullScreen, setIsFullScreen] = useState(false);
+
+  // Pick 2 random videos on each render (change 2 to any number you want)
+  const randomVideos = useMemo(() => getRandomVideos(VIDEO_FILES, 3), []);
 
   return (
     <div
@@ -22,50 +42,36 @@ export default function LegalContent() {
         className={`${
           isFullScreen
             ? "w-full h-screen flex items-center justify-center bg-black fixed top-0 left-0 z-50"
-            : "grid gap-8 md:grid-cols-2 justify-center"
+            : "grid gap-6 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 justify-center"
         }`}
       >
         <div
           className={`${
             isFullScreen
               ? "w-full h-full flex flex-col items-center justify-center"
-              : ""
+              : "contents"
           }`}
         >
-          <iframe
-            width={isFullScreen ? "100%" : "100%"}
-            height={isFullScreen ? "100%" : "315"}
-            src="https://www.tiktok.com/@thelaw_gh/video/7470121358928727302"
-            title="Legal Video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className={`rounded-lg shadow ${
-              isFullScreen ? "h-full" : ""
-            }`}
-            style={isFullScreen ? { minHeight: "80vh" } : {}}
-          ></iframe>
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={() => setIsFullScreen(!isFullScreen)}
-              className="bg-[#1A237E] text-white px-4 py-2 rounded hover:bg-[#283593] transition"
-            >
-              {isFullScreen ? "Exit Full Screen" : "Full Screen"}
-            </button>
-          </div>
+          {randomVideos.map((file) => (
+            <video
+              key={file}
+              src={`/legal-videos/${file}`}
+              controls
+              className={
+                isFullScreen
+                  ? "rounded-lg mb-4 max-w-[266px] h-[202px] object-cover mx-auto"
+                  : "rounded-lg mb-4 w-full max-w-[266px] h-[202px] object-cover mx-auto"
+              }
+              style={isFullScreen ? { background: "black" } : {}}
+            />
+          ))}
+          <div className="flex justify-center mt-4"></div>
           {!isFullScreen && (
-            <p className="mt-2 text-lg font-semibold text-[#200000]">
-              Understanding Your Rights in Ghana
+            <p className="mt-2 text-lg font-semibold text-[#200000] text-center">
+              Click on a video to watch
             </p>
           )}
         </div>
-        <a
-          href="https://www.tiktok.com/@thelaw_gh/video/7470121358928727302"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-[#1A237E] text-white px-4 py-2 rounded hover:bg-[#283593] transition"
-        >
-          Watch on TikTok
-        </a>
       </div>
     </div>
   );

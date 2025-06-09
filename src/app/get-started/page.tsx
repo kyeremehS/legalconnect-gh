@@ -29,13 +29,14 @@ export default function AuthPage() {
               LegalConnect
             </span>
           </div>
-          ~
+
           {/* <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-white via-[#F9A825] to-white bg-clip-text text-transparent">
             Hello Captain 👋
           </h1> */}
-          <p className="text-xl text-gray-200 mb-8">
-            The platform where clients and legal consultants succeed. Together.
+          <p className="text-xl text-gray-200 mb-8 text-center">
+            The platform where clients and legal consultants succeed together.
           </p>
+
           <div className="mt-12">
             <Image
               src="/Coat_of_arms_of_Ghana.svg"
@@ -73,11 +74,22 @@ export default function AuthPage() {
 
             <div>
               <label className="block text-sm font-medium text-[#212121] mb-2">
-                Password
+                create a password
               </label>
               <input
                 type="password"
                 placeholder="Enter your password"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#212121] mb-2">
+                confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="confirm password"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1A237E] focus:border-transparent outline-none transition-all text-[#212121]"
               />
               <div className="text-right mt-2">
@@ -88,6 +100,7 @@ export default function AuthPage() {
                   forgot password?
                 </a>
               </div>
+              <div className="text-right mt-2"></div>
             </div>
 
             <button
@@ -111,14 +124,15 @@ export default function AuthPage() {
               className="w-full bg-white border border-gray-300 text-[#212121] py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all hover:scale-105 shadow-lg flex items-center justify-center gap-2"
             >
               <Image src="/google.png" alt="Google" width={20} height={20} />
-              Sign in with Google
+              Sign up with Google
             </button>
 
             <div className="text-center text-sm text-[#212121]/70">
               <p>
-                Not a member yet?{" "}
+                Sign up as a consultant?{" "}
                 <Link
-                  href="/signup"
+                  href="/consultant"
+                  target="_blank"
                   className="text-[#1A237E] hover:text-[#F9A825] font-medium transition-colors"
                 >
                   Sign up as consultant

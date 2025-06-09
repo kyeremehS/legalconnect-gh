@@ -11,7 +11,8 @@ export default function Home() {
       <header className="bg-gradient-to-br from-[#1A237E] via-[#1A237E]/95 to-[#1A237E]/90 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/Legalhammer.webp')] opacity-5"></div>
         <nav className="container mx-auto px-6 py-6 flex justify-between items-center relative z-10">
-          <div className="flex items-center hover:scale-105 transition-transform">
+          {/* Logo and Brand */}
+          <div className="flex items-center gap-3">
             <Image
               src="/legalb.jpg"
               alt="LegalConnect Logo"
@@ -19,34 +20,44 @@ export default function Home() {
               height={40}
               className="animate-pulse"
             />
-            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-white to-[#F9A825] bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-white to-[#F9A825] bg-clip-text text-transparent">
               LegalConnect
             </span>
           </div>
-          <div className="hidden md:flex space-x-10">
-            {[
-              "Services",
-              "About",
-              "Contact",
-              "Lawyer Dashboard",
-              "User Dashboard",
-            ].map((item) => (
-              <Link
-                key={item}
-                href={
-                  item === "Lawyer Dashboard"
-                    ? "/Lawyer"
-                    : item === "User Dashboard"
-                      ? "/User-landing" // <-- Update this to your actual route
-                      : `#${item.toLowerCase()}`
-                }
-                className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
-              >
-                {item}
-              </Link>
-            ))}
+          {/* Navigation Links */}
+          <div className="flex items-center gap-8">
             <Link
-              href="/get-started"
+              href="#services"
+              className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
+            >
+              Services
+            </Link>
+            <Link
+              href="#about"
+              className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
+            >
+              About
+            </Link>
+            <Link
+              href="#contact"
+              className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
+            >
+              Contact
+            </Link>
+            <Link
+              href="/Lawyer"
+              className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
+            >
+              Lawyer Dashboard
+            </Link>
+            <Link
+              href="/User-landing"
+              className="text-gray-200 hover:text-white hover:scale-105 transition-all font-medium"
+            >
+              User Dashboard
+            </Link>
+            <Link
+              href="/sign-in"
               className="bg-[#F9A825] hover:bg-[#F9A825]/90 px-6 py-2 rounded-full text-[#1A237E] text-sm font-semibold transition-all hover:scale-105 shadow-lg hover:shadow-[#F9A825]/20"
             >
               Login
@@ -92,15 +103,27 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="md:w-1/2 relative">
-              <div className="absolute -inset-4 bg-[#F9A825]/20 rounded-full blur-3xl"></div>
+            <div className="md:w-1/2 relative flex items-center justify-center">
+              {/* Blurred background image */}
+              <Image
+                src="/lawyer-in-ghana-legal-empire-hs3.jpg"
+                alt=""
+                width={650}
+                height={750}
+                aria-hidden="true"
+                className="absolute inset-0 w-[650px] h-[750px] blur-3xl scale-110 opacity-60 z-0"
+                style={{ objectFit: "cover" }}
+                priority
+              />
+              {/* Main sharp image */}
               <Image
                 src="/lawyer-in-ghana-legal-empire-hs3.jpg"
                 alt="Justice illustration"
                 width={600}
                 height={700}
                 priority
-                className="relative hover:scale-105 transition-transform duration-500"
+                className="relative hover:scale-105 transition-transform duration-500 z-10"
+                style={{ objectFit: "cover" }}
               />
             </div>
           </div>
