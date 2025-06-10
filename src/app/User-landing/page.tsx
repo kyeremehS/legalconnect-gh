@@ -41,7 +41,7 @@ const features = [
   {
     name: "Legal Education",
     description: "Access articles and resources.",
-    href: "/user/education",
+    href: "/User-landing/user-education",
     icon: "/law.png",
     color: "bg-orange-100 text-orange-800",
   },

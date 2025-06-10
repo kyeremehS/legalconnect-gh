@@ -107,6 +107,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close chat"
           >
             <X className="w-5 h-5 text-gray-700" />
           </button>
@@ -170,6 +171,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:bg-[#1A237E]/90"
               }`}
+              aria-label="Send message"
             >
               <Send className="w-5 h-5" />
             </button>
