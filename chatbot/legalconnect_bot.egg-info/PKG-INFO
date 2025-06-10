@@ -1,5 +1,7 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: legalconnect-bot
 Version: 0.0.0
 Author: Samuel Kyeremeh
 Author-email: affum3331@gmail.com
+Dynamic: author
+Dynamic: author-email

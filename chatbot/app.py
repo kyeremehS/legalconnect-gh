@@ -7,7 +7,6 @@ import os
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.llms import CTransformers
 from langchain.llms import LlamaCpp
 
 from langchain.prompts import PromptTemplate

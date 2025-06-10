@@ -203,7 +203,7 @@ export default function Messages() {
                 isMobileMessageView ? "hidden md:block" : "block"
               }`}
             >
-              <h2 className="text-lg font-semibold mb-4 flex items-center">
+              <h2 className="text-lg text-[#343a40] font-semibold mb-4 flex items-center">
                 <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2 text-blue-500" />{" "}
                 Messages
               </h2>
@@ -215,7 +215,7 @@ export default function Messages() {
                     placeholder="Search messages..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 pl-10 border rounded focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 pl-10 border rounded focus:ring-blue-500 focus:border-blue-500 text-gray-800"
                     aria-label="Search messages"
                   />
                 </div>
@@ -234,8 +234,10 @@ export default function Messages() {
                     >
                       <div className="flex justify-between">
                         <div>
-                          <p className="text-sm font-medium">{msg.client}</p>
-                          <p className="text-xs text-gray-500 truncate">
+                          <p className="text-sm text-[#343a40] font-medium">
+                            {msg.client}
+                          </p>
+                          <p className="text-xs text-gray-800 truncate">
                             {msg.subject}
                           </p>
                         </div>
@@ -264,19 +266,21 @@ export default function Messages() {
               )}
               {selectedMessage ? (
                 <div>
-                  <h2 className="text-lg font-semibold mb-4">
+                  <h2 className="text-lg text-gray-800 font-semibold mb-4">
                     Message from {selectedMessage.client}
                   </h2>
                   <div className="border-b pb-4 mb-4">
-                    <p className="text-sm font-medium">
+                    <p className="text-sm text-[#343a40] font-medium">
                       {selectedMessage.subject}
                     </p>
                     <p className="text-xs text-gray-400">
                       {selectedMessage.timestamp}
                     </p>
-                    <p className="mt-2 text-sm">{selectedMessage.text}</p>
+                    <p className="mt-2 text-[#343a40] text-sm">
+                      {selectedMessage.text}
+                    </p>
                   </div>
-                  <div>
+                  <div className="text-[#343a40] font-medium mb-2">
                     <textarea
                       id="reply-text"
                       placeholder="Type your reply..."
@@ -300,7 +304,7 @@ export default function Messages() {
 
               {/* Call Requests */}
               <div className="mt-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                <h2 className="text-lg text-[#343a40] font-semibold mb-4 flex items-center">
                   <PhoneIcon className="h-5 w-5 mr-2 text-blue-500" /> Call
                   Requests
                 </h2>
@@ -314,7 +318,9 @@ export default function Messages() {
                         className="p-4 border rounded flex justify-between items-center"
                       >
                         <div>
-                          <p className="text-sm font-medium">{call.client}</p>
+                          <p className="text-sm text-[#343a40] font-medium">
+                            {call.client}
+                          </p>
                           <p className="text-xs text-gray-500">
                             Requested: {call.time}
                           </p>
