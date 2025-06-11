@@ -117,7 +117,7 @@ export default function VideoCreate() {
                 />
               </div>
               <div>
-                <label className="block text-sm  text-[#000814] font-medium text-gray-700">
+                <label className="block text-sm text-[#000814] font-medium">
                   Description
                 </label>
                 <textarea
