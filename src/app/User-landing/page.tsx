@@ -20,14 +20,14 @@ const features = [
   {
     name: "Message & Call Lawyer",
     description: "Chat or call your lawyer directly.",
-    href: "/user/messages",
+    href: "/User-landing/user-message-call",
     icon: "/phone.png",
     color: "bg-yellow-100 text-yellow-800",
   },
   {
     name: "Profile Settings",
     description: "Update your personal information.",
-    href: "/user/profile",
+    href: "/User-landing/profile-settings",
     icon: "/user-setting.png",
     color: "bg-purple-100 text-purple-800",
   },
@@ -41,7 +41,7 @@ const features = [
   {
     name: "Legal Education",
     description: "Access articles and resources.",
-    href: "/user/education",
+    href: "/User-landing/user-education",
     icon: "/law.png",
     color: "bg-orange-100 text-orange-800",
   },

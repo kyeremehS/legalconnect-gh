@@ -4,8 +4,13 @@ import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import ChatModal from "./ChatModal";
 
-export default function ChatButton() {
+type ChatButtonProps = {
+  onClick?: () => void;
+};
+
+const ChatButton: React.FC<ChatButtonProps> = ({ onClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <>

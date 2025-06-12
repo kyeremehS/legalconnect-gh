@@ -4,11 +4,10 @@ from dotenv import load_dotenv
 import os
 
 # LangChain Community Imports (Modern Versions)
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.llms import CTransformers
-from langchain.llms import LlamaCpp
+from langchain_community.llms import LlamaCpp
 
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
