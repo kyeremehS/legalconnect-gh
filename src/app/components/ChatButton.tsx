@@ -29,3 +29,5 @@ const ChatButton: React.FC<ChatButtonProps> = ({ onClick }) => {
     </>
   );
 }
+
+export default ChatButton;
