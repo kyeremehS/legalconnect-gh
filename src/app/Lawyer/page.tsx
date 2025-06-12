@@ -10,7 +10,7 @@ const navItems = [
   { name: "Messages & Calls", href: "/Lawyer/messages-calls" },
   { name: "Videos", href: "/Lawyer/create-content" },
   { name: "Engagement", href: "/lawyer/engagement" },
-  { name: "Profile", href: "/lawyer/profile" },
+  { name: "Profile", href: "/Lawyer/profile" },
   { name: "Settings", href: "/lawyer/settings" },
 ];
 
