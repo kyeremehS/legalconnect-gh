@@ -28,7 +28,6 @@ import {
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
-import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,154 +51,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 z-50 px-4 py-3"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <nav
-          className={`
-          mx-auto max-w-7xl 
-          bg-white/60 backdrop-blur-md 
-          border border-amber-100/30 
-          shadow-lg shadow-amber-100/20 
-          rounded-full px-6 py-4 
-          transition-all duration-300
-          relative overflow-hidden
-          ${scrollY > 50 ? "bg-white/75 backdrop-blur-lg" : ""}
-        `}
-        >
-          {/* Progress Bar - Add this at the top of nav */}
-          <motion.div
-            className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-amber-400 to-amber-600"
-            style={{
-              width: "100%",
-              scaleX: scrollProgress / 100,
-              transformOrigin: "0%",
-              opacity: scrollProgress > 0 ? 1 : 0,
-            }}
-            transition={{ duration: 0.1, ease: "linear" }}
-          />
-
-          <div className="flex justify-between items-center">
-            {/* Logo */}
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <Scale className="w-8 h-8 text-amber-600" />
-              </motion.div>
-              <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
-                LegalConnect
-              </span>
-            </motion.div>
-
-            {/* Nav Links */}
-            <div className="hidden md:flex items-center gap-8 text-sm">
-              <Link
-                href="#features"
-                className="text-gray-600 hover:text-amber-600 transition-colors"
-              >
-                Features
-              </Link>
-              <Link
-                href="#solutions"
-                className="text-gray-600 hover:text-amber-600 transition-colors"
-              >
-                Solutions
-              </Link>
-              {/* <Link
-                href="/pricing"
-                className="text-gray-600 hover:text-amber-600 transition-colors"
-              >
-                Pricing
-              </Link> */}
-              <Link
-                href="/sign-in"
-                className="text-gray-600 hover:text-amber-600 transition-colors"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/get-started"
-                className="bg-[#d4a017] text-white px-5 py-2.5 rounded-full hover:bg-[#b17d25] transition-all flex items-center gap-2 group"
-              >
-                Get Started{" "}
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <UserButton />
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden text-gray-600 hover:text-amber-600 transition-colors"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-          </div>
-        </nav>
-
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-24 left-4 right-4 bg-white rounded-2xl shadow-xl border border-[#f5c05a]/20 p-6 md:hidden"
-            >
-              <div className="flex flex-col gap-4">
-                <Link
-                  href="#features"
-                  className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Features
-                </Link>
-                <Link
-                  href="#solutions"
-                  className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Solutions
-                </Link>
-                <Link
-                  href="/pricing"
-                  className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/sign-in"
-                  className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/get-started"
-                  className="bg-[#d4a017] text-white px-5 py-3 rounded-xl hover:bg-[#b17d25] transition-all flex items-center justify-center gap-2 group"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Get Started{" "}
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
       {/* Hero Section - Add animations */}
       <motion.section
         className="pt-32 pb-20 relative overflow-hidden"
@@ -443,7 +294,9 @@ export default function Home() {
                     <Users2 className="w-6 h-6 text-amber-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-500">{testimonial.name}</h4>
+                    <h4 className="font-semibold text-gray-500">
+                      {testimonial.name}
+                    </h4>
                     <p className="text-sm text-gray-500">{testimonial.role}</p>
                   </div>
                 </div>
@@ -484,7 +337,9 @@ export default function Home() {
                 <div className="w-16 h-16 mx-auto mb-4 bg-[#fff8eb] rounded-xl flex items-center justify-center group-hover:bg-[#fff2d4] transition-colors">
                   {integration.icon}
                 </div>
-                <h3 className="font-semibold text-gray-500 mb-2">{integration.name}</h3>
+                <h3 className="font-semibold text-gray-500 mb-2">
+                  {integration.name}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {integration.description}
                 </p>
@@ -538,107 +393,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-
-      {/* Footer */}
-      <footer className="py-12 bg-white border-t border-gray-100">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12">
-            <div>
-              <div className="flex items-center gap-2 mb-6">
-                <Scale className="w-8 h-8 text-amber-600" />
-                <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
-                  LegalConnect
-                </span>
-              </div>
-              <p className="text-gray-600 mb-6">
-                Making legal services more accessible and efficient through
-                AI-powered solutions.
-              </p>
-              <div className="flex gap-4">
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-amber-600 transition-colors"
-                >
-                  <Twitter className="w-5 h-5" />
-                </Link>
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-amber-600 transition-colors"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </Link>
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-amber-600 transition-colors"
-                >
-                  <Github className="w-5 h-5" />
-                </Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-400 mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <Link href="/features">Features</Link>
-                </li>
-                <li>
-                  <Link href="/pricing">Pricing</Link>
-                </li>
-                <li>
-                  <Link href="/security">Security</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-400 mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <Link href="/about">About</Link>
-                </li>
-                <li>
-                  <Link href="/careers">Careers</Link>
-                </li>
-                <li>
-                  <Link href="/blog">Blog</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-400 mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <Link href="/privacy">Privacy</Link>
-                </li>
-                <li>
-                  <Link href="/terms">Terms</Link>
-                </li>
-                <li>
-                  <Link href="/security">Security</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-600">
-              © 2024 LegalConnect. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm text-gray-600">
-              <Link
-                href="/privacy"
-                className="hover:text-amber-600 transition-colors"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="/terms"
-                className="hover:text-amber-600 transition-colors"
-              >
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       {/* Chat Modal */}
       <ChatButton />
