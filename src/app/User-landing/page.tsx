@@ -1,7 +1,8 @@
 "use client";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import SidebarLayout from "@/components/SidebarLayout";
+
 const features = [
   {
     name: "Watch Legal Videos",

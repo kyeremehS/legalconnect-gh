@@ -1,17 +1,32 @@
 "use client";
-import Link from 'next/link';
-import Image from 'next/image';
-import { JSX, useState } from 'react';
+import Link from "next/link";
+import Image from "next/image";
+import { JSX, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 // Mock user and chat data
-const mockUser = { displayName: 'Kofi Mensah' };
+const mockUser = { displayName: "Kofi Mensah" };
 const mockChat = [
-  { id: 1, sender: 'chatbot', text: 'How can I assist you with your legal questions today?', time: '10:55 PM' },
-  { id: 2, sender: 'user', text: 'What is a power of attorney?', time: '10:56 PM' },
-  { id: 3, sender: 'chatbot', text: 'A power of attorney is a legal document that allows someone to act on your behalf in legal or financial matters. Would you like more details?', time: '10:57 PM' },
+  {
+    id: 1,
+    sender: "chatbot",
+    text: "How can I assist you with your legal questions today?",
+    time: "10:55 PM",
+  },
+  {
+    id: 2,
+    sender: "user",
+    text: "What is a power of attorney?",
+    time: "10:56 PM",
+  },
+  {
+    id: 3,
+    sender: "chatbot",
+    text: "A power of attorney is a legal document that allows someone to act on your behalf in legal or financial matters. Would you like more details?",
+    time: "10:57 PM",
+  },
 ];
 
 const navItems = [
@@ -24,7 +39,6 @@ const navItems = [
   { name: "Settings", href: "/user/settings" },
 ];
 
-
 interface LegalChatbotProps {
   trigger: React.ReactNode;
 }
@@ -33,7 +47,7 @@ interface LegalChatbotProps {
 export const LegalChatbot: React.FC<LegalChatbotProps> = ({ trigger }) => {
   // State management
   const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [messages, setMessages] = useState(mockChat);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -43,44 +57,59 @@ export const LegalChatbot: React.FC<LegalChatbotProps> = ({ trigger }) => {
       // Add user message
       const userMessage = {
         id: messages.length + 1,
-        sender: 'user',
+        sender: "user",
         text: input.trim(),
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
-      setMessages(prev => [...prev, userMessage]);
-      setInput('');
+      setMessages((prev) => [...prev, userMessage]);
+      setInput("");
       setIsTyping(true);
 
       try {
         // Make API call to your chatbot backend
-        const response = await fetch('/api/chat', {
-          method: 'POST',
+        const response = await fetch("/api/chat", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ message: input.trim() }),
         });
 
-        if (!response.ok) throw new Error('Failed to get response');
+        if (!response.ok) throw new Error("Failed to get response");
 
         const data = await response.json();
 
         // Add bot response
-        setMessages(prev => [...prev, {
-          id: prev.length + 2,
-          sender: 'chatbot',
-          text: data.message,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: prev.length + 2,
+            sender: "chatbot",
+            text: data.message,
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          },
+        ]);
       } catch (error) {
-        console.error('Chat error:', error);
+        console.error("Chat error:", error);
         // Add error message
-        setMessages(prev => [...prev, {
-          id: prev.length + 2,
-          sender: 'chatbot',
-          text: 'Sorry, I encountered an error. Please try again.',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: prev.length + 2,
+            sender: "chatbot",
+            text: "Sorry, I encountered an error. Please try again.",
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          },
+        ]);
       } finally {
         setIsTyping(false);
       }
@@ -117,20 +146,30 @@ export const LegalChatbot: React.FC<LegalChatbotProps> = ({ trigger }) => {
               <div className="p-4 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-gray-600"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <circle cx="12" cy="12" r="10"></circle>
                       <path d="M12 16v-4"></path>
                       <path d="M12 8h.01"></path>
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-800">Legal Assistant</h3>
+                    <h3 className="font-semibold text-gray-800">
+                      Legal Assistant
+                    </h3>
                     <p className="text-sm text-gray-500">Ask me anything</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Close chat"
                 >
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
@@ -141,17 +180,27 @@ export const LegalChatbot: React.FC<LegalChatbotProps> = ({ trigger }) => {
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`mb-6 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    className={`mb-6 flex ${
+                      message.sender === "user"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
                   >
                     <div
                       className={`max-w-xs md:max-w-md p-4 rounded-2xl ${
-                        message.sender === 'user'
-                          ? 'bg-gray-900 text-white ml-12'
-                          : 'bg-white text-gray-800 shadow-sm border border-gray-100 mr-12'
+                        message.sender === "user"
+                          ? "bg-gray-900 text-white ml-12"
+                          : "bg-white text-gray-800 shadow-sm border border-gray-100 mr-12"
                       }`}
                     >
                       <p>{message.text}</p>
-                      <p className={`text-xs mt-2 ${message.sender === 'user' ? 'text-gray-300' : 'text-gray-400'}`}>
+                      <p
+                        className={`text-xs mt-2 ${
+                          message.sender === "user"
+                            ? "text-gray-300"
+                            : "text-gray-400"
+                        }`}
+                      >
                         {message.time}
                       </p>
                     </div>
@@ -189,8 +238,16 @@ export const LegalChatbot: React.FC<LegalChatbotProps> = ({ trigger }) => {
                   <button
                     type="submit"
                     className="bg-gray-900 p-3 rounded-xl text-white hover:bg-gray-800 transition-colors"
+                    aria-label="Send message"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M22 2L11 13"></path>
                       <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
                     </svg>

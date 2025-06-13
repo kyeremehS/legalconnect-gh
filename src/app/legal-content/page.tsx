@@ -1,78 +1,137 @@
 "use client";
-import { useState, useMemo } from "react";
+import React, { useState } from "react";
 
-// List your video filenames here
-const VIDEO_FILES = [
-  "Already-used-underpants.mp4",
-  "tenant-and-landlord.mp4",
-  "AMA-vs-traders.mp4",
-  "Child-labour.mp4",
-  "Water-closet-Hall.mp4",
-  "teacher-and-student.mp4",
-  "GFA-and-footballer.mp4",
-  // Add more as needed
+// Example categories and videos
+const categories = [
+  {
+    label: "Land Law",
+    description: "Videos about land rights, disputes, and property law.",
+    videos: [
+      {
+        title: "Understanding Land Ownership in Ghana",
+        url: "https://www.youtube.com/embed/your_land_video_id",
+        lawyer: "Ama Kwarteng, Esq.",
+      },
+      {
+        title: "Resolving Land Disputes",
+        url: "https://www.youtube.com/embed/your_land_dispute_video_id",
+        lawyer: "Kwame Mensah, Esq.",
+      },
+    ],
+  },
+  {
+    label: "Family Law",
+    description:
+      "Videos about marriage, divorce, child custody, and related issues.",
+    videos: [
+      {
+        title: "Marriage and Divorce Laws",
+        url: "https://www.youtube.com/embed/your_family_video_id",
+        lawyer: "Abena Owusu, Esq.",
+      },
+      {
+        title: "Child Custody Explained",
+        url: "https://www.youtube.com/embed/your_custody_video_id",
+        lawyer: "Kojo Asante, Esq.",
+      },
+    ],
+  },
+  {
+    label: "Employment Law",
+    description:
+      "Videos about employee rights, contracts, and workplace issues.",
+    videos: [
+      {
+        title: "Your Rights as an Employee",
+        url: "https://www.youtube.com/embed/your_employment_video_id",
+        lawyer: "Efua Boateng, Esq.",
+      },
+      {
+        title: "Understanding Employment Contracts",
+        url: "https://www.youtube.com/embed/your_contract_video_id",
+        lawyer: "Yaw Adu, Esq.",
+      },
+    ],
+  },
 ];
 
-// Helper to get N random videos
-function getRandomVideos(arr: string[], n: number) {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, n);
-}
+export default function LegalContentPage() {
+  const [selectedCategory, setSelectedCategory] = useState(categories[0].label);
 
-export default function LegalContent() {
-  const [isFullScreen, setIsFullScreen] = useState(false);
-
-  // Pick 2 random videos on each render (change 2 to any number you want)
-  const randomVideos = useMemo(() => getRandomVideos(VIDEO_FILES, 3), []);
+  const activeCategory = categories.find(
+    (cat) => cat.label === selectedCategory
+  );
 
   return (
-    <div
-      className={`min-h-screen bg-white p-8 ${
-        isFullScreen ? "flex flex-col items-center justify-center" : ""
-      }`}
-    >
-      <h1
-        className={`text-3xl font-bold mb-6 text-[#1A237E] text-center ${
-          isFullScreen ? "hidden" : ""
-        }`}
-      >
-        Watch Legal Content
-      </h1>
-      <div
-        className={`${
-          isFullScreen
-            ? "w-full h-screen flex items-center justify-center bg-black fixed top-0 left-0 z-50"
-            : "grid gap-6 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 justify-center"
-        }`}
-      >
-        <div
-          className={`${
-            isFullScreen
-              ? "w-full h-full flex flex-col items-center justify-center"
-              : "contents"
-          }`}
-        >
-          {randomVideos.map((file) => (
-            <video
-              key={file}
-              src={`/legal-videos/${file}`}
-              controls
-              className={
-                isFullScreen
-                  ? "rounded-lg mb-4 max-w-[266px] h-[202px] object-cover mx-auto"
-                  : "rounded-lg mb-4 w-full max-w-[266px] h-[202px] object-cover mx-auto"
-              }
-              style={isFullScreen ? { background: "black" } : {}}
-            />
+    <main className="min-h-screen bg-gradient-to-br from-[#F7F9FC] via-[#e3e8f7] to-[#cfd8fd] py-8 px-2 md:px-6 flex flex-col items-center">
+      {/* Hero Section */}
+      <section className="w-full max-w-4xl text-center mb-8 md:mb-12 px-2">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-[#1A237E] mb-4 drop-shadow-lg">
+          Legal Video Library
+        </h1>
+        <p className="text-base md:text-xl text-gray-700 mb-6">
+          Watch educational videos categorized by legal issue and lawyer
+          expertise.
+        </p>
+      </section>
+
+      {/* Category Tabs */}
+      <nav className="w-full max-w-3xl flex flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-10">
+        {categories.map((cat) => (
+          <button
+            key={cat.label}
+            onClick={() => setSelectedCategory(cat.label)}
+            className={`px-4 md:px-6 py-2 rounded-full font-semibold shadow transition
+              ${
+                selectedCategory === cat.label
+                  ? "bg-[#F9A825] text-[#1A237E]"
+                  : "bg-white text-[#1A237E] border border-[#F9A825] hover:bg-[#f9a825]/10"
+              }`}
+            aria-current={selectedCategory === cat.label ? "page" : undefined}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Category Description */}
+      <section className="w-full max-w-3xl text-center mb-6 md:mb-8 px-2">
+        <h2 className="text-xl md:text-2xl font-bold text-[#1A237E] mb-2">
+          {activeCategory?.label}
+        </h2>
+        <p className="text-gray-700">{activeCategory?.description}</p>
+      </section>
+
+      {/* Videos Grid */}
+      <section className="w-full max-w-6xl flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
+          {activeCategory?.videos.map((video, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-xl shadow-lg p-4 md:p-6 flex flex-col items-center hover:shadow-2xl transition"
+            >
+              <div className="w-full aspect-video mb-3 rounded overflow-hidden flex justify-center items-center">
+                <iframe
+                  src={video.url}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-48 md:h-56 rounded"
+                />
+              </div>
+              <h3 className="text-base md:text-lg font-bold text-[#1A237E] mb-1 text-center">
+                {video.title}
+              </h3>
+              <span className="text-xs md:text-sm text-gray-500 mb-1 text-center block">
+                By {video.lawyer}
+              </span>
+              <span className="inline-block bg-[#F9A825]/20 text-[#1A237E] px-3 py-1 rounded text-xs font-semibold">
+                {activeCategory.label}
+              </span>
+            </div>
           ))}
-          <div className="flex justify-center mt-4"></div>
-          {!isFullScreen && (
-            <p className="mt-2 text-lg font-semibold text-[#200000] text-center">
-              Click on a video to watch
-            </p>
-          )}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
