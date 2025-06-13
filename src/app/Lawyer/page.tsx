@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import SidebarLayout from "@/components/SidebarLayout";
 
 const navItems = [
@@ -11,7 +12,7 @@ const navItems = [
   { name: "Videos", href: "/Lawyer/create-content" },
   { name: "Engagement", href: "/lawyer/engagement" },
   { name: "Profile", href: "/Lawyer/profile" },
-  { name: "Settings", href: "/lawyer/settings" },
+  { name: "Settings", href: "/Lawyer/Seting" },
 ];
 
 interface User {
@@ -25,6 +26,7 @@ const LawyerDashboard: React.FC = () => {
     role: "lawyer",
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
 
   if (!user) return <div>Loading...</div>;
 
@@ -46,10 +48,13 @@ const LawyerDashboard: React.FC = () => {
               Welcome, Lawyer {user.displayName}
             </h1>
             <div className="space-x-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded">
+              <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                 Settings
               </button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                onClick={() => router.push("/")}
+              >
                 Logout
               </button>
             </div>
