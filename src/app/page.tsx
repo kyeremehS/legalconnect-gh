@@ -28,6 +28,7 @@ import {
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -114,12 +115,12 @@ export default function Home() {
               >
                 Solutions
               </Link>
-              <Link
+              {/* <Link
                 href="/pricing"
                 className="text-gray-600 hover:text-amber-600 transition-colors"
               >
                 Pricing
-              </Link>
+              </Link> */}
               <Link
                 href="/sign-in"
                 className="text-gray-600 hover:text-amber-600 transition-colors"
@@ -133,6 +134,7 @@ export default function Home() {
                 Get Started{" "}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
+              <UserButton />
             </div>
 
             {/* Mobile Menu Button */}
