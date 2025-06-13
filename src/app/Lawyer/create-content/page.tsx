@@ -1,58 +1,79 @@
 "use client";
-import { useState, useRef } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function VideoCreate() {
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [fileName, setFileName] = useState("");
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const router = useRouter();
+// Example categories and videos
+const categories = [
+  {
+    label: "Land Law",
+    description: "Videos about land rights, disputes, and property law.",
+    videos: [
+      {
+        title: "Understanding Land Ownership in Ghana",
+        url: "https://www.youtube.com/embed/your_land_video_id",
+        lawyer: "Ama Kwarteng, Esq.",
+      },
+      {
+        title: "Resolving Land Disputes",
+        url: "https://www.youtube.com/embed/your_land_dispute_video_id",
+        lawyer: "Kwame Mensah, Esq.",
+      },
+    ],
+  },
+  {
+    label: "Family Law",
+    description:
+      "Videos about marriage, divorce, child custody, and related issues.",
+    videos: [
+      {
+        title: "Marriage and Divorce Laws",
+        url: "https://www.youtube.com/embed/your_family_video_id",
+        lawyer: "Abena Owusu, Esq.",
+      },
+      {
+        title: "Child Custody Explained",
+        url: "https://www.youtube.com/embed/your_custody_video_id",
+        lawyer: "Kojo Asante, Esq.",
+      },
+    ],
+  },
+  {
+    label: "Employment Law",
+    description:
+      "Videos about employee rights, contracts, and workplace issues.",
+    videos: [
+      {
+        title: "Your Rights as an Employee",
+        url: "https://www.youtube.com/embed/your_employment_video_id",
+        lawyer: "Efua Boateng, Esq.",
+      },
+      {
+        title: "Understanding Employment Contracts",
+        url: "https://www.youtube.com/embed/your_contract_video_id",
+        lawyer: "Yaw Adu, Esq.",
+      },
+    ],
+  },
+];
 
-  // Handle video file selection from local computer
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) {
-      alert("Please select a valid video file (MP4 or WebM).");
-      return;
-    }
-    const file = files[0];
-    if (file && (file.type === "video/mp4" || file.type === "video/webm")) {
-      // Validate file size (<50MB)
-      if (file.size > 50 * 1024 * 1024) {
-        alert("Video file must be under 50MB.");
-        return;
-      }
-      setVideoFile(file);
-      setFileName(file.name);
+export default function LegalContentPage() {
+  const [selectedCategory, setSelectedCategory] = useState(categories[0].label);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const activeCategory = categories.find(
+    (cat) => cat.label === selectedCategory
+  );
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-
-      // Validate duration (<60 seconds)
-      const video = document.createElement("video");
-      video.src = url;
-      video.onloadedmetadata = () => {
-        if (video.duration > 60) {
-          alert("Video must be 60 seconds or shorter.");
-          setVideoFile(null);
-          setPreviewUrl("");
-          setFileName("");
-          URL.revokeObjectURL(url);
-        }
-      };
-    } else {
-      alert("Please select a valid video file (MP4 or WebM).");
     }
   };
 
-  // Dummy publish handler (frontend only)
-  const handlePublish = () => {
-    alert("This is a frontend-only demo. No video will be uploaded.");
-  };
+  const fileName = "page.tsx";
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -88,12 +109,7 @@ export default function VideoCreate() {
             {previewUrl && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold">Preview</h3>
-                <video
-                  ref={videoRef}
-                  src={previewUrl}
-                  controls
-                  className="w-full rounded"
-                />
+                <video src={previewUrl} controls className="w-full rounded" />
               </div>
             )}
           </div>
@@ -109,8 +125,8 @@ export default function VideoCreate() {
                 </label>
                 <input
                   type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  // value={title}
+                  // onChange={(e) => setTitle(e.target.value)}
                   className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
                   placeholder="e.g., Understanding Land Disputes in Ghana"
                   required
@@ -121,8 +137,8 @@ export default function VideoCreate() {
                   Description
                 </label>
                 <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  // value={description}
+                  // onChange={(e) => setDescription(e.target.value)}
                   className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Briefly describe your video (e.g., key points or keywords)"
                   rows={4}
@@ -137,8 +153,8 @@ export default function VideoCreate() {
                 </label>
                 <select
                   id="category-select"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  // value={category}
+                  // onChange={(e) => setCategory(e.target.value)}
                   className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
@@ -160,13 +176,13 @@ export default function VideoCreate() {
         {/* Action Buttons */}
         <div className="mt-6 flex space-x-4">
           <button
-            onClick={handlePublish}
+            // onClick={handlePublish}
             className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600"
           >
             Publish
           </button>
           <button
-            onClick={() => router.push("/lawyer/videos")}
+            // onClick={() => router.push("/lawyer/videos")}
             className="bg-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-400"
           >
             Cancel
@@ -180,6 +196,75 @@ export default function VideoCreate() {
           Video Creation Guidelines
         </Link>
       </footer>
+
+      {/* Hero Section */}
+      <section className="w-full max-w-4xl text-center mb-8 md:mb-12 px-2">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-[#1A237E] mb-4 drop-shadow-lg">
+          Legal Video Library
+        </h1>
+        <p className="text-base md:text-xl text-gray-700 mb-6">
+          Watch educational videos categorized by legal issue and lawyer
+          expertise.
+        </p>
+      </section>
+
+      {/* Category Tabs */}
+      <nav className="w-full max-w-3xl flex flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-10">
+        {categories.map((cat) => (
+          <button
+            key={cat.label}
+            onClick={() => setSelectedCategory(cat.label)}
+            className={`px-4 md:px-6 py-2 rounded-full font-semibold shadow transition
+              ${
+                selectedCategory === cat.label
+                  ? "bg-[#F9A825] text-[#1A237E]"
+                  : "bg-white text-[#1A237E] border border-[#F9A825] hover:bg-[#f9a825]/10"
+              }`}
+            aria-current={selectedCategory === cat.label ? "page" : undefined}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Category Description */}
+      <section className="w-full max-w-3xl text-center mb-6 md:mb-8 px-2">
+        <h2 className="text-xl md:text-2xl font-bold text-[#1A237E] mb-2">
+          {activeCategory?.label}
+        </h2>
+        <p className="text-gray-700">{activeCategory?.description}</p>
+      </section>
+
+      {/* Centered Videos Grid */}
+      <section className="w-full flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl w-full justify-items-center">
+          {activeCategory?.videos.map((video, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-xl shadow-lg p-4 md:p-6 flex flex-col items-center hover:shadow-2xl transition w-full max-w-md"
+            >
+              <div className="w-full flex justify-center aspect-video mb-3 rounded overflow-hidden">
+                <iframe
+                  src={video.url}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-48 md:h-56 rounded"
+                />
+              </div>
+              <h3 className="text-base md:text-lg font-bold text-[#1A237E] mb-1 text-center">
+                {video.title}
+              </h3>
+              <span className="text-xs md:text-sm text-gray-500 mb-1 text-center block">
+                By {video.lawyer}
+              </span>
+              <span className="inline-block bg-[#F9A825]/20 text-[#1A237E] px-3 py-1 rounded text-xs font-semibold">
+                {activeCategory.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

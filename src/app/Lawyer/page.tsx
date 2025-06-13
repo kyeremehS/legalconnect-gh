@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+//import { useRouter } from "next/navigation";
 import SidebarLayout from "@/components/SidebarLayout";
 
 const navItems = [
@@ -26,7 +26,7 @@ const LawyerDashboard: React.FC = () => {
     role: "lawyer",
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const router = useRouter();
+  //const router = useRouter();
 
   if (!user) return <div>Loading...</div>;
 
@@ -53,7 +53,7 @@ const LawyerDashboard: React.FC = () => {
               </button>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-                onClick={() => router.push("/")}
+                //onClick={() => router.push("/")}
               >
                 Logout
               </button>
