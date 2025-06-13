@@ -1,7 +1,21 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/user-page',
+        permanent: false,
+        has: [
+          {
+            type: 'cookie',
+            key: '__session',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

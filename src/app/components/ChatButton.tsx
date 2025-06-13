@@ -16,26 +16,18 @@ const ChatButton: React.FC<ChatButtonProps> = ({ onClick }) => {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-[#1A237E] text-white p-4 rounded-full shadow-lg hover:bg-blue-800 transition-all flex items-center justify-center group"
-        aria-label="Open chat"
-        style={{ width: 64, height: 64 }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        className="fixed bottom-6 right-6 p-4 bg-amber-600 text-white rounded-full shadow-xl hover:bg-amber-600/90 transition-all hover:scale-105 hover:shadow-2xl group z-50"
+        aria-label="Chat with Legal Assistant"
       >
-        <MessageCircle size={32} color="#fff" />
-        {/* Tooltip on hover */}
-        <span
-          className={`absolute right-20 bottom-1/2 translate-y-1/2 bg-white text-[#1A237E] px-4 py-2 rounded shadow-lg text-sm font-medium whitespace-nowrap transition-opacity duration-200 ${
-            isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          Chat with legal chatbot
+        <MessageCircle className="w-6 h-6" />
+        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
+          Chat with Legal Assistant
         </span>
       </button>
 
       <ChatModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
-};
+}
 
 export default ChatButton;
