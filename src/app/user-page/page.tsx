@@ -1,190 +1,348 @@
-"use client"; // pages/dashboard.js
+"use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Image from "next/image";
+import { UserButton } from "@clerk/nextjs";
 import {
-  UserCircle,
   Calendar,
   MessageSquare,
   Video,
   Search,
+  Bell,
+  BookOpen,
+  FileText,
+  Clock,
+  Star,
+  ChevronRight,
+  TrendingUp,
+  Users,
+  Shield,
+  Briefcase,
 } from "lucide-react";
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState("overview");
+
   const user = {
     name: "Samuel",
+    role: "Client",
     unreadMessages: 5,
     appointments: 2,
     aiQueries: 3,
+    recentActivity: [
+      {
+        type: "appointment",
+        title: "Consultation with Lawyer Kwame",
+        time: "2 hours ago",
+        status: "upcoming",
+      },
+      {
+        type: "message",
+        title: "New message from Legal Assistant",
+        time: "3 hours ago",
+        status: "unread",
+      },
+      {
+        type: "document",
+        title: "Contract Review Completed",
+        time: "1 day ago",
+        status: "completed",
+      },
+    ],
+    upcomingAppointments: [
+      {
+        id: 1,
+        lawyer: "Kwame Mensah",
+        specialty: "Corporate Law",
+        date: "2024-03-20",
+        time: "14:00",
+        status: "confirmed",
+      },
+      {
+        id: 2,
+        lawyer: "Ama Osei",
+        specialty: "Family Law",
+        date: "2024-03-22",
+        time: "10:30",
+        status: "pending",
+      },
+    ],
+    recommendedLawyers: [
+      {
+        id: 1,
+        name: "Kwame Mensah",
+        specialty: "Corporate Law",
+        rating: 4.9,
+        reviews: 128,
+        experience: "15 years",
+        image: "/lawyer1.jpg",
+        availability: "Next available: Tomorrow",
+      },
+      {
+        id: 2,
+        name: "Ama Osei",
+        specialty: "Family Law",
+        rating: 4.8,
+        reviews: 95,
+        experience: "12 years",
+        image: "/lawyer2.jpg",
+        availability: "Next available: Today",
+      },
+      {
+        id: 3,
+        name: "Kofi Addo",
+        specialty: "Criminal Law",
+        rating: 4.7,
+        reviews: 156,
+        experience: "18 years",
+        image: "/lawyer3.jpg",
+        availability: "Next available: Next Week",
+      },
+    ],
+    legalResources: [
+      {
+        title: "Understanding Ghana's Legal System",
+        category: "Guide",
+        readTime: "10 min",
+        icon: <BookOpen className="w-5 h-5" />,
+      },
+      {
+        title: "Common Legal Terms Explained",
+        category: "Reference",
+        readTime: "5 min",
+        icon: <FileText className="w-5 h-5" />,
+      },
+      {
+        title: "Your Rights as a Citizen",
+        category: "Rights",
+        readTime: "8 min",
+        icon: <Shield className="w-5 h-5" />,
+      },
+    ],
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header */}
-      <header className="flex justify-between items-center px-6 py-4 bg-white shadow-md">
-        <h1 className="text-3xl font-extrabold text-blue-700">
-          Ghana Legal AI
-        </h1>
-        <nav className="space-x-6 text-gray-700 font-medium">
-          <Link href="/dashboard">Home</Link>
-          <Link href="/lawyers">Lawyers</Link>
-          <Link href="/chat">Chat</Link>
-          <Link href="/appointments">Appointments</Link>
-          <Link href="/resources">Resources</Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <button className="relative">
-            <span role="img" aria-label="Notifications">
-              🔔
-            </span>
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
-              {user.unreadMessages}
-            </span>
-          </button>
-          <div className="flex items-center bg-blue-600 text-white px-4 py-1 rounded-full">
-            <UserCircle className="mr-2" size={20} /> {user.name}
+    <div className="min-h-screen pt-20 bg-white text-black">
+
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Welcome Section */}
+        <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                Welcome back, {user.name}!
+              </h1>
+              <p className="text-white/90">
+                Here's what's happening with your legal matters
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Link
+                href="/find-lawyer"
+                className="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-primary-50 transition"
+              >
+                Find a Lawyer
+              </Link>
+              <Link
+                href="/chat"
+                className="bg-primary-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-600 transition"
+              >
+                Chat with AI Assistant
+              </Link>
+            </div>
           </div>
         </div>
-      </header>
 
-      {/* Welcome Banner */}
-      <section className="p-10 text-center bg-blue-100 rounded-b-3xl shadow-inner">
-        <h2 className="text-4xl font-bold text-blue-900 mb-2">
-          Welcome back, {user.name}!
-        </h2>
-        <p className="text-gray-700 text-lg">How can we help you today?</p>
-        <div className="mt-6 flex justify-center gap-6">
-          <Link
-            href="/lawyers"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition"
-          >
-            Find a Lawyer
-          </Link>
-          <Link
-            href="/chatbot"
-            className="bg-white border-2 border-blue-600 hover:bg-blue-50 text-blue-600 px-6 py-3 rounded-xl transition"
-          >
-            Ask AI Legal Assistant
-          </Link>
-        </div>
-      </section>
-
-      {/* Search Bar */}
-      <section className="p-6 flex justify-center">
-        <div className="relative w-full max-w-2xl">
-          <Search className="absolute left-3 top-3 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search for a lawyer, legal issue, or resource..."
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-      </section>
-
-      {/* Quick Actions */}
-      <section className="p-6 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-6xl mx-auto">
-        {[
-          {
-            label: "Book a Consultation",
-            href: "/appointments",
-            icon: <Calendar />,
-          },
-          {
-            label: "View Appointments",
-            href: "/appointments",
-            icon: <Calendar />,
-          },
-          { label: "Continue Chat", href: "/chat", icon: <MessageSquare /> },
-          { label: "Watch Legal Tips", href: "/videos", icon: <Video /> },
-        ].map((action) => (
-          <Link
-            key={action.label}
-            href={action.href}
-            className="bg-white shadow-md p-5 rounded-2xl flex flex-col items-center justify-center hover:bg-blue-50 transition text-center"
-          >
-            <div className="text-blue-600 mb-2">{action.icon}</div>
-            <span className="font-medium text-gray-800">{action.label}</span>
-          </Link>
-        ))}
-      </section>
-
-      {/* Featured Lawyers */}
-      <section className="p-6 max-w-6xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-4 text-blue-800">
-          Featured Lawyers
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {[
+            {
+              title: "Upcoming Appointments",
+              value: user.appointments,
+              icon: <Calendar className="w-6 h-6" />,
+              color: "primary",
+            },
+            {
+              title: "Unread Messages",
+              value: user.unreadMessages,
+              icon: <MessageSquare className="w-6 h-6" />,
+              color: "primary",
+            },
+            {
+              title: "AI Queries",
+              value: user.aiQueries,
+              icon: <TrendingUp className="w-6 h-6" />,
+              color: "primary",
+            },
+            {
+              title: "Active Cases",
+              value: "2",
+              icon: <Briefcase className="w-6 h-6" />,
+              color: "primary",
+            },
+          ].map((stat, index) => (
             <div
-              key={i}
-              className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center"
+              key={index}
+              className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
             >
-              <div className="h-20 w-20 bg-gray-200 rounded-full mb-4" />
-              <h4 className="font-bold text-lg text-gray-800">Lawyer {i}</h4>
-              <p className="text-sm text-gray-500">Specialty: Family Law</p>
-              <p className="text-yellow-500 mt-1">⭐ 4.9</p>
-              <Link
-                href="/lawyers/1"
-                className="mt-3 text-blue-600 hover:underline"
-              >
-                Book
-              </Link>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-black">{stat.title}</p>
+                  <p className="text-2xl font-bold mt-1 text-black">{stat.value}</p>
+                </div>
+                <div className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}>
+                  {stat.icon}
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      </section>
 
-      {/* Activity Summary */}
-      <section className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6 rounded-2xl shadow-md text-center">
-          <h5 className="text-xl font-bold">Appointments</h5>
-          <p className="text-3xl mt-2">{user.appointments}</p>
-        </div>
-        <div className="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 rounded-2xl shadow-md text-center">
-          <h5 className="text-xl font-bold">Unread Messages</h5>
-          <p className="text-3xl mt-2">{user.unreadMessages}</p>
-        </div>
-        <div className="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-6 rounded-2xl shadow-md text-center">
-          <h5 className="text-xl font-bold">AI Queries</h5>
-          <p className="text-3xl mt-2">{user.aiQueries}</p>
-        </div>
-      </section>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Recent Activity & Upcoming Appointments */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Recent Activity */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h2 className="text-xl font-semibold mb-4 text-black">Recent Activity</h2>
+              <div className="space-y-4">
+                {user.recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-lg transition"
+                  >
+                    <div className="p-2 rounded-lg bg-primary-100 text-primary-600">
+                      {activity.type === "appointment" ? (
+                        <Calendar className="w-5 h-5" />
+                      ) : activity.type === "message" ? (
+                        <MessageSquare className="w-5 h-5" />
+                      ) : (
+                        <FileText className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-black">{activity.title}</p>
+                      <p className="text-sm text-black">{activity.time}</p>
+                    </div>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary-100 text-primary-600">
+                      {activity.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      {/* Legal Resources */}
-      <section className="p-6 max-w-4xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-4 text-blue-800">
-          Legal Resources
-        </h3>
-        <ul className="space-y-2 list-disc list-inside text-gray-700">
-          <li>
-            <Link
-              href="/resources/know-your-rights"
-              className="hover:text-blue-600"
-            >
-              Know Your Rights
-            </Link>
-          </li>
-          <li>
-            <Link href="/resources/popular" className="hover:text-blue-600">
-              Popular Articles
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/resources/everyday-law"
-              className="hover:text-blue-600"
-            >
-              Law for Everyday People
-            </Link>
-          </li>
-        </ul>
-      </section>
+            {/* Upcoming Appointments */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-black">Upcoming Appointments</h2>
+                <Link
+                  href="/appointments"
+                  className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                >
+                  View all
+                </Link>
+              </div>
+              <div className="space-y-4">
+                {user.upcomingAppointments.map((appointment) => (
+                  <div
+                    key={appointment.id}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-primary-100 rounded-lg">
+                        <Calendar className="w-6 h-6 text-primary-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-black">{appointment.lawyer}</p>
+                        <p className="text-sm text-black">{appointment.specialty}</p>
+                        <p className="text-sm text-black">
+                          {appointment.date} at {appointment.time}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs px-3 py-1 rounded-full bg-primary-100 text-primary-600">
+                      {appointment.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
-      {/* Footer */}
-      <footer className="p-6 bg-blue-800 text-white text-center text-sm mt-10 rounded-t-3xl">
-        © 2025 Ghana Legal AI — All rights reserved.
-      </footer>
+          {/* Right Column - Recommended Lawyers & Resources */}
+          <div className="space-y-6">
+            {/* Recommended Lawyers */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h2 className="text-xl font-semibold mb-4 text-black">Recommended Lawyers</h2>
+              <div className="space-y-4">
+                {user.recommendedLawyers.map((lawyer) => (
+                  <div
+                    key={lawyer.id}
+                    className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-12 h-12">
+                        <Image
+                          src={lawyer.image}
+                          alt={lawyer.name}
+                          fill
+                          className="rounded-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-black">{lawyer.name}</p>
+                        <p className="text-sm text-black">{lawyer.specialty}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Star className="w-4 h-4 text-primary-500 fill-current" />
+                          <span className="text-sm text-black">
+                            {lawyer.rating} ({lawyer.reviews} reviews)
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between text-sm">
+                      <span className="text-black">{lawyer.experience} experience</span>
+                      <span className="text-primary-600">{lawyer.availability}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Legal Resources */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h2 className="text-xl font-semibold mb-4 text-black">Legal Resources</h2>
+              <div className="space-y-4">
+                {user.legalResources.map((resource, index) => (
+                  <Link
+                    key={index}
+                    href="#"
+                    className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition"
+                  >
+                    <div className="p-2 bg-primary-100 rounded-lg text-primary-600">
+                      {resource.icon}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-black">{resource.title}</p>
+                      <div className="flex items-center gap-2 text-sm text-black">
+                        <span>{resource.category}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {resource.readTime}
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-black" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

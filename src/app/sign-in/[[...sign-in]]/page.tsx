@@ -1,13 +1,23 @@
+"use client";
 import { SignIn } from "@clerk/nextjs";
 import Image from "next/image";
-import NavBar from "../../components/NavBar";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   return (
     <div>
       
-      <div className="flex flex-col bg-gradient-to-br from-[#e7daa5] via-[#ebeacf] to-[#eeeef2] md:flex-row py-36 bg-gray-200 justify-center items-center h-auto">
-        <SignIn />
+      <div className="flex flex-col bg-gradient-to-br from-[#e7daa5] via-[#ebeacf] to-[#eeeef2] md:flex-row py-36 md:gap-10 bg-gray-200 justify-center items-center h-auto">
+        <SignIn 
+          afterSignInUrl="/user-page"
+          redirectUrl="/user-page"
+          appearance={{
+            elements: {
+              formButtonPrimary: 'bg-[#d4a017] hover:bg-[#b38a15] text-sm normal-case',
+              footerActionLink: 'text-[#d4a017] hover:text-[#b38a15]'
+            }
+          }}
+        />
         <div className="text-white relative block">
           <div className="absolute inset-0 bg-[url('/Legalhammer.webp')] opacity-5"></div>
           <div className="relative z-10">

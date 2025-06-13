@@ -10,9 +10,11 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const { isSignedIn } = useAuth();
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setScrollY(window.scrollY);
 
@@ -25,6 +27,11 @@ const NavBar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div>
@@ -84,7 +91,7 @@ const NavBar = () => {
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden sm:flex items-center gap-8 text-sm">
+            <div className="hidden md:flex items-center gap-8 text-sm">
               <Link
                 href="#features"
                 className="text-gray-600 hover:text-amber-600 transition-colors"
@@ -100,18 +107,35 @@ const NavBar = () => {
               {isSignedIn ? (
                 <UserButton afterSignOutUrl="/" />
               ) : (
-                <Link
-                  href="/sign-in"
-                  className="text-gray-600 hover:text-amber-600 transition-colors"
-                >
-                  Sign in
-                </Link>
+                <>
+                  <Link
+                    href="/sign-in"
+                    className="text-gray-600 hover:text-amber-600 transition-colors"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    className="bg-amber-600 text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
+                  >
+                    Sign up
+                  </Link>
+                </>
               )}
             </div>
 
             {/* Mobile Navigation */}
             <div className="flex items-center gap-4 md:hidden">
-              {isSignedIn && <UserButton afterSignOutUrl="/" />}
+              {isSignedIn ? (
+                <UserButton afterSignOutUrl="/" />
+              ) : (
+                <Link
+                  href="/sign-up"
+                  className="bg-amber-600 text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors text-sm"
+                >
+                  Sign up
+                </Link>
+              )}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-gray-600 hover:text-amber-600 transition-colors"
@@ -149,13 +173,22 @@ const NavBar = () => {
                   Solutions
                 </Link>
                 {!isSignedIn && (
-                  <Link
-                    href="/sign-in"
-                    className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign in
-                  </Link>
+                  <>
+                    <Link
+                      href="/sign-in"
+                      className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      href="/sign-up"
+                      className="bg-amber-600 text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors text-center"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign up
+                    </Link>
+                  </>
                 )}
               </div>
             </motion.div>
