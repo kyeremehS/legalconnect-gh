@@ -65,7 +65,7 @@ const LawyerDashboard = () => {
 
       <div className="flex min-h-screen">
         {/* Sidebar - Fixed positioning for desktop, absolute for mobile */}
-        <aside className={`
+        {/* <aside className={`
           fixed top-0 left-0 h-full w-64 bg-white
           border-r border-gray-100 shadow-sm
           transform transition-transform duration-300 ease-in-out
@@ -89,7 +89,7 @@ const LawyerDashboard = () => {
               </Link>
             ))}
           </nav>
-        </aside>
+        </aside> */}
 
         {/* Main Content - Adjusted margin for desktop */}
         <main className="flex-1 w-full p-4 lg:p-8 mt-16 lg:mt-0">

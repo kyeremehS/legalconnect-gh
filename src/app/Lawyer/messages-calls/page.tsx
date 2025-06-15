@@ -55,7 +55,7 @@ export default function MessagesAndCalls() {
 
   return (
     <div className="min-h-screen bg-white">
-      <main className=" flex-1 p-6">
+      <main className="flex-1 p-4 lg:p-8 mt-16 lg:mt-0">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
