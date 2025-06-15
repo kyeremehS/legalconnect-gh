@@ -1,360 +1,195 @@
 "use client";
-import { use, useState } from "react";
-import Link from "next/link";
-import {
-  MagnifyingGlassIcon,
-  ChatBubbleLeftRightIcon,
-  PhoneIcon,
-} from "@heroicons/react/24/outline";
 
-export default function Messages() {
-  type Message = {
-    id: number;
-    client: string;
-    subject: string;
-    text: string;
-    timestamp: string;
-    unread: boolean;
-  };
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileMessageView, setIsMobileMessageView] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+import { motion } from "framer-motion";
+import { MessageSquare, Search, MoreVertical, Send, Paperclip } from "lucide-react";
+import { useState } from "react";
 
-  // Mock message data
-  const messages = [
-    {
-      id: 1,
-      client: "Kwame Asante",
-      subject: "Divorce Consultation",
-      text: "I need advice on divorce proceedings.",
-      timestamp: "2025-05-23 10:00 AM",
-      unread: true,
-    },
-    {
-      id: 2,
-      client: "Ama Kwarteng",
-      subject: "Contract Review",
-      text: "Can you review my employment contract?",
-      timestamp: "2025-05-22 3:15 PM",
-      unread: false,
-    },
-    {
-      id: 3,
-      client: "Kofi Mensah",
-      subject: "Land Dispute",
-      text: "I have a dispute over inherited land.",
-      timestamp: "2025-05-21 9:30 AM",
-      unread: false,
-    },
-  ];
+type Chat = {
+  id: string;
+  name: string;
+  lastMessage: string;
+  timestamp: string;
+  unreadCount?: number;
+  avatar?: string;
+};
 
-  // Mock call request data
-  const callRequests = [
-    {
-      id: 1,
-      client: "Kwame Asante",
-      time: "2025-05-23 2:00 PM",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      client: "Ama Kwarteng",
-      time: "2025-05-24 10:00 AM",
-      status: "Pending",
-    },
-  ];
+type Message = {
+  id: string;
+  content: string;
+  timestamp: string;
+  sender: "user" | "client";
+};
 
-  // Filter messages based on search query
-  const filteredMessages = messages.filter(
-    (msg) =>
-      msg.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      msg.subject.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+const mockChats: Chat[] = [
+  {
+    id: "1",
+    name: "John Smith",
+    lastMessage: "I need legal advice regarding my business contract",
+    timestamp: "2:30 PM",
+    unreadCount: 3,
+  },
+  // ...add more mock chats
+];
 
-  // Handle message selection
-  const handleSelectMessage = (message: {
-    id: number;
-    client: string;
-    subject: string;
-    text: string;
-    timestamp: string;
-    unread: boolean;
-  }) => {
-    setSelectedMessage(message);
-    setIsMobileMessageView(true);
-  };
+const mockMessages: Message[] = [
+  {
+    id: "1",
+    content: "Hello, I need legal advice regarding my business contract",
+    timestamp: "2:30 PM",
+    sender: "client",
+  },
+  {
+    id: "2",
+    content: "Of course, I'd be happy to help. Could you provide more details about your situation?",
+    timestamp: "2:31 PM",
+    sender: "user",
+  },
+  // ...add more mock messages
+];
 
-  // Simulate reply action
-  const handleSendReply = () => {
-    const replyTextArea = document.getElementById(
-      "reply-text"
-    ) as HTMLTextAreaElement | null;
-    if (replyTextArea) {
-      console.log("Reply sent:", replyTextArea.value);
-      replyTextArea.value = "";
-    }
-  };
-
-  // Simulate call request actions
-  const handleAcceptCall = (id: number) =>
-    console.log(`Accepted call request ${id}`);
-  const handleRejectCall = (id: number) =>
-    console.log(`Rejected call request ${id}`);
-
-  // Toggle hamburger menu
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+export default function MessagesAndCalls() {
+  const [chats] = useState<Chat[]>(mockChats);
+  const [messages] = useState<Message[]>(mockMessages);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [newMessage, setNewMessage] = useState("");
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Hamburger Menu (Mobile) */}
-      <div
-        className={`fixed top-0 left-0 w-64 h-full bg-blue-800 text-white p-4 transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 md:hidden`}
-      >
-        <button
-          onClick={toggleMenu}
-          className="text-white text-2xl mb-4"
-          aria-label="Close Menu"
+    <div className="min-h-screen bg-white">
+      <main className=" flex-1 p-6">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="h-[calc(100vh-100px)]"
         >
-          ✕
-        </button>
-        <nav className="space-y-2">
-          <Link
-            href="/lawyer/dashboard"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/lawyer/appointments"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Appointments
-          </Link>
-          <Link
-            href="/lawyer/messages"
-            onClick={toggleMenu}
-            className="block p-2 bg-blue-700 rounded"
-          >
-            Messages & Calls
-          </Link>
-          <Link
-            href="/lawyer/videos"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Videos
-          </Link>
-          <Link
-            href="/lawyer/engagement"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Engagement
-          </Link>
-          <Link
-            href="/lawyer/profile"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/lawyer/settings"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Settings
-          </Link>
-        </nav>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1">
-        {/* Header */}
-        <header className="flex justify-between items-center p-6 bg-white shadow">
-          <div className="flex items-center">
-            <button
-              onClick={toggleMenu}
-              className="block md:hidden text-blue-800 text-2xl mr-4"
-              aria-label="Toggle Menu"
-            >
-              ☰
-            </button>
-            <h1 className="text-2xl font-bold text-blue-800">
-              Messages & Calls
-            </h1>
+          {/* Header */}
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">Messages & Calls</h1>
+            <p className="text-[#4a4a4a] font-medium">Manage your communications</p>
           </div>
-          <Link href="/Lawyer" className="text-blue-500 hover:underline">
-            Back to Dashboard
-          </Link>
-        </header>
 
-        {/* Messages and Calls Content */}
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Messages List (Sidebar) */}
-            <div
-              className={`bg-white rounded shadow p-4 ${
-                isMobileMessageView ? "hidden md:block" : "block"
-              }`}
-            >
-              <h2 className="text-lg text-[#343a40] font-semibold mb-4 flex items-center">
-                <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2 text-blue-500" />{" "}
-                Messages
-              </h2>
-              <div className="mb-4">
-                <div className="relative">
-                  <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-3 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search messages..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 pl-10 border rounded focus:ring-blue-500 focus:border-blue-500 text-gray-800"
-                    aria-label="Search messages"
-                  />
+          {/* Main Chat Interface */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-[calc(100%-80px)]">
+            <div className="flex h-full">
+              {/* Chat List */}
+              <div className="w-[320px] border-r border-gray-200 flex flex-col">
+                <div className="p-4 border-b border-gray-200 bg-white">
+                  <div className="relative">
+                    <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
+                    <input
+                      type="text"
+                      placeholder="Search chats"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-lg border border-gray-200 
+                        focus:outline-none focus:ring-2 focus:ring-[#d4a017] text-[#1a1a1a]"
+                    />
+                  </div>
+                </div>
+
+                <div className="overflow-y-auto flex-1">
+                  {chats.map((chat) => (
+                    <motion.div
+                      key={chat.id}
+                      onClick={() => setSelectedChat(chat)}
+                      className={`flex items-center gap-3 p-4 cursor-pointer border-b border-gray-100
+                        hover:bg-[#fff8eb] transition-colors
+                        ${selectedChat?.id === chat.id ? "bg-[#fff8eb]" : ""}`}
+                    >
+                      <div className="w-12 h-12 rounded-full bg-[#d4a017] flex items-center justify-center">
+                        <span className="text-white font-semibold text-lg">{chat.name.charAt(0)}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-baseline mb-1">
+                          <h3 className="font-semibold text-[#1a1a1a] truncate">{chat.name}</h3>
+                          <span className="text-xs font-medium text-[#4a4a4a]">{chat.timestamp}</span>
+                        </div>
+                        <p className="text-sm text-[#4a4a4a] truncate">{chat.lastMessage}</p>
+                      </div>
+                      {chat.unreadCount && (
+                        <span className="bg-[#d4a017] text-white text-xs font-bold rounded-full 
+                          w-5 h-5 flex items-center justify-center">
+                          {chat.unreadCount}
+                        </span>
+                      )}
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-              <ul className="space-y-2">
-                {filteredMessages.length === 0 ? (
-                  <li className="text-gray-500">No messages found.</li>
-                ) : (
-                  filteredMessages.map((msg) => (
-                    <li
-                      key={msg.id}
-                      onClick={() => handleSelectMessage(msg)}
-                      className={`p-3 rounded cursor-pointer hover:bg-blue-100 ${
-                        selectedMessage?.id === msg.id ? "bg-blue-200" : ""
-                      } ${msg.unread ? "font-semibold" : ""}`}
-                    >
-                      <div className="flex justify-between">
-                        <div>
-                          <p className="text-sm text-[#343a40] font-medium">
-                            {msg.client}
-                          </p>
-                          <p className="text-xs text-gray-800 truncate">
-                            {msg.subject}
-                          </p>
-                        </div>
-                        <p className="text-xs text-gray-400">{msg.timestamp}</p>
-                      </div>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
 
-            {/* Message View and Call Requests (Main Panel) */}
-            <div
-              className={`md:col-span-2 bg-white rounded shadow p-4 ${
-                isMobileMessageView ? "block" : "hidden md:block"
-              }`}
-            >
-              {isMobileMessageView && (
-                <button
-                  onClick={() => setIsMobileMessageView(false)}
-                  className="mb-4 text-blue-500 hover:underline"
-                  aria-label="Back to messages list"
-                >
-                  Back to Messages
-                </button>
-              )}
-              {selectedMessage ? (
-                <div>
-                  <h2 className="text-lg text-gray-800 font-semibold mb-4">
-                    Message from {selectedMessage.client}
-                  </h2>
-                  <div className="border-b pb-4 mb-4">
-                    <p className="text-sm text-[#343a40] font-medium">
-                      {selectedMessage.subject}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {selectedMessage.timestamp}
-                    </p>
-                    <p className="mt-2 text-[#343a40] text-sm">
-                      {selectedMessage.text}
-                    </p>
-                  </div>
-                  <div className="text-[#343a40] font-medium mb-2">
-                    <textarea
-                      id="reply-text"
-                      placeholder="Type your reply..."
-                      className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                      rows={4}
-                      aria-label="Reply to message"
-                    />
-                    <button
-                      onClick={handleSendReply}
-                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      Send Reply
+              {/* Chat Area */}
+              {selectedChat ? (
+                <div className="flex-1 flex flex-col bg-[#fafafa]">
+                  <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#d4a017] flex items-center justify-center">
+                        <span className="text-white font-semibold">{selectedChat.name.charAt(0)}</span>
+                      </div>
+                      <h2 className="font-semibold text-[#1a1a1a]">{selectedChat.name}</h2>
+                    </div>
+                    <button className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]">
+                      <MoreVertical className="w-5 h-5" />
                     </button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto p-4">
+                    {messages.map((message) => (
+                      <motion.div
+                        key={message.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`max-w-[70%] mb-4 ${message.sender === "user" ? "ml-auto" : "mr-auto"}`}
+                      >
+                        <div className={`p-3 rounded-xl shadow-sm ${
+                          message.sender === "user"
+                            ? "bg-[#d4a017] text-white"
+                            : "bg-white border border-gray-200"
+                        }`}>
+                          <p className={message.sender === "user" ? "text-white" : "text-[#1a1a1a]"}>
+                            {message.content}
+                          </p>
+                          <span className={`text-xs block text-right mt-1 
+                            ${message.sender === "user" ? "text-white/80" : "text-[#4a4a4a]"}`}>
+                            {message.timestamp}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="p-4 bg-white border-t border-gray-200">
+                    <div className="flex items-center gap-2 bg-[#fafafa] rounded-xl p-3 border border-gray-200">
+                      <button className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]">
+                        <Paperclip className="w-5 h-5" />
+                      </button>
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Type a message"
+                        className="flex-1 bg-transparent focus:outline-none text-[#1a1a1a] placeholder-[#4a4a4a]"
+                      />
+                      <button className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]">
+                        <Send className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-500 text-center">
-                  Select a message to view details.
+                <div className="flex-1 flex items-center justify-center bg-[#fafafa]">
+                  <div className="text-center">
+                    <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[#d4a017]" />
+                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2">
+                      Select a chat to start messaging
+                    </h3>
+                    <p className="text-[#4a4a4a]">
+                      Choose from your existing conversations or start a new one
+                    </p>
+                  </div>
                 </div>
               )}
-
-              {/* Call Requests */}
-              <div className="mt-6">
-                <h2 className="text-lg text-[#343a40] font-semibold mb-4 flex items-center">
-                  <PhoneIcon className="h-5 w-5 mr-2 text-blue-500" /> Call
-                  Requests
-                </h2>
-                {callRequests.length === 0 ? (
-                  <p className="text-gray-500">No pending call requests.</p>
-                ) : (
-                  <ul className="space-y-4">
-                    {callRequests.map((call) => (
-                      <li
-                        key={call.id}
-                        className="p-4 border rounded flex justify-between items-center"
-                      >
-                        <div>
-                          <p className="text-sm text-[#343a40] font-medium">
-                            {call.client}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Requested: {call.time}
-                          </p>
-                        </div>
-                        <div className="space-x-2">
-                          <button
-                            onClick={() => handleAcceptCall(call.id)}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            onClick={() => handleRejectCall(call.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <footer className="p-6 text-center">
-          <Link href="/help" className="text-blue-500 hover:underline">
-            Messaging Guidelines
-          </Link>
-        </footer>
-      </div>
+        </motion.div>
+      </main>
     </div>
   );
 }

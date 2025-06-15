@@ -76,7 +76,7 @@ export default function Dashboard() {
         rating: 4.9,
         reviews: 128,
         experience: "15 years",
-        image: "/lawyer1.jpg",
+        image: "/lawyer-icon.png",
         availability: "Next available: Tomorrow",
       },
       {
@@ -86,7 +86,7 @@ export default function Dashboard() {
         rating: 4.8,
         reviews: 95,
         experience: "12 years",
-        image: "/lawyer2.jpg",
+        image: "/lawyer-icon.png",
         availability: "Next available: Today",
       },
       {
@@ -96,7 +96,7 @@ export default function Dashboard() {
         rating: 4.7,
         reviews: 156,
         experience: "18 years",
-        image: "/lawyer3.jpg",
+        image: "/lawyer-icon.png",
         availability: "Next available: Next Week",
       },
     ],
@@ -105,7 +105,7 @@ export default function Dashboard() {
         title: "Understanding Ghana's Legal System",
         category: "Guide",
         readTime: "10 min",
-        icon: <BookOpen className="w-5 h-5" />,
+          icon: <BookOpen className="w-5 h-5" />,
       },
       {
         title: "Common Legal Terms Explained",

@@ -25,6 +25,7 @@ import {
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
+import NavBar from "./components/NavBar";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,6 +49,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <NavBar /> {/* Keep navbar only on landing page */}
       {/* Hero Section */}
       <motion.section
         className="pt-32 pb-20 relative overflow-hidden"

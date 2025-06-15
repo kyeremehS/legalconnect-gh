@@ -1,4 +1,6 @@
 "use client";
+
+import { motion } from "framer-motion";
 import React, { useState } from "react";
 
 // Example data types
@@ -36,10 +38,8 @@ const exampleAppointments: Appointment[] = [
 ];
 
 export default function LawyerAppointments() {
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(exampleAppointments);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>(exampleAppointments);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   // Handler for confirming/canceling appointments
@@ -51,156 +51,186 @@ export default function LawyerAppointments() {
   };
 
   return (
-    <>
-      <span>Text</span>
-      <span>More</span>
-      <main className="min-h-screen bg-[#F7F9FC] py-8 px-4 flex flex-col items-center">
-        <div className="w-full max-w-3xl bg-white rounded-lg shadow p-8">
-          <h1 className="text-3xl font-bold text-[#1A237E] mb-6 text-center">
-            Appointments
-          </h1>
-          {/* Appointment List */}
-          <section>
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#F9A825]/20">
-                  <th className="p-2 text-[#003049]">Client</th>
-                  <th className="p-2 text-[#003049]">Date</th>
-                  <th className="p-2 text-[#003049]">Time</th>
-                  <th className="p-2 text-[#003049]">Type</th>
-                  <th className="p-2 text-[#003049]">Subject</th>
-                  <th className="p-2 text-[#003049]">Status</th>
-                  <th className="p-2 text-[#003049]">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointments.map((appt) => (
-                  <tr key={appt.id} className="border-b hover:bg-gray-100">
-                    <td className="p-2">{appt.userName}</td>
-                    <td className="p-2">{appt.date}</td>
-                    <td className="p-2">{appt.time}</td>
-                    <td className="p-2">{appt.type}</td>
-                    <td className="p-2">{appt.subject}</td>
-                    <td className="p-2 capitalize">
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-semibold ${
-                          appt.status === "confirmed"
-                            ? "bg-green-100 text-green-700"
-                            : appt.status === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : appt.status === "completed"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {appt.status}
-                      </span>
-                    </td>
-                    <td className="p-2">
-                      <div className="flex flex-col space-y-2">
-                        <button
-                          className="text-[#1A237E] underline"
-                          onClick={() => {
-                            setSelectedAppointment(appt);
-                            setShowModal(true);
-                          }}
-                        >
-                          View
-                        </button>
-                        {appt.status === "pending" && (
-                          <>
-                            <button
-                              className="text-green-700 underline"
-                              onClick={() => updateStatus(appt.id, "confirmed")}
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              className="text-red-700 underline"
-                              onClick={() => updateStatus(appt.id, "canceled")}
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-        </div>
-
-        {/* Modal for appointment details */}
-        {showModal && selectedAppointment && (
-          <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-              <h2 className="text-xl font-bold mb-4 text-[#1A237E]">
-                Appointment Details
-              </h2>
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Client:</span>{" "}
-                {selectedAppointment.userName}
+    <div className="min-h-screen bg-white">
+      <main className="w-full p-4 lg:p-8">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-7xl mx-auto"
+        >
+          {/* Header */}
+          <div className="mb-8 bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#d4a017]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
               </div>
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Date:</span>{" "}
-                {selectedAppointment.date}
-              </div>
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Time:</span>{" "}
-                {selectedAppointment.time}
-              </div>
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Type:</span>{" "}
-                {selectedAppointment.type}
-              </div>
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Subject:</span>{" "}
-                {selectedAppointment.subject}
-              </div>
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Status:</span>{" "}
-                <span className="capitalize">{selectedAppointment.status}</span>
-              </div>
-              {selectedAppointment.notes && (
-                <div className="mb-2 text-[#003049]">
-                  <span className="font-semibold">Notes:</span>{" "}
-                  {selectedAppointment.notes}
-                </div>
-              )}
-              <div className="flex gap-4 mt-6 justify-end">
-                <button
-                  className="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded hover:bg-gray-300 transition"
-                  onClick={() => setShowModal(false)}
-                >
-                  Close
-                </button>
-                {selectedAppointment.status === "pending" && (
-                  <>
-                    <button
-                      className="bg-green-600 text-white font-semibold px-4 py-2 rounded hover:bg-green-700 transition"
-                      onClick={() =>
-                        updateStatus(selectedAppointment.id, "confirmed")
-                      }
-                    >
-                      Confirm
-                    </button>
-                    <button
-                      className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 transition"
-                      onClick={() =>
-                        updateStatus(selectedAppointment.id, "canceled")
-                      }
-                    >
-                      Cancel
-                    </button>
-                  </>
-                )}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800">Appointments</h1>
+                <p className="text-gray-600">Manage your upcoming consultations</p>
               </div>
             </div>
           </div>
-        )}
+
+          {/* Appointments Table */}
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Client</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Date</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Time</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Type</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Subject</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {appointments.map((appt) => (
+                    <motion.tr
+                      key={appt.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-6 py-4">{appt.userName}</td>
+                      <td className="px-6 py-4">{appt.date}</td>
+                      <td className="px-6 py-4">{appt.time}</td>
+                      <td className="px-6 py-4">{appt.type}</td>
+                      <td className="px-6 py-4">{appt.subject}</td>
+                      <td className="px-6 py-4">
+                        <span className={`
+                          px-3 py-1 rounded-full text-xs font-medium
+                          ${appt.status === "confirmed" ? "bg-green-100 text-green-700" : ""}
+                          ${appt.status === "pending" ? "bg-[#fff8eb] text-[#d4a017]" : ""}
+                          ${appt.status === "completed" ? "bg-blue-100 text-blue-700" : ""}
+                          ${appt.status === "canceled" ? "bg-red-100 text-red-700" : ""}
+                        `}>
+                          {appt.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedAppointment(appt);
+                              setShowModal(true);
+                            }}
+                            className="text-[#d4a017] hover:text-[#b17d25] transition-colors"
+                          >
+                            View
+                          </button>
+                          {appt.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() => updateStatus(appt.id, "confirmed")}
+                                className="text-green-600 hover:text-green-700 transition-colors ml-2"
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                onClick={() => updateStatus(appt.id, "canceled")}
+                                className="text-red-600 hover:text-red-700 transition-colors ml-2"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </motion.div>
       </main>
-    </>
+
+      {/* Modal - Updated styling */}
+      {showModal && selectedAppointment && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full"
+          >
+            <h2 className="text-xl font-bold mb-4 text-[#1A237E]">
+              Appointment Details
+            </h2>
+            <div className="mb-2 text-[#003049]">
+              <span className="font-semibold">Client:</span>{" "}
+              {selectedAppointment.userName}
+            </div>
+            <div className="mb-2 text-[#003049]">
+              <span className="font-semibold">Date:</span>{" "}
+              {selectedAppointment.date}
+            </div>
+            <div className="mb-2 text-[#003049]">
+              <span className="font-semibold">Time:</span>{" "}
+              {selectedAppointment.time}
+            </div>
+            <div className="mb-2 text-[#003049]">
+              <span className="font-semibold">Type:</span>{" "}
+              {selectedAppointment.type}
+            </div>
+            <div className="mb-2 text-[#003049]">
+              <span className="font-semibold">Subject:</span>{" "}
+              {selectedAppointment.subject}
+            </div>
+            <div className="mb-2 text-[#003049]">
+              <span className="font-semibold">Status:</span>{" "}
+              <span className="capitalize">{selectedAppointment.status}</span>
+            </div>
+            {selectedAppointment.notes && (
+              <div className="mb-2 text-[#003049]">
+                <span className="font-semibold">Notes:</span>{" "}
+                {selectedAppointment.notes}
+              </div>
+            )}
+            <div className="flex gap-4 mt-6 justify-end">
+              <button
+                className="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded hover:bg-gray-300 transition"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+              {selectedAppointment.status === "pending" && (
+                <>
+                  <button
+                    className="bg-green-600 text-white font-semibold px-4 py-2 rounded hover:bg-green-700 transition"
+                    onClick={() =>
+                      updateStatus(selectedAppointment.id, "confirmed")
+                    }
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 transition"
+                    onClick={() =>
+                      updateStatus(selectedAppointment.id, "canceled")
+                    }
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </div>
   );
 }

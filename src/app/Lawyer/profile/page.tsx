@@ -1,241 +1,192 @@
 "use client";
-import React, { useState } from "react";
 
-export default function LawyerProfile() {
-  // State for edit mode and profile fields
-  const [editMode, setEditMode] = useState(false);
-  const [profile, setProfile] = useState({
-    name: "Ama Kwarteng, Esq.",
-    specialization: "Land Law, Family Law, Corporate Law",
+import { motion } from "framer-motion";
+import { User, Mail, Phone, MapPin, Book, Star, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+
+type LawyerProfile = {
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  specialization: string;
+  experience: number;
+  rating: number;
+  bio: string;
+  education: string[];
+  expertise: string[];
+  languages: string[];
+};
+
+export default function Profile() {
+  const [profile] = useState<LawyerProfile>({
+    name: "Ama Kwarteng",
+    email: "ama.kwarteng@legalconnect.com",
+    phone: "+233 123 456 789",
     location: "Accra, Ghana",
-    about:
-      "Ama Kwarteng is an experienced lawyer specializing in land and family law with over 10 years of practice. She is dedicated to providing clear, practical legal advice and passionate about helping clients resolve their legal issues efficiently.",
-    credentials: [
-      "LL.B, University of Ghana",
-      "Member, Ghana Bar Association",
-      "Certified Mediator",
+    specialization: "Corporate Law",
+    experience: 8,
+    rating: 4.8,
+    bio: "Experienced corporate lawyer with expertise in business law and contracts.",
+    education: [
+      "LLB, University of Ghana",
+      "Master of Laws (LLM), Harvard Law School",
     ],
-    practiceAreas: ["Land Law", "Family Law", "Corporate Law"],
-    avatar: "/lawyer-avatar.jpg",
+    expertise: [
+      "Corporate Law",
+      "Business Contracts",
+      "Mergers & Acquisitions",
+      "Intellectual Property",
+    ],
+    languages: ["English", "Twi", "French"],
   });
 
-  // Handlers for editing
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setProfile((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAreaChange = (idx: number, value: string) => {
-    setProfile((prev) => ({
-      ...prev,
-      practiceAreas: prev.practiceAreas.map((area, i) =>
-        i === idx ? value : area
-      ),
-    }));
-  };
-
-  const handleCredentialChange = (idx: number, value: string) => {
-    setProfile((prev) => ({
-      ...prev,
-      credentials: prev.credentials.map((cred, i) =>
-        i === idx ? value : cred
-      ),
-    }));
-  };
-
-  const handleSave = () => {
-    setEditMode(false);
-    // Here you would typically send the updated profile to your backend
-  };
-
   return (
-    <main className="min-h-screen bg-[#F7F9FC] py-8 px-4 flex justify-center">
-      <div className="w-full max-w-3xl bg-white rounded-lg shadow p-8 mt-8">
-        {/* Profile Header */}
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8">
-          <img
-            src={profile.avatar}
-            alt="Lawyer profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-[#F9A825]"
-          />
-          <div className="flex-1">
-            {editMode ? (
-              <>
-                <label htmlFor="name" className="sr-only">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  name="name"
-                  value={profile.name}
-                  onChange={handleChange}
-                  className="text-2xl font-bold text-[#1A237E] mb-2 w-full border-b focus:outline-none"
-                  placeholder="Name"
-                />
-                <label htmlFor="specialization" className="sr-only">
-                  Specialization
-                </label>
-                <input
-                  id="specialization"
-                  type="text"
-                  name="specialization"
-                  value={profile.specialization}
-                  onChange={handleChange}
-                  className="text-gray-700 mb-2 w-full border-b focus:outline-none"
-                  placeholder="Specialization"
-                />
-                <label htmlFor="location" className="sr-only">
-                  Location
-                </label>
-                <input
-                  id="location"
-                  type="text"
-                  name="location"
-                  value={profile.location}
-                  onChange={handleChange}
-                  className="text-gray-500 mb-2 w-full border-b focus:outline-none"
-                  placeholder="Location"
-                />
-              </>
-            ) : (
-              <>
-                <h1 className="text-2xl font-bold text-[#1A237E]">
-                  {profile.name}
-                </h1>
-                <p className="text-gray-700">{profile.specialization}</p>
-                <p className="text-gray-500">{profile.location}</p>
-              </>
-            )}
-            <div className="flex gap-2 mt-2">
-              <button className="bg-[#F9A825] text-[#1A237E] px-4 py-2 rounded font-semibold">
-                Message
-              </button>
-              <button
-                className="bg-gray-200 text-[#1A237E] px-4 py-2 rounded font-semibold ml-2"
-                onClick={() => setEditMode((prev) => !prev)}
-              >
-                {editMode ? "Cancel" : "Edit Profile"}
-              </button>
-              {editMode && (
-                <button
-                  className="bg-green-600 text-white px-4 py-2 rounded font-semibold ml-2"
-                  onClick={handleSave}
-                >
-                  Save
-                </button>
-              )}
+    <div className="min-h-screen bg-white">
+      <main className="ml-64 flex-1 p-8">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Header with Back Button */}
+          <div className="mb-8">
+            <Link
+              href="/Lawyer"
+              className="inline-flex items-center gap-2 text-[#d4a017] hover:text-[#b17d25] mb-4 group transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" />
+              <span className="font-medium">Back to Dashboard</span>
+            </Link>
+            <h1 className="text-3xl font-bold text-[#1a1a1a]">My Profile</h1>
+            <p className="text-[#4a4a4a] font-medium">
+              Manage your professional information
+            </p>
+          </div>
+
+          {/* Profile Content Grid */}
+          <div className="grid grid-cols-12 gap-6">
+            {/* Left Column - Main Info */}
+            <div className="col-span-12 lg:col-span-8 space-y-6">
+              {/* Basic Info Card */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                <div className="flex items-start gap-6">
+                  <div className="w-24 h-24 rounded-full bg-[#fff8eb] flex items-center justify-center">
+                    <User className="w-12 h-12 text-[#d4a017]" />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-[#1a1a1a] mb-2">
+                      {profile.name}
+                    </h2>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-[#4a4a4a]">
+                        <Mail className="w-4 h-4" />
+                        <span>{profile.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[#4a4a4a]">
+                        <Phone className="w-4 h-4" />
+                        <span>{profile.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[#4a4a4a]">
+                        <MapPin className="w-4 h-4" />
+                        <span>{profile.location}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button className="px-4 py-2 bg-[#fff8eb] text-[#d4a017] rounded-lg hover:bg-[#d4a017] hover:text-white transition-colors">
+                    Edit Profile
+                  </button>
+                </div>
+              </div>
+
+              {/* Bio & Experience */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
+                  About Me
+                </h3>
+                <p className="text-[#4a4a4a] mb-6">{profile.bio}</p>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-[#fff8eb] flex items-center justify-center">
+                      <Book className="w-6 h-6 text-[#d4a017]" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#4a4a4a]">Experience</p>
+                      <p className="font-semibold text-[#1a1a1a]">
+                        {profile.experience} Years
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-[#fff8eb] flex items-center justify-center">
+                      <Star className="w-6 h-6 text-[#d4a017]" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#4a4a4a]">Rating</p>
+                      <p className="font-semibold text-[#1a1a1a]">
+                        {profile.rating}/5.0
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Additional Info */}
+            <div className="col-span-12 lg:col-span-4 space-y-6">
+              {/* Education */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
+                  Education
+                </h3>
+                <ul className="space-y-3">
+                  {profile.education.map((edu, index) => (
+                    <li key={index} className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#d4a017]" />
+                      <span className="text-[#4a4a4a]">{edu}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Areas of Expertise */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
+                  Areas of Expertise
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {profile.expertise.map((expert, index) => (
+                    <span
+                      key={index}
+                      className="bg-[#f9a825]/20 text-[#1a237e] px-3 py-1 rounded"
+                    >
+                      {expert}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Languages */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
+                  Languages
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {profile.languages.map((lang, index) => (
+                    <span
+                      key={index}
+                      className="bg-[#f9a825]/20 text-[#1a237e] px-3 py-1 rounded"
+                    >
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* About/Bio */}
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold text-[#1A237E] mb-2">About</h2>
-          {editMode ? (
-            <textarea
-              name="about"
-              value={profile.about}
-              onChange={handleChange}
-              className="text-gray-700 w-full border rounded p-2"
-              rows={4}
-              placeholder="About"
-            />
-          ) : (
-            <p className="text-gray-700">{profile.about}</p>
-          )}
-        </section>
-
-        {/* Credentials */}
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold text-[#1A237E] mb-2">
-            Credentials
-          </h2>
-          {editMode ? (
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
-              {profile.credentials.map((cred, idx) => (
-                <li key={idx}>
-                  <label
-                    htmlFor={`cred-${idx}`}
-                    className="sr-only"
-                  >{`Credential ${idx + 1}`}</label>
-                  <input
-                    id={`cred-${idx}`}
-                    type="text"
-                    value={cred}
-                    onChange={(e) =>
-                      handleCredentialChange(idx, e.target.value)
-                    }
-                    className="w-full border-b focus:outline-none"
-                    placeholder={`Credential ${idx + 1}`}
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul className="list-disc list-inside text-gray-700">
-              {profile.credentials.map((cred, idx) => (
-                <li key={idx}>{cred}</li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        {/* Practice Areas */}
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold text-[#1A237E] mb-2">
-            Practice Areas
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {editMode
-              ? profile.practiceAreas.map((area, idx) => (
-                  <span key={idx}>
-                    <label
-                      htmlFor={`area-${idx}`}
-                      className="sr-only"
-                    >{`Practice Area ${idx + 1}`}</label>
-                    <input
-                      id={`area-${idx}`}
-                      type="text"
-                      value={area}
-                      onChange={(e) => handleAreaChange(idx, e.target.value)}
-                      className="bg-[#F9A825]/20 text-[#1A237E] px-3 py-1 rounded border focus:outline-none"
-                      placeholder={`Practice Area ${idx + 1}`}
-                    />
-                  </span>
-                ))
-              : profile.practiceAreas.map((area, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-[#F9A825]/20 text-[#1A237E] px-3 py-1 rounded"
-                  >
-                    {area}
-                  </span>
-                ))}
-          </div>
-        </section>
-
-        {/* Reviews */}
-        <section>
-          <h2 className="text-lg font-semibold text-[#1A237E] mb-2">
-            Client Reviews
-          </h2>
-          <div className="bg-gray-50 p-4 rounded mb-2">
-            <p className="text-gray-700 italic">
-              "Very professional and helpful!"
-            </p>
-            <span className="text-xs text-gray-500">- Kofi A.</span>
-          </div>
-          <div className="bg-gray-50 p-4 rounded mb-2">
-            <p className="text-gray-700 italic">
-              "Quick to respond and gave clear advice."
-            </p>
-            <span className="text-xs text-gray-500">- Abena S.</span>
-          </div>
-        </section>
-      </div>
-    </main>
+        </motion.div>
+      </main>
+    </div>
   );
 }

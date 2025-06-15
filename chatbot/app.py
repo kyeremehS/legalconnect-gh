@@ -5,7 +5,7 @@ import os
 
 # LangChain Community Imports (Modern Versions)
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_community.llms import LlamaCpp
 

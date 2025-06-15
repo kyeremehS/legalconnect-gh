@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -22,15 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en"  className={`${outfit.variable} antialiased`}>
+      <html lang="en" className={`${outfit.variable} antialiased`}>
         <head>
           <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
         </head>
-        <body className={outfit.variable}>
-          <NavBar />
-          {children}
-          <Footer />
-        </body>
+        <body className={outfit.variable}>{children}</body>
       </html>
     </ClerkProvider>
   );
