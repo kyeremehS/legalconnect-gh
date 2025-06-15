@@ -22,11 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en"  className={`${outfit.variable} antialiased`}>
         <head>
           <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
         </head>
-        <body className={`${outfit.variable} antialiased`}>
+        <body className={outfit.variable}>
           <NavBar />
           {children}
           <Footer />
