@@ -6,6 +6,11 @@ import { Linkedin } from "lucide-react";
 import { Github } from "lucide-react";
 
 const Footer = () => {
+  // Function to get current year
+  const getCurrentYear = () => {
+    return new Date().getFullYear();
+  };
+
   return (
     <div>
       {/* Footer */}
@@ -89,7 +94,7 @@ const Footer = () => {
           </div>
           <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-600">
-              © 2024 LegalConnect. All rights reserved.
+              © {getCurrentYear()} LegalConnect. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-gray-600">
               <Link
