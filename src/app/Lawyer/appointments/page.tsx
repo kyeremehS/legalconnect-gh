@@ -128,12 +128,14 @@ export default function LawyerAppointments() {
                       animate={{ opacity: 1 }}
                       className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4">{appt.client}</td>
-                      <td className="px-6 py-4">{appt.date}</td>
-                      <td className="px-6 py-4">{appt.time}</td>
-                      <td className="px-6 py-4">{appt.type}</td>
-                      <td className="px-6 py-4">{appt.subject}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-gray-600">{appt.client}</td>
+                      <td className="px-6 py-4 text-gray-600">{appt.date}</td>
+                      <td className="px-6 py-4 text-gray-600">{appt.time}</td>
+                      <td className="px-6 py-4 text-gray-600">{appt.type}</td>
+                      <td className="px-6 py-4 text-gray-600">
+                        {appt.subject}
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">
                         <span
                           className={`
                           px-3 py-1 rounded-full text-xs font-medium
