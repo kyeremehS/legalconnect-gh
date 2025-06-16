@@ -44,11 +44,7 @@ export default function LawyerSettings() {
   };
 
   return (
-    <main
-      className={`min-h-screen ${
-        theme === "dark" ? "bg-gray-900" : "bg-[#F7F9FC]"
-      } py-8 px-4 flex justify-center`}
-    >
+    <main className="min-h-screen bg-gradient-to-br from-[#F7F9FC] via-[#e3e8f7] to-[#cfd8fd] py-8 px-4 flex justify-center">
       <div
         className={`w-full max-w-2xl ${
           theme === "dark"
@@ -56,9 +52,12 @@ export default function LawyerSettings() {
             : "bg-white text-gray-700"
         } rounded-lg shadow p-8`}
       >
-        <h1 className="text-2xl font-bold mb-6 text-[#1A237E] dark:text-[#F9A825]">
-          Settings
+        <h1 className="text-3xl font-bold text-[#1A237E] mb-4">
+          Page Title
         </h1>
+        <p className="text-gray-700 text-lg">
+          Welcome to your stylish page!
+        </p>
 
         {/* Theme Toggle */}
         <section className="mb-8">
@@ -207,7 +206,7 @@ export default function LawyerSettings() {
           <div className="flex gap-4 justify-end">
             <button
               type="submit"
-              className="bg-[#F9A825] text-[#1A237E] font-semibold px-6 py-2 rounded hover:bg-[#F9A825]/90 transition"
+              className="bg-gradient-to-r from-[#F9A825] to-[#FFD600] text-[#1A237E] px-6 py-2 rounded-full font-semibold shadow hover:from-[#FFD600] hover:to-[#F9A825] hover:scale-105 transition"
             >
               Save Changes
             </button>

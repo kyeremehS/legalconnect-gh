@@ -1,360 +1,379 @@
 "use client";
-import { use, useState } from "react";
-import Link from "next/link";
-import {
-  MagnifyingGlassIcon,
-  ChatBubbleLeftRightIcon,
-  PhoneIcon,
-} from "@heroicons/react/24/outline";
+import React, { useState, useEffect, useRef } from "react";
 
-export default function Messages() {
-  type Message = {
-    id: number;
-    client: string;
-    subject: string;
-    text: string;
-    timestamp: string;
-    unread: boolean;
-  };
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileMessageView, setIsMobileMessageView] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+// Example data
+const conversations = [
+  {
+    id: "1",
+    name: "Kofi Mensah",
+    avatar: "",
+    lastMessage: "Thank you for your help!",
+    unread: 2,
+    online: true,
+  },
+  {
+    id: "2",
+    name: "Abena Owusu",
+    avatar: "",
+    lastMessage: "Can we reschedule our call?",
+    unread: 0,
+    online: false,
+  },
+];
 
-  // Mock message data
-  const messages = [
-    {
-      id: 1,
-      client: "Kwame Asante",
-      subject: "Divorce Consultation",
-      text: "I need advice on divorce proceedings.",
-      timestamp: "2025-05-23 10:00 AM",
-      unread: true,
-    },
-    {
-      id: 2,
-      client: "Ama Kwarteng",
-      subject: "Contract Review",
-      text: "Can you review my employment contract?",
-      timestamp: "2025-05-22 3:15 PM",
-      unread: false,
-    },
-    {
-      id: 3,
-      client: "Kofi Mensah",
-      subject: "Land Dispute",
-      text: "I have a dispute over inherited land.",
-      timestamp: "2025-05-21 9:30 AM",
-      unread: false,
-    },
-  ];
+const messages = [
+  {
+    id: 1,
+    fromLawyer: false,
+    text: "Hello, I need legal advice.",
+    time: "10:01 AM",
+  },
+  {
+    id: 2,
+    fromLawyer: true,
+    text: "Sure, how can I help you?",
+    time: "10:02 AM",
+  },
+  {
+    id: 3,
+    fromLawyer: false,
+    text: "It's about a land dispute.",
+    time: "10:03 AM",
+  },
+];
 
-  // Mock call request data
-  const callRequests = [
-    {
-      id: 1,
-      client: "Kwame Asante",
-      time: "2025-05-23 2:00 PM",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      client: "Ama Kwarteng",
-      time: "2025-05-24 10:00 AM",
-      status: "Pending",
-    },
-  ];
-
-  // Filter messages based on search query
-  const filteredMessages = messages.filter(
-    (msg) =>
-      msg.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      msg.subject.toLowerCase().includes(searchQuery.toLowerCase())
+export default function MessagesCalls() {
+  const [selectedConversation, setSelectedConversation] = useState(
+    conversations[0]
   );
+  const [input, setInput] = useState("");
+  const [chat, setChat] = useState(messages);
+  const [callStatus, setCallStatus] = useState<"idle" | "incoming" | "active">(
+    "idle"
+  );
+  const [callDuration, setCallDuration] = useState(0);
 
-  // Handle message selection
-  const handleSelectMessage = (message: {
-    id: number;
-    client: string;
-    subject: string;
-    text: string;
-    timestamp: string;
-    unread: boolean;
-  }) => {
-    setSelectedMessage(message);
-    setIsMobileMessageView(true);
-  };
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Simulate reply action
-  const handleSendReply = () => {
-    const replyTextArea = document.getElementById(
-      "reply-text"
-    ) as HTMLTextAreaElement | null;
-    if (replyTextArea) {
-      console.log("Reply sent:", replyTextArea.value);
-      replyTextArea.value = "";
+  // Scroll to bottom on new message
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat]);
+
+  // Simulate call duration
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (callStatus === "active") {
+      timer = setInterval(() => setCallDuration((d) => d + 1), 1000);
+    } else {
+      setCallDuration(0);
+    }
+    return () => clearInterval(timer);
+  }, [callStatus]);
+
+  // Handle sending a message
+  const handleSend = () => {
+    if (input.trim()) {
+      setChat([
+        ...chat,
+        {
+          id: chat.length + 1,
+          fromLawyer: true,
+          text: input,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
+      setInput("");
     }
   };
 
-  // Simulate call request actions
-  const handleAcceptCall = (id: number) =>
-    console.log(`Accepted call request ${id}`);
-  const handleRejectCall = (id: number) =>
-    console.log(`Rejected call request ${id}`);
-
-  // Toggle hamburger menu
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  // Format call duration
+  const formatDuration = (seconds: number) =>
+    `${Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Hamburger Menu (Mobile) */}
-      <div
-        className={`fixed top-0 left-0 w-64 h-full bg-blue-800 text-white p-4 transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 md:hidden`}
-      >
-        <button
-          onClick={toggleMenu}
-          className="text-white text-2xl mb-4"
-          aria-label="Close Menu"
-        >
-          ✕
-        </button>
-        <nav className="space-y-2">
-          <Link
-            href="/lawyer/dashboard"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/lawyer/appointments"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Appointments
-          </Link>
-          <Link
-            href="/lawyer/messages"
-            onClick={toggleMenu}
-            className="block p-2 bg-blue-700 rounded"
-          >
-            Messages & Calls
-          </Link>
-          <Link
-            href="/lawyer/videos"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Videos
-          </Link>
-          <Link
-            href="/lawyer/engagement"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Engagement
-          </Link>
-          <Link
-            href="/lawyer/profile"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/lawyer/settings"
-            onClick={toggleMenu}
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Settings
-          </Link>
-        </nav>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1">
-        {/* Header */}
-        <header className="flex justify-between items-center p-6 bg-white shadow">
-          <div className="flex items-center">
-            <button
-              onClick={toggleMenu}
-              className="block md:hidden text-blue-800 text-2xl mr-4"
-              aria-label="Toggle Menu"
-            >
-              ☰
-            </button>
-            <h1 className="text-2xl font-bold text-blue-800">
-              Messages & Calls
-            </h1>
+    <main className="min-h-screen bg-[#F7F9FC] flex flex-col items-center py-0 md:py-8">
+      <div className="w-full max-w-5xl h-[90vh] bg-white rounded-xl shadow flex overflow-hidden">
+        {/* Sidebar: Conversation List */}
+        <aside className="hidden md:flex flex-col w-1/3 bg-[#F9A825]/10 border-r border-[#F9A825]/30">
+          <div className="p-4 border-b border-[#F9A825]/20">
+            <h2 className="text-lg font-bold text-[#1A237E]">Chats</h2>
           </div>
-          <Link href="/Lawyer" className="text-blue-500 hover:underline">
-            Back to Dashboard
-          </Link>
-        </header>
-
-        {/* Messages and Calls Content */}
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Messages List (Sidebar) */}
-            <div
-              className={`bg-white rounded shadow p-4 ${
-                isMobileMessageView ? "hidden md:block" : "block"
-              }`}
-            >
-              <h2 className="text-lg text-[#343a40] font-semibold mb-4 flex items-center">
-                <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2 text-blue-500" />{" "}
-                Messages
-              </h2>
-              <div className="mb-4">
+          <div className="flex-1 overflow-y-auto">
+            {conversations.map((conv) => (
+              <button
+                key={conv.id}
+                type="button"
+                className={`w-full flex items-center gap-3 px-4 py-3 transition text-left border-b border-[#F9A825]/10
+                  ${
+                    selectedConversation.id === conv.id
+                      ? "bg-[#F9A825]/20"
+                      : "hover:bg-[#F9A825]/10"
+                  }`}
+                onClick={() => setSelectedConversation(conv)}
+              >
                 <div className="relative">
-                  <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-3 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search messages..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 pl-10 border rounded focus:ring-blue-500 focus:border-blue-500 text-gray-800"
-                    aria-label="Search messages"
+                  <div className="w-10 h-10 rounded-full bg-[#F9A825]/40 text-[#1A237E] flex items-center justify-center font-bold text-lg">
+                    {conv.avatar ? (
+                      <img
+                        src={conv.avatar}
+                        alt={conv.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      conv.name[0]
+                    )}
+                  </div>
+                  {/* Online/Offline Dot */}
+                  <span
+                    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+                      conv.online ? "bg-green-400" : "bg-gray-400"
+                    }`}
+                    title={conv.online ? "Online" : "Offline"}
                   />
                 </div>
-              </div>
-              <ul className="space-y-2">
-                {filteredMessages.length === 0 ? (
-                  <li className="text-gray-500">No messages found.</li>
-                ) : (
-                  filteredMessages.map((msg) => (
-                    <li
-                      key={msg.id}
-                      onClick={() => handleSelectMessage(msg)}
-                      className={`p-3 rounded cursor-pointer hover:bg-blue-100 ${
-                        selectedMessage?.id === msg.id ? "bg-blue-200" : ""
-                      } ${msg.unread ? "font-semibold" : ""}`}
-                    >
-                      <div className="flex justify-between">
-                        <div>
-                          <p className="text-sm text-[#343a40] font-medium">
-                            {msg.client}
-                          </p>
-                          <p className="text-xs text-gray-800 truncate">
-                            {msg.subject}
-                          </p>
-                        </div>
-                        <p className="text-xs text-gray-400">{msg.timestamp}</p>
-                      </div>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-
-            {/* Message View and Call Requests (Main Panel) */}
-            <div
-              className={`md:col-span-2 bg-white rounded shadow p-4 ${
-                isMobileMessageView ? "block" : "hidden md:block"
-              }`}
-            >
-              {isMobileMessageView && (
-                <button
-                  onClick={() => setIsMobileMessageView(false)}
-                  className="mb-4 text-blue-500 hover:underline"
-                  aria-label="Back to messages list"
-                >
-                  Back to Messages
-                </button>
-              )}
-              {selectedMessage ? (
-                <div>
-                  <h2 className="text-lg text-gray-800 font-semibold mb-4">
-                    Message from {selectedMessage.client}
-                  </h2>
-                  <div className="border-b pb-4 mb-4">
-                    <p className="text-sm text-[#343a40] font-medium">
-                      {selectedMessage.subject}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {selectedMessage.timestamp}
-                    </p>
-                    <p className="mt-2 text-[#343a40] text-sm">
-                      {selectedMessage.text}
-                    </p>
-                  </div>
-                  <div className="text-[#343a40] font-medium mb-2">
-                    <textarea
-                      id="reply-text"
-                      placeholder="Type your reply..."
-                      className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                      rows={4}
-                      aria-label="Reply to message"
-                    />
-                    <button
-                      onClick={handleSendReply}
-                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      Send Reply
-                    </button>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-700">{conv.name}</div>
+                  <div className="text-xs text-gray-500 truncate">
+                    {conv.lastMessage}
                   </div>
                 </div>
-              ) : (
-                <div className="text-gray-500 text-center">
-                  Select a message to view details.
-                </div>
-              )}
-
-              {/* Call Requests */}
-              <div className="mt-6">
-                <h2 className="text-lg text-[#343a40] font-semibold mb-4 flex items-center">
-                  <PhoneIcon className="h-5 w-5 mr-2 text-blue-500" /> Call
-                  Requests
-                </h2>
-                {callRequests.length === 0 ? (
-                  <p className="text-gray-500">No pending call requests.</p>
-                ) : (
-                  <ul className="space-y-4">
-                    {callRequests.map((call) => (
-                      <li
-                        key={call.id}
-                        className="p-4 border rounded flex justify-between items-center"
-                      >
-                        <div>
-                          <p className="text-sm text-[#343a40] font-medium">
-                            {call.client}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Requested: {call.time}
-                          </p>
-                        </div>
-                        <div className="space-x-2">
-                          <button
-                            onClick={() => handleAcceptCall(call.id)}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            onClick={() => handleRejectCall(call.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                {/* Unread Badge */}
+                {conv.unread > 0 && (
+                  <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+                    {conv.unread}
+                  </span>
                 )}
-              </div>
-            </div>
+              </button>
+            ))}
           </div>
-        </div>
+        </aside>
 
-        {/* Footer */}
-        <footer className="p-6 text-center">
-          <Link href="/help" className="text-blue-500 hover:underline">
-            Messaging Guidelines
-          </Link>
-        </footer>
+        {/* Main Chat/Call Area */}
+        <section className="flex-1 flex flex-col h-full bg-[#F7F9FC]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-4 py-3 bg-[#F9A825]/20 border-b border-[#F9A825]/30">
+            <div className="w-10 h-10 rounded-full bg-[#F9A825]/40 text-[#1A237E] flex items-center justify-center font-bold text-lg">
+              {selectedConversation.avatar ? (
+                <img
+                  src={selectedConversation.avatar}
+                  alt={selectedConversation.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                selectedConversation.name[0]
+              )}
+            </div>
+            <div>
+              <div className="font-semibold text-gray-700">
+                {selectedConversation.name}
+              </div>
+              <div className="text-xs text-gray-500 flex items-center gap-1">
+                <span
+                  className={`w-2 h-2 rounded-full inline-block ${
+                    selectedConversation.online ? "bg-green-400" : "bg-gray-400"
+                  }`}
+                />
+                {selectedConversation.online ? "Online" : "Offline"}
+              </div>
+            </div>
+            {/* Call Button */}
+            <button
+              type="button"
+              className="ml-auto bg-gradient-to-r from-[#F9A825] to-[#FFD600] text-[#1A237E] px-4 py-2 rounded-full font-semibold shadow hover:from-[#FFD600] hover:to-[#F9A825] hover:scale-105 transition flex items-center gap-2"
+              onClick={() => setCallStatus("incoming")}
+              aria-label="Start Call"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 5l7 7-7 7M22 12H3"
+                />
+              </svg>
+              Call
+            </button>
+          </div>
+
+          {/* Call Controls */}
+          {callStatus === "incoming" && (
+            <div className="flex flex-col items-center justify-center flex-1">
+              <div className="text-lg font-bold text-[#1A237E] mb-4">
+                Incoming Call...
+              </div>
+              <div className="flex justify-center gap-4 mt-2">
+                <button
+                  type="button"
+                  className="bg-green-600 text-white font-semibold px-6 py-2 rounded hover:bg-green-700 transition"
+                  aria-label="Accept Call"
+                  onClick={() => setCallStatus("active")}
+                >
+                  Accept
+                </button>
+                <button
+                  type="button"
+                  className="bg-red-600 text-white font-semibold px-6 py-2 rounded hover:bg-red-700 transition"
+                  aria-label="Decline Call"
+                  onClick={() => setCallStatus("idle")}
+                >
+                  Decline
+                </button>
+              </div>
+            </div>
+          )}
+
+          {callStatus === "active" && (
+            <div className="flex flex-col items-center justify-center flex-1">
+              <div className="text-lg font-bold text-[#1A237E] mb-2">
+                Call in Progress
+              </div>
+              <div className="text-gray-700 mb-4">
+                Duration: {formatDuration(callDuration)}
+              </div>
+              <button
+                type="button"
+                className="bg-red-600 text-white font-semibold px-6 py-2 rounded hover:bg-red-700 transition"
+                aria-label="End Call"
+                onClick={() => setCallStatus("idle")}
+              >
+                End Call
+              </button>
+            </div>
+          )}
+
+          {/* Chat Area */}
+          {callStatus === "idle" && (
+            <>
+              {/* IDEA 2: Sticky Input Bar */}
+              <div className="flex-1 overflow-y-auto px-2 md:px-8 py-4 flex flex-col gap-2 md:gap-3">
+                {chat.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${
+                      msg.fromLawyer ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[80%] px-4 py-2 rounded-2xl shadow
+                        ${
+                          msg.fromLawyer
+                            ? "bg-[#F9A825] text-[#1A237E] rounded-br-none"
+                            : "bg-white text-gray-700 rounded-bl-none"
+                        }`}
+                    >
+                      {msg.text}
+                      <div
+                        className={`text-xs mt-1 ${
+                          msg.fromLawyer
+                            ? "text-[#1A237E] text-right"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {msg.time}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div ref={chatEndRef} />
+              </div>
+              {/* Sticky Input Bar at the bottom */}
+              <form
+                className="sticky bottom-0 bg-[#F9A825]/10 border-t border-[#F9A825]/20 p-3 flex gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend();
+                }}
+              >
+                <input
+                  type="text"
+                  className="flex-1 border border-[#F9A825]/30 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] bg-white"
+                  placeholder="Type a message"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  aria-label="Type your message"
+                />
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-[#F9A825] to-[#FFD600] text-[#1A237E] px-5 py-2 rounded-full font-semibold shadow hover:from-[#FFD600] hover:to-[#F9A825] hover:scale-105 transition flex items-center gap-2"
+                  aria-label="Send message"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Send
+                </button>
+              </form>
+            </>
+          )}
+        </section>
       </div>
-    </div>
+      {/* Mobile conversation list */}
+      <div className="md:hidden w-full max-w-5xl mt-2">
+        <div className="flex overflow-x-auto gap-2 px-2">
+          {conversations.map((conv) => (
+            <button
+              key={conv.id}
+              type="button"
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition
+                ${
+                  selectedConversation.id === conv.id
+                    ? "bg-[#F9A825]/20"
+                    : "hover:bg-[#F9A825]/10"
+                }`}
+              onClick={() => setSelectedConversation(conv)}
+            >
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-[#F9A825]/40 text-[#1A237E] flex items-center justify-center font-bold text-lg">
+                  {conv.avatar ? (
+                    <img
+                      src={conv.avatar}
+                      alt={conv.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    conv.name[0]
+                  )}
+                </div>
+                <span
+                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+                    conv.online ? "bg-green-400" : "bg-gray-400"
+                  }`}
+                  title={conv.online ? "Online" : "Offline"}
+                />
+              </div>
+              <span className="text-xs font-semibold text-[#1A237E]">
+                {conv.name.split(" ")[0]}
+              </span>
+              {conv.unread > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+                  {conv.unread}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </main>
   );
 }

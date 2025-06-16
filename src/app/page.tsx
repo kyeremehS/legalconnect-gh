@@ -25,6 +25,7 @@ import {
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
+import Navbar from "@components/Navbar";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,6 +49,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Navbar />
       {/* Hero Section */}
       <motion.section
         className="pt-32 pb-20 relative overflow-hidden"
@@ -68,7 +70,9 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Get instant legal guidance, connect with trusted lawyers, and learn your rights through short, engaging videos. All in one secure platform.
+              Get instant legal guidance, connect with trusted lawyers, and
+              learn your rights through short, engaging videos. All in one
+              secure platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -155,7 +159,8 @@ export default function Home() {
               Your Legal Journey, Simplified
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Everything you need to understand and navigate legal matters, all in one place
+              Everything you need to understand and navigate legal matters, all
+              in one place
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -240,7 +245,8 @@ export default function Home() {
               Ready to Take Control of Your Legal Matters?
             </h2>
             <p className="text-amber-200 mb-8 text-lg max-w-2xl mx-auto">
-              Join thousands of users who trust LegalConnect for their legal needs. Get started with a free consultation today.
+              Join thousands of users who trust LegalConnect for their legal
+              needs. Get started with a free consultation today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -342,12 +348,14 @@ const features = [
   },
   {
     title: "Secure Communication",
-    description: "All your conversations and documents are protected with end-to-end encryption.",
+    description:
+      "All your conversations and documents are protected with end-to-end encryption.",
     icon: <Lock className="w-6 h-6 text-[#d4a017]" />,
   },
   {
     title: "Document Management",
-    description: "Store and organize your legal documents securely in one place.",
+    description:
+      "Store and organize your legal documents securely in one place.",
     icon: <FileText className="w-6 h-6 text-[#d4a017]" />,
   },
   {
