@@ -25,7 +25,7 @@ import {
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
-import Navbar from "@components/Navbar";
+import NavBar from "./components/NavBar";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      <NavBar /> {/* Keep navbar only on landing page */}
       {/* Hero Section */}
       <motion.section
         className="pt-32 pb-20 relative overflow-hidden"
@@ -144,7 +144,6 @@ export default function Home() {
           />
         </div>
       </motion.section>
-
       {/* Features Grid */}
       <motion.section
         className="py-20 bg-white"
@@ -188,7 +187,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-
       {/* Target Audience Section */}
       <motion.section
         className="py-20 relative"
@@ -229,7 +227,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-
       {/* CTA Section */}
       <motion.section
         className="py-20 bg-[#d4a017] text-white relative overflow-hidden"
@@ -266,7 +263,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-
       {/* Testimonials Section */}
       <motion.section
         className="py-20 bg-white"
@@ -320,7 +316,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-
       {/* Chat Modal */}
       <ChatButton />
     </div>

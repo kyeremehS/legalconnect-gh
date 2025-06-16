@@ -1,379 +1,248 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
 
-// Example data
-const conversations = [
+import { motion } from "framer-motion";
+import {
+  MessageSquare,
+  Search,
+  MoreVertical,
+  Send,
+  Paperclip,
+} from "lucide-react";
+import { useState } from "react";
+
+type Chat = {
+  id: string;
+  name: string;
+  lastMessage: string;
+  timestamp: string;
+  unreadCount?: number;
+  avatar?: string;
+};
+
+type Message = {
+  id: string;
+  content: string;
+  timestamp: string;
+  sender: "user" | "client";
+};
+
+const mockChats: Chat[] = [
   {
     id: "1",
-    name: "Kofi Mensah",
-    avatar: "",
-    lastMessage: "Thank you for your help!",
-    unread: 2,
-    online: true,
+    name: "John Smith",
+    lastMessage: "I need legal advice regarding my business contract",
+    timestamp: "2:30 PM",
+    unreadCount: 3,
+  },
+  // ...add more mock chats
+];
+
+const mockMessages: Message[] = [
+  {
+    id: "1",
+    content: "Hello, I need legal advice regarding my business contract",
+    timestamp: "2:30 PM",
+    sender: "client",
   },
   {
     id: "2",
-    name: "Abena Owusu",
-    avatar: "",
-    lastMessage: "Can we reschedule our call?",
-    unread: 0,
-    online: false,
+    content:
+      "Of course, I'd be happy to help. Could you provide more details about your situation?",
+    timestamp: "2:31 PM",
+    sender: "user",
   },
+  // ...add more mock messages
 ];
 
-const messages = [
-  {
-    id: 1,
-    fromLawyer: false,
-    text: "Hello, I need legal advice.",
-    time: "10:01 AM",
-  },
-  {
-    id: 2,
-    fromLawyer: true,
-    text: "Sure, how can I help you?",
-    time: "10:02 AM",
-  },
-  {
-    id: 3,
-    fromLawyer: false,
-    text: "It's about a land dispute.",
-    time: "10:03 AM",
-  },
-];
-
-export default function MessagesCalls() {
-  const [selectedConversation, setSelectedConversation] = useState(
-    conversations[0]
-  );
-  const [input, setInput] = useState("");
-  const [chat, setChat] = useState(messages);
-  const [callStatus, setCallStatus] = useState<"idle" | "incoming" | "active">(
-    "idle"
-  );
-  const [callDuration, setCallDuration] = useState(0);
-
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
-
-  // Scroll to bottom on new message
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chat]);
-
-  // Simulate call duration
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (callStatus === "active") {
-      timer = setInterval(() => setCallDuration((d) => d + 1), 1000);
-    } else {
-      setCallDuration(0);
-    }
-    return () => clearInterval(timer);
-  }, [callStatus]);
-
-  // Handle sending a message
-  const handleSend = () => {
-    if (input.trim()) {
-      setChat([
-        ...chat,
-        {
-          id: chat.length + 1,
-          fromLawyer: true,
-          text: input,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
-      setInput("");
-    }
-  };
-
-  // Format call duration
-  const formatDuration = (seconds: number) =>
-    `${Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
+export default function MessagesAndCalls() {
+  const [chats] = useState<Chat[]>(mockChats);
+  const [messages] = useState<Message[]>(mockMessages);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [newMessage, setNewMessage] = useState("");
 
   return (
-    <main className="min-h-screen bg-[#F7F9FC] flex flex-col items-center py-0 md:py-8">
-      <div className="w-full max-w-5xl h-[90vh] bg-white rounded-xl shadow flex overflow-hidden">
-        {/* Sidebar: Conversation List */}
-        <aside className="hidden md:flex flex-col w-1/3 bg-[#F9A825]/10 border-r border-[#F9A825]/30">
-          <div className="p-4 border-b border-[#F9A825]/20">
-            <h2 className="text-lg font-bold text-[#1A237E]">Chats</h2>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {conversations.map((conv) => (
-              <button
-                key={conv.id}
-                type="button"
-                className={`w-full flex items-center gap-3 px-4 py-3 transition text-left border-b border-[#F9A825]/10
-                  ${
-                    selectedConversation.id === conv.id
-                      ? "bg-[#F9A825]/20"
-                      : "hover:bg-[#F9A825]/10"
-                  }`}
-                onClick={() => setSelectedConversation(conv)}
-              >
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-[#F9A825]/40 text-[#1A237E] flex items-center justify-center font-bold text-lg">
-                    {conv.avatar ? (
-                      <img
-                        src={conv.avatar}
-                        alt={conv.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      conv.name[0]
-                    )}
-                  </div>
-                  {/* Online/Offline Dot */}
-                  <span
-                    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-                      conv.online ? "bg-green-400" : "bg-gray-400"
-                    }`}
-                    title={conv.online ? "Online" : "Offline"}
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-gray-700">{conv.name}</div>
-                  <div className="text-xs text-gray-500 truncate">
-                    {conv.lastMessage}
-                  </div>
-                </div>
-                {/* Unread Badge */}
-                {conv.unread > 0 && (
-                  <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
-                    {conv.unread}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        {/* Main Chat/Call Area */}
-        <section className="flex-1 flex flex-col h-full bg-[#F7F9FC]">
+    <div className="min-h-screen overflow-y-auto bg-white">
+      <main className="p-4 lg:p-8 pt-20 lg:pt-8 ">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="h-[calc(100vh-100px)]"
+        >
           {/* Header */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-[#F9A825]/20 border-b border-[#F9A825]/30">
-            <div className="w-10 h-10 rounded-full bg-[#F9A825]/40 text-[#1A237E] flex items-center justify-center font-bold text-lg">
-              {selectedConversation.avatar ? (
-                <img
-                  src={selectedConversation.avatar}
-                  alt={selectedConversation.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              ) : (
-                selectedConversation.name[0]
-              )}
-            </div>
-            <div>
-              <div className="font-semibold text-gray-700">
-                {selectedConversation.name}
-              </div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">
-                <span
-                  className={`w-2 h-2 rounded-full inline-block ${
-                    selectedConversation.online ? "bg-green-400" : "bg-gray-400"
-                  }`}
-                />
-                {selectedConversation.online ? "Online" : "Offline"}
-              </div>
-            </div>
-            {/* Call Button */}
-            <button
-              type="button"
-              className="ml-auto bg-gradient-to-r from-[#F9A825] to-[#FFD600] text-[#1A237E] px-4 py-2 rounded-full font-semibold shadow hover:from-[#FFD600] hover:to-[#F9A825] hover:scale-105 transition flex items-center gap-2"
-              onClick={() => setCallStatus("incoming")}
-              aria-label="Start Call"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 5l7 7-7 7M22 12H3"
-                />
-              </svg>
-              Call
-            </button>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">
+              Messages & Calls
+            </h1>
+            <p className="text-[#4a4a4a] font-medium">
+              Manage your communications
+            </p>
           </div>
 
-          {/* Call Controls */}
-          {callStatus === "incoming" && (
-            <div className="flex flex-col items-center justify-center flex-1">
-              <div className="text-lg font-bold text-[#1A237E] mb-4">
-                Incoming Call...
-              </div>
-              <div className="flex justify-center gap-4 mt-2">
-                <button
-                  type="button"
-                  className="bg-green-600 text-white font-semibold px-6 py-2 rounded hover:bg-green-700 transition"
-                  aria-label="Accept Call"
-                  onClick={() => setCallStatus("active")}
-                >
-                  Accept
-                </button>
-                <button
-                  type="button"
-                  className="bg-red-600 text-white font-semibold px-6 py-2 rounded hover:bg-red-700 transition"
-                  aria-label="Decline Call"
-                  onClick={() => setCallStatus("idle")}
-                >
-                  Decline
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Main Chat Interface */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-[calc(100%-80px)] ">
+            <div className="flex h-full flex-col lg:flex-row">
+              {/* Chat List */}
+              <div className="md:w-[320px] w-full border-r border-gray-200 flex flex-col">
+                <div className="p-4 border-b border-gray-200 bg-white">
+                  <div className="relative">
+                    <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
+                    <input
+                      type="text"
+                      placeholder="Search chats"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-lg border border-gray-200 
+                        focus:outline-none focus:ring-2 focus:ring-[#d4a017] text-[#1a1a1a]"
+                    />
+                  </div>
+                </div>
 
-          {callStatus === "active" && (
-            <div className="flex flex-col items-center justify-center flex-1">
-              <div className="text-lg font-bold text-[#1A237E] mb-2">
-                Call in Progress
-              </div>
-              <div className="text-gray-700 mb-4">
-                Duration: {formatDuration(callDuration)}
-              </div>
-              <button
-                type="button"
-                className="bg-red-600 text-white font-semibold px-6 py-2 rounded hover:bg-red-700 transition"
-                aria-label="End Call"
-                onClick={() => setCallStatus("idle")}
-              >
-                End Call
-              </button>
-            </div>
-          )}
-
-          {/* Chat Area */}
-          {callStatus === "idle" && (
-            <>
-              {/* IDEA 2: Sticky Input Bar */}
-              <div className="flex-1 overflow-y-auto px-2 md:px-8 py-4 flex flex-col gap-2 md:gap-3">
-                {chat.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${
-                      msg.fromLawyer ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[80%] px-4 py-2 rounded-2xl shadow
-                        ${
-                          msg.fromLawyer
-                            ? "bg-[#F9A825] text-[#1A237E] rounded-br-none"
-                            : "bg-white text-gray-700 rounded-bl-none"
-                        }`}
+                <div className="overflow-y-auto flex-1">
+                  {chats.map((chat) => (
+                    <motion.div
+                      key={chat.id}
+                      onClick={() => setSelectedChat(chat)}
+                      className={`flex items-center gap-3 p-4 cursor-pointer border-b border-gray-100
+                        hover:bg-[#fff8eb] transition-colors
+                        ${selectedChat?.id === chat.id ? "bg-[#fff8eb]" : ""}`}
                     >
-                      {msg.text}
-                      <div
-                        className={`text-xs mt-1 ${
-                          msg.fromLawyer
-                            ? "text-[#1A237E] text-right"
-                            : "text-gray-400"
+                      <div className="w-12 h-12 rounded-full bg-[#d4a017] flex items-center justify-center">
+                        <span className="text-white font-semibold text-lg">
+                          {chat.name.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-baseline mb-1">
+                          <h3 className="font-semibold text-[#1a1a1a] truncate">
+                            {chat.name}
+                          </h3>
+                          <span className="text-xs font-medium text-[#4a4a4a]">
+                            {chat.timestamp}
+                          </span>
+                        </div>
+                        <p className="text-sm text-[#4a4a4a] truncate">
+                          {chat.lastMessage}
+                        </p>
+                      </div>
+                      {chat.unreadCount && (
+                        <span
+                          className="bg-[#d4a017] text-white text-xs font-bold rounded-full 
+                          w-5 h-5 flex items-center justify-center"
+                        >
+                          {chat.unreadCount}
+                        </span>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Chat Area */}
+              {selectedChat ? (
+                <div className="flex-1 flex flex-col bg-[#fafafa]">
+                  <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#d4a017] flex items-center justify-center">
+                        <span className="text-white font-semibold">
+                          {selectedChat.name.charAt(0)}
+                        </span>
+                      </div>
+                      <h2 className="font-semibold text-[#1a1a1a]">
+                        {selectedChat.name}
+                      </h2>
+                    </div>
+                    <button
+                      className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                      title="More options"
+                      aria-label="More options"
+                    >
+                      <MoreVertical className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto p-4">
+                    {messages.map((message) => (
+                      <motion.div
+                        key={message.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`max-w-[70%] mb-4 ${
+                          message.sender === "user" ? "ml-auto" : "mr-auto"
                         }`}
                       >
-                        {msg.time}
-                      </div>
+                        <div
+                          className={`p-3 rounded-xl shadow-sm ${
+                            message.sender === "user"
+                              ? "bg-[#d4a017] text-white"
+                              : "bg-white border border-gray-200"
+                          }`}
+                        >
+                          <p
+                            className={
+                              message.sender === "user"
+                                ? "text-white"
+                                : "text-[#1a1a1a]"
+                            }
+                          >
+                            {message.content}
+                          </p>
+                          <span
+                            className={`text-xs block text-right mt-1 
+                            ${
+                              message.sender === "user"
+                                ? "text-white/80"
+                                : "text-[#4a4a4a]"
+                            }`}
+                          >
+                            {message.timestamp}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="p-4 bg-white border-t border-gray-200">
+                    <div className="flex items-center gap-2 bg-[#fafafa] rounded-xl p-3 border border-gray-200">
+                      <button
+                        className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                        title="Attach file"
+                        aria-label="Attach file"
+                      >
+                        <Paperclip className="w-5 h-5" />
+                      </button>
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Type a message"
+                        className="flex-1 bg-transparent focus:outline-none text-[#1a1a1a] placeholder-[#4a4a4a]"
+                      />
+                      <button
+                        className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                        title="Send message"
+                        aria-label="Send message"
+                      >
+                        <Send className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
-                ))}
-                <div ref={chatEndRef} />
-              </div>
-              {/* Sticky Input Bar at the bottom */}
-              <form
-                className="sticky bottom-0 bg-[#F9A825]/10 border-t border-[#F9A825]/20 p-3 flex gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSend();
-                }}
-              >
-                <input
-                  type="text"
-                  className="flex-1 border border-[#F9A825]/30 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] bg-white"
-                  placeholder="Type a message"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  aria-label="Type your message"
-                />
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-[#F9A825] to-[#FFD600] text-[#1A237E] px-5 py-2 rounded-full font-semibold shadow hover:from-[#FFD600] hover:to-[#F9A825] hover:scale-105 transition flex items-center gap-2"
-                  aria-label="Send message"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  Send
-                </button>
-              </form>
-            </>
-          )}
-        </section>
-      </div>
-      {/* Mobile conversation list */}
-      <div className="md:hidden w-full max-w-5xl mt-2">
-        <div className="flex overflow-x-auto gap-2 px-2">
-          {conversations.map((conv) => (
-            <button
-              key={conv.id}
-              type="button"
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition
-                ${
-                  selectedConversation.id === conv.id
-                    ? "bg-[#F9A825]/20"
-                    : "hover:bg-[#F9A825]/10"
-                }`}
-              onClick={() => setSelectedConversation(conv)}
-            >
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-[#F9A825]/40 text-[#1A237E] flex items-center justify-center font-bold text-lg">
-                  {conv.avatar ? (
-                    <img
-                      src={conv.avatar}
-                      alt={conv.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    conv.name[0]
-                  )}
                 </div>
-                <span
-                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-                    conv.online ? "bg-green-400" : "bg-gray-400"
-                  }`}
-                  title={conv.online ? "Online" : "Offline"}
-                />
-              </div>
-              <span className="text-xs font-semibold text-[#1A237E]">
-                {conv.name.split(" ")[0]}
-              </span>
-              {conv.unread > 0 && (
-                <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
-                  {conv.unread}
-                </span>
+              ) : (
+                <div className="flex-1 flex items-center justify-center bg-[#fafafa]">
+                  <div className="text-center">
+                    <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[#d4a017]" />
+                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2">
+                      Select a chat to start messaging
+                    </h3>
+                    <p className="text-[#4a4a4a]">
+                      Choose from your existing conversations or start a new one
+                    </p>
+                  </div>
+                </div>
               )}
-            </button>
-          ))}
-        </div>
-      </div>
-    </main>
+            </div>
+          </div>
+        </motion.div>
+      </main>
+    </div>
   );
 }

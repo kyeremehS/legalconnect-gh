@@ -5,7 +5,7 @@ import os
 
 # LangChain Community Imports (Modern Versions)
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_community.llms import LlamaCpp
 
@@ -44,7 +44,7 @@ chain_type_kwargs = {"prompt": PROMPT}
 
 # === LLM Setup ===
 llm = LlamaCpp(
-    model_path="mistral-7b-instruct-v0.1.Q4_K_M.gguf",
+    model_path="c:\Users\hp\Downloads\mistral-7b-instruct-v0.1.Q4_K_M.gguf",
     temperature=0.7,
     max_tokens=256,
     top_p=1,
@@ -66,10 +66,10 @@ qa = RetrievalQA.from_chain_type(
     chain_type_kwargs=chain_type_kwargs
 )
 
-# === Routes ===
-@app.route("/")
-def index():
-    return render_template('chat.html')
+# # === Routes ===
+# @app.route("/")
+# def index():
+#     return render_template('chat.html')
 
 @app.route("/get", methods=["GET", "POST"])
 def chat():

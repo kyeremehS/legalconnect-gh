@@ -1,270 +1,211 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-// Example categories and videos
+import React from "react";
+import { motion } from "framer-motion";
+import { Video, Upload, ArrowLeft, Plus, PlayCircle } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+
+type VideoContent = {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  thumbnail?: string;
+  status: "draft" | "published";
+  views?: number;
+  createdAt: string;
+  category: string;
+};
+
 const categories = [
-  {
-    label: "Land Law",
-    description: "Videos about land rights, disputes, and property law.",
-    videos: [
-      {
-        title: "Understanding Land Ownership in Ghana",
-        url: "https://www.youtube.com/embed/your_land_video_id",
-        lawyer: "Ama Kwarteng, Esq.",
-      },
-      {
-        title: "Resolving Land Disputes",
-        url: "https://www.youtube.com/embed/your_land_dispute_video_id",
-        lawyer: "Kwame Mensah, Esq.",
-      },
-    ],
-  },
-  {
-    label: "Family Law",
-    description:
-      "Videos about marriage, divorce, child custody, and related issues.",
-    videos: [
-      {
-        title: "Marriage and Divorce Laws",
-        url: "https://www.youtube.com/embed/your_family_video_id",
-        lawyer: "Abena Owusu, Esq.",
-      },
-      {
-        title: "Child Custody Explained",
-        url: "https://www.youtube.com/embed/your_custody_video_id",
-        lawyer: "Kojo Asante, Esq.",
-      },
-    ],
-  },
-  {
-    label: "Employment Law",
-    description:
-      "Videos about employee rights, contracts, and workplace issues.",
-    videos: [
-      {
-        title: "Your Rights as an Employee",
-        url: "https://www.youtube.com/embed/your_employment_video_id",
-        lawyer: "Efua Boateng, Esq.",
-      },
-      {
-        title: "Understanding Employment Contracts",
-        url: "https://www.youtube.com/embed/your_contract_video_id",
-        lawyer: "Yaw Adu, Esq.",
-      },
-    ],
-  },
+  "Business Law",
+  "Criminal Law",
+  "Family Law",
+  "Property Law",
 ];
 
-export default function LegalContentPage() {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0].label);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export default function CreateContent() {
+  const [videos] = useState<VideoContent[]>([
+    {
+      id: "1",
+      title: "Understanding Business Contracts",
+      description: "A comprehensive guide to business contract basics",
+      duration: "15:30",
+      status: "published",
+      views: 245,
+      createdAt: "2024-02-15",
+      category: "Business Law",
+    },
+    // Add more mock data as needed
+  ]);
 
-  const activeCategory = categories.find(
-    (cat) => cat.label === selectedCategory
-  );
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
-
-  const fileName = "page.tsx";
+  const [activeFilter, setActiveFilter] = useState("all");
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-blue-800">Upload Legal Video</h1>
-        <Link href="/Lawyer" className="text-blue-500 hover:underline">
-          Back to Dashboard
-        </Link>
-      </header>
+    <React.Fragment>
+      <div className="min-h-screen bg-white">
+        <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Navigation Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <Link
+                  href="/Lawyer"
+                  className="inline-flex items-center gap-2 text-[#d4a017] hover:text-[#b17d25] mb-2 group transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" />
+                  <span className="font-medium">Back to Dashboard</span>
+                </Link>
+                <h1 className="text-3xl font-bold text-[#1a1a1a]">
+                  Content Studio
+                </h1>
+                <p className="text-[#4a4a4a] font-medium">
+                  Create and manage your legal content
+                </p>
+              </div>
+              <button className="flex items-center gap-2 bg-[#d4a017] text-white px-6 py-3 rounded-xl hover:bg-[#b17d25] transition-colors font-medium">
+                <Plus className="w-5 h-5" />
+                New Video
+              </button>
+            </div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Video Upload Section */}
-          <div>
-            <h2 className="text-xl font-semibold  text-[#000814] mb-2">
-              Choose Video from Your Computer
-            </h2>
-            <p className="text-sm text-[#000814] text-500 mb-2">
-              Max 60 seconds, MP4 or WebM, under 50MB
-            </p>
-            <input
-              type="file"
-              accept="video/mp4,video/webm"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600"
-              aria-label="Choose video file from computer"
-            />
-            {fileName && (
-              <p className="mt-2 text-sm text-gray-600">Selected: {fileName}</p>
-            )}
-            {previewUrl && (
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold">Preview</h3>
-                <video src={previewUrl} controls className="w-full rounded" />
-              </div>
-            )}
-          </div>
-          {/* Editing Section */}
-          <div>
-            <h2 className="text-xl text-[#000814] font-semibold mb-2">
-              Video Details
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  // value={title}
-                  // onChange={(e) => setTitle(e.target.value)}
-                  className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="e.g., Understanding Land Disputes in Ghana"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-[#000814] font-medium">
-                  Description
-                </label>
-                <textarea
-                  // value={description}
-                  // onChange={(e) => setDescription(e.target.value)}
-                  className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Briefly describe your video (e.g., key points or keywords)"
-                  rows={4}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="category-select"
-                  className="block text-sm font-medium text-gray-700"
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-12 gap-6">
+              {/* Left Column - Upload & Guidelines */}
+              <div className="col-span-12 lg:col-span-4 space-y-6">
+                {/* Quick Upload Card */}
+                <motion.div
+                  whileHover={{ y: -2 }}
+                  className="bg-white p-6 rounded-2xl border-2 border-dashed border-[#d4a017] hover:border-[#b17d25]"
                 >
-                  Category
-                </label>
-                <select
-                  id="category-select"
-                  // value={category}
-                  // onChange={(e) => setCategory(e.target.value)}
-                  className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                  required
-                >
-                  <option value="text-[#000814]">Select a category</option>
-                  <option value="family-law text-[#000814]">Family Law</option>
-                  <option value="corporate-law text-[#000814]">
-                    Corporate Law
-                  </option>
-                  <option value="criminal-law text-[#000814]">
-                    Criminal Law
-                  </option>
-                  <option value="land-law text-[#000814]">Land Law</option>
-                </select>
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center mx-auto mb-4">
+                      <Upload className="w-8 h-8 text-[#d4a017]" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2">
+                      Quick Upload
+                    </h3>
+                    <p className="text-[#4a4a4a] mb-4">
+                      Drag and drop or browse files
+                    </p>
+                    <button className="bg-[#d4a017] text-white px-6 py-2 rounded-lg hover:bg-[#b17d25] transition-colors font-medium">
+                      Select Video
+                    </button>
+                  </div>
+                </motion.div>
+
+                {/* Guidelines Card */}
+                <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                  <h3 className="text-lg font-semibold text-[#1a1a1a] mb-4 flex items-center gap-2">
+                    <PlayCircle className="w-5 h-5 text-[#d4a017]" />
+                    Content Guidelines
+                  </h3>
+                  <ul className="space-y-3">
+                    {[
+                      "Keep videos between 5-15 minutes",
+                      "Use clear and concise titles",
+                      "Add relevant thumbnails",
+                      "Include detailed descriptions",
+                      "Tag with appropriate categories",
+                    ].map((tip, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center gap-3 text-[#4a4a4a]"
+                      >
+                        <div className="w-2 h-2 rounded-full bg-[#d4a017]" />
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Right Column - Videos Grid */}
+              <div className="col-span-12 lg:col-span-8">
+                {/* Category Filters */}
+                <div className="mb-6 border-b border-gray-200">
+                  <div className="flex gap-4 overflow-x-auto pb-4">
+                    <button
+                      onClick={() => setActiveFilter("all")}
+                      className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors
+                        ${
+                          activeFilter === "all"
+                            ? "bg-[#fff8eb] text-[#d4a017] font-medium"
+                            : "text-[#4a4a4a] hover:bg-gray-50"
+                        }`}
+                    >
+                      All Videos
+                    </button>
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => setActiveFilter(category)}
+                        className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors
+                          ${
+                            activeFilter === category
+                              ? "bg-[#fff8eb] text-[#d4a017] font-medium"
+                              : "text-[#4a4a4a] hover:bg-gray-50"
+                          }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Videos Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {videos.map((video) => (
+                    <motion.div
+                      key={video.id}
+                      whileHover={{ y: -5 }}
+                      className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-[#d4a017] transition-colors"
+                    >
+                      <div className="aspect-video bg-[#fff8eb] flex items-center justify-center relative group">
+                        <Video className="w-12 h-12 text-[#d4a017] group-hover:opacity-0 transition-opacity" />
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="bg-[#d4a017] text-white px-4 py-2 rounded-lg hover:bg-[#b17d25] transition-colors">
+                            Edit Video
+                          </button>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-4 mb-2">
+                          <h3 className="font-semibold text-[#1a1a1a] line-clamp-2">
+                            {video.title}
+                          </h3>
+                          <span
+                            className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap
+                            ${
+                              video.status === "published"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {video.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-[#4a4a4a] mb-3 line-clamp-2">
+                          {video.description}
+                        </p>
+                        <div className="flex items-center justify-between text-xs text-[#4a4a4a]">
+                          <span>{video.duration}</span>
+                          <span>{video.views} views</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex space-x-4">
-          <button
-            // onClick={handlePublish}
-            className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600"
-          >
-            Publish
-          </button>
-          <button
-            // onClick={() => router.push("/lawyer/videos")}
-            className="bg-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-        </div>
+          </motion.div>
+        </main>
       </div>
-
-      {/* Footer */}
-      <footer className="mt-6 text-center">
-        <Link href="/help" className="text-blue-500 hover:underline">
-          Video Creation Guidelines
-        </Link>
-      </footer>
-
-      {/* Hero Section */}
-      <section className="w-full max-w-4xl text-center mb-8 md:mb-12 px-2">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-[#1A237E] mb-4 drop-shadow-lg">
-          Legal Video Library
-        </h1>
-        <p className="text-base md:text-xl text-gray-700 mb-6">
-          Watch educational videos categorized by legal issue and lawyer
-          expertise.
-        </p>
-      </section>
-
-      {/* Category Tabs */}
-      <nav className="w-full max-w-3xl flex flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-10">
-        {categories.map((cat) => (
-          <button
-            key={cat.label}
-            onClick={() => setSelectedCategory(cat.label)}
-            className={`px-4 md:px-6 py-2 rounded-full font-semibold shadow transition
-              ${
-                selectedCategory === cat.label
-                  ? "bg-[#F9A825] text-[#1A237E]"
-                  : "bg-white text-[#1A237E] border border-[#F9A825] hover:bg-[#f9a825]/10"
-              }`}
-            aria-current={selectedCategory === cat.label ? "page" : undefined}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </nav>
-
-      {/* Category Description */}
-      <section className="w-full max-w-3xl text-center mb-6 md:mb-8 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-[#1A237E] mb-2">
-          {activeCategory?.label}
-        </h2>
-        <p className="text-gray-700">{activeCategory?.description}</p>
-      </section>
-
-      {/* Centered Videos Grid */}
-      <section className="w-full flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl w-full justify-items-center">
-          {activeCategory?.videos.map((video, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-lg p-4 md:p-6 flex flex-col items-center hover:shadow-2xl transition w-full max-w-md"
-            >
-              <div className="w-full flex justify-center aspect-video mb-3 rounded overflow-hidden">
-                <iframe
-                  src={video.url}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-48 md:h-56 rounded"
-                />
-              </div>
-              <h3 className="text-base md:text-lg font-bold text-[#1A237E] mb-1 text-center">
-                {video.title}
-              </h3>
-              <span className="text-xs md:text-sm text-gray-500 mb-1 text-center block">
-                By {video.lawyer}
-              </span>
-              <span className="inline-block bg-[#F9A825]/20 text-[#1A237E] px-3 py-1 rounded text-xs font-semibold">
-                {activeCategory.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
+    </React.Fragment>
   );
 }

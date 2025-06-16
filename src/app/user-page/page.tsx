@@ -76,7 +76,7 @@ export default function Dashboard() {
         rating: 4.9,
         reviews: 128,
         experience: "15 years",
-        image: "/lawyer1.jpg",
+        image: "/lawyer-icon.png",
         availability: "Next available: Tomorrow",
       },
       {
@@ -86,7 +86,7 @@ export default function Dashboard() {
         rating: 4.8,
         reviews: 95,
         experience: "12 years",
-        image: "/lawyer2.jpg",
+        image: "/lawyer-icon.png",
         availability: "Next available: Today",
       },
       {
@@ -96,7 +96,7 @@ export default function Dashboard() {
         rating: 4.7,
         reviews: 156,
         experience: "18 years",
-        image: "/lawyer3.jpg",
+        image: "/lawyer-icon.png",
         availability: "Next available: Next Week",
       },
     ],
@@ -124,7 +124,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pt-20 bg-white text-black">
-
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 mb-6">
@@ -189,9 +188,13 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-black">{stat.title}</p>
-                  <p className="text-2xl font-bold mt-1 text-black">{stat.value}</p>
+                  <p className="text-2xl font-bold mt-1 text-black">
+                    {stat.value}
+                  </p>
                 </div>
-                <div className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}>
+                <div
+                  className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}
+                >
                   {stat.icon}
                 </div>
               </div>
@@ -205,7 +208,9 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-6">
             {/* Recent Activity */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-xl font-semibold mb-4 text-black">Recent Activity</h2>
+              <h2 className="text-xl font-semibold mb-4 text-black">
+                Recent Activity
+              </h2>
               <div className="space-y-4">
                 {user.recentActivity.map((activity, index) => (
                   <div
@@ -236,7 +241,9 @@ export default function Dashboard() {
             {/* Upcoming Appointments */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-black">Upcoming Appointments</h2>
+                <h2 className="text-xl font-semibold text-black">
+                  Upcoming Appointments
+                </h2>
                 <Link
                   href="/appointments"
                   className="text-primary-600 hover:text-primary-700 text-sm font-medium"
@@ -255,8 +262,12 @@ export default function Dashboard() {
                         <Calendar className="w-6 h-6 text-primary-600" />
                       </div>
                       <div>
-                        <p className="font-medium text-black">{appointment.lawyer}</p>
-                        <p className="text-sm text-black">{appointment.specialty}</p>
+                        <p className="font-medium text-black">
+                          {appointment.lawyer}
+                        </p>
+                        <p className="text-sm text-black">
+                          {appointment.specialty}
+                        </p>
                         <p className="text-sm text-black">
                           {appointment.date} at {appointment.time}
                         </p>
@@ -275,7 +286,9 @@ export default function Dashboard() {
           <div className="space-y-6">
             {/* Recommended Lawyers */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-xl font-semibold mb-4 text-black">Recommended Lawyers</h2>
+              <h2 className="text-xl font-semibold mb-4 text-black">
+                Recommended Lawyers
+              </h2>
               <div className="space-y-4">
                 {user.recommendedLawyers.map((lawyer) => (
                   <div
@@ -303,8 +316,12 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="mt-3 flex items-center justify-between text-sm">
-                      <span className="text-black">{lawyer.experience} experience</span>
-                      <span className="text-primary-600">{lawyer.availability}</span>
+                      <span className="text-black">
+                        {lawyer.experience} experience
+                      </span>
+                      <span className="text-primary-600">
+                        {lawyer.availability}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -313,7 +330,9 @@ export default function Dashboard() {
 
             {/* Legal Resources */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-xl font-semibold mb-4 text-black">Legal Resources</h2>
+              <h2 className="text-xl font-semibold mb-4 text-black">
+                Legal Resources
+              </h2>
               <div className="space-y-4">
                 {user.legalResources.map((resource, index) => (
                   <Link
