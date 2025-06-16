@@ -44,7 +44,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-white">
-      <main className="flex-1 p-4 lg:p-8 mt-16 lg:mt-0">
+      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -71,7 +71,7 @@ export default function Profile() {
             <div className="col-span-12 lg:col-span-8 space-y-6">
               {/* Basic Info Card */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200">
-                <div className="flex items-start gap-6">
+                <div className="flex flex-col md:flex-row items-start gap-6">
                   <div className="w-24 h-24 rounded-full bg-[#fff8eb] flex items-center justify-center">
                     <User className="w-12 h-12 text-[#d4a017]" />
                   </div>

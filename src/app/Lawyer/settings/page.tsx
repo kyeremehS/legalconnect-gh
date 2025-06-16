@@ -44,11 +44,7 @@ export default function LawyerSettings() {
   };
 
   return (
-    <main
-      className={`min-h-screen ${
-        theme === "dark" ? "bg-gray-900" : "bg-[#F7F9FC]"
-      } py-8 px-4 flex justify-center`}
-    >
+    <main className="p-4 lg:p-8 pt-20 lg:pt-8">
       <div
         className={`w-full max-w-2xl ${
           theme === "dark"

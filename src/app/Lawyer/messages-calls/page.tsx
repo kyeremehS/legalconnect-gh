@@ -1,7 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MessageSquare, Search, MoreVertical, Send, Paperclip } from "lucide-react";
+import {
+  MessageSquare,
+  Search,
+  MoreVertical,
+  Send,
+  Paperclip,
+} from "lucide-react";
 import { useState } from "react";
 
 type Chat = {
@@ -40,7 +46,8 @@ const mockMessages: Message[] = [
   },
   {
     id: "2",
-    content: "Of course, I'd be happy to help. Could you provide more details about your situation?",
+    content:
+      "Of course, I'd be happy to help. Could you provide more details about your situation?",
     timestamp: "2:31 PM",
     sender: "user",
   },
@@ -54,8 +61,8 @@ export default function MessagesAndCalls() {
   const [newMessage, setNewMessage] = useState("");
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="flex-1 p-4 lg:p-8 mt-16 lg:mt-0">
+    <div className="min-h-screen overflow-y-auto bg-white">
+      <main className="p-4 lg:p-8 pt-20 lg:pt-8 ">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -64,15 +71,19 @@ export default function MessagesAndCalls() {
         >
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-[#1a1a1a]">Messages & Calls</h1>
-            <p className="text-[#4a4a4a] font-medium">Manage your communications</p>
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">
+              Messages & Calls
+            </h1>
+            <p className="text-[#4a4a4a] font-medium">
+              Manage your communications
+            </p>
           </div>
 
           {/* Main Chat Interface */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-[calc(100%-80px)]">
-            <div className="flex h-full">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-[calc(100%-80px)] ">
+            <div className="flex h-full flex-col lg:flex-row">
               {/* Chat List */}
-              <div className="w-[320px] border-r border-gray-200 flex flex-col">
+              <div className="md:w-[320px] w-full border-r border-gray-200 flex flex-col">
                 <div className="p-4 border-b border-gray-200 bg-white">
                   <div className="relative">
                     <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
@@ -95,18 +106,28 @@ export default function MessagesAndCalls() {
                         ${selectedChat?.id === chat.id ? "bg-[#fff8eb]" : ""}`}
                     >
                       <div className="w-12 h-12 rounded-full bg-[#d4a017] flex items-center justify-center">
-                        <span className="text-white font-semibold text-lg">{chat.name.charAt(0)}</span>
+                        <span className="text-white font-semibold text-lg">
+                          {chat.name.charAt(0)}
+                        </span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-baseline mb-1">
-                          <h3 className="font-semibold text-[#1a1a1a] truncate">{chat.name}</h3>
-                          <span className="text-xs font-medium text-[#4a4a4a]">{chat.timestamp}</span>
+                          <h3 className="font-semibold text-[#1a1a1a] truncate">
+                            {chat.name}
+                          </h3>
+                          <span className="text-xs font-medium text-[#4a4a4a]">
+                            {chat.timestamp}
+                          </span>
                         </div>
-                        <p className="text-sm text-[#4a4a4a] truncate">{chat.lastMessage}</p>
+                        <p className="text-sm text-[#4a4a4a] truncate">
+                          {chat.lastMessage}
+                        </p>
                       </div>
                       {chat.unreadCount && (
-                        <span className="bg-[#d4a017] text-white text-xs font-bold rounded-full 
-                          w-5 h-5 flex items-center justify-center">
+                        <span
+                          className="bg-[#d4a017] text-white text-xs font-bold rounded-full 
+                          w-5 h-5 flex items-center justify-center"
+                        >
                           {chat.unreadCount}
                         </span>
                       )}
@@ -121,9 +142,13 @@ export default function MessagesAndCalls() {
                   <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-[#d4a017] flex items-center justify-center">
-                        <span className="text-white font-semibold">{selectedChat.name.charAt(0)}</span>
+                        <span className="text-white font-semibold">
+                          {selectedChat.name.charAt(0)}
+                        </span>
                       </div>
-                      <h2 className="font-semibold text-[#1a1a1a]">{selectedChat.name}</h2>
+                      <h2 className="font-semibold text-[#1a1a1a]">
+                        {selectedChat.name}
+                      </h2>
                     </div>
                     <button className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]">
                       <MoreVertical className="w-5 h-5" />
@@ -136,18 +161,34 @@ export default function MessagesAndCalls() {
                         key={message.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`max-w-[70%] mb-4 ${message.sender === "user" ? "ml-auto" : "mr-auto"}`}
+                        className={`max-w-[70%] mb-4 ${
+                          message.sender === "user" ? "ml-auto" : "mr-auto"
+                        }`}
                       >
-                        <div className={`p-3 rounded-xl shadow-sm ${
-                          message.sender === "user"
-                            ? "bg-[#d4a017] text-white"
-                            : "bg-white border border-gray-200"
-                        }`}>
-                          <p className={message.sender === "user" ? "text-white" : "text-[#1a1a1a]"}>
+                        <div
+                          className={`p-3 rounded-xl shadow-sm ${
+                            message.sender === "user"
+                              ? "bg-[#d4a017] text-white"
+                              : "bg-white border border-gray-200"
+                          }`}
+                        >
+                          <p
+                            className={
+                              message.sender === "user"
+                                ? "text-white"
+                                : "text-[#1a1a1a]"
+                            }
+                          >
                             {message.content}
                           </p>
-                          <span className={`text-xs block text-right mt-1 
-                            ${message.sender === "user" ? "text-white/80" : "text-[#4a4a4a]"}`}>
+                          <span
+                            className={`text-xs block text-right mt-1 
+                            ${
+                              message.sender === "user"
+                                ? "text-white/80"
+                                : "text-[#4a4a4a]"
+                            }`}
+                          >
                             {message.timestamp}
                           </span>
                         </div>

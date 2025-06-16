@@ -52,7 +52,7 @@ export default function LawyerAppointments() {
 
   return (
     <div className="min-h-screen bg-white">
-      <main className="flex-1 p-4 lg:p-8 mt-16 lg:mt-0">
+      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

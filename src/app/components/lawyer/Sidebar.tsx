@@ -25,7 +25,7 @@ const navItems = [
   { name: "Videos", href: "/Lawyer/create-content", icon: FileText },
   { name: "Clients", href: "#", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
-  { name: "Settings", href: "#", icon: Settings },
+  { name: "Settings", href: "/Lawyer/settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -33,8 +33,8 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-50">
+      {/* Mobile Header */}
+      <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-30">
         <h1 className="text-xl font-bold text-[#d4a017]">LegalConnect</h1>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -49,42 +49,40 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Sidebar */}
-      <div
+      {/* Sidebar for both mobile and desktop */}
+      <aside
         className={`
-        fixed inset-y-0 left-0 transform 
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0 lg:static
-        transition-transform duration-300 ease-in-out
-        z-40
-      `}
+          fixed top-0 left-0 w-64 h-full bg-white border-r border-gray-200
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          z-40
+        `}
       >
-        <aside className="w-64 h-full bg-white border-r border-gray-200 shadow-sm flex flex-col">
-          <div className="p-6 border-b border-gray-100 hidden lg:block">
-            <h1 className="text-2xl font-bold text-[#d4a017]">LegalConnect</h1>
-          </div>
+        {/* Logo - hidden on mobile */}
+        <div className="p-6 border-b border-gray-100 hidden lg:block">
+          <h1 className="text-2xl font-bold text-[#d4a017]">LegalConnect</h1>
+        </div>
 
-          {/* Add padding top for mobile to account for header */}
-          <nav className="mt-16 lg:mt-6 px-3 flex-1 overflow-y-auto">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-[#fff8eb] hover:text-[#d4a017] transition-all group mb-1"
-              >
-                <item.icon className="w-5 h-5 group-hover:text-[#d4a017]" />
-                <span className="font-medium">{item.name}</span>
-              </Link>
-            ))}
-          </nav>
-        </aside>
-      </div>
+        {/* Navigation Links */}
+        <nav className="mt-16 lg:mt-6 px-3">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-[#fff8eb] hover:text-[#d4a017] transition-all group mb-1"
+            >
+              <item.icon className="w-5 h-5 group-hover:text-[#d4a017]" />
+              <span className="font-medium">{item.name}</span>
+            </Link>
+          ))}
+        </nav>
+      </aside>
 
-      {/* Overlay */}
+      {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}

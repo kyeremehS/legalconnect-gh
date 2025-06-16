@@ -1,19 +1,17 @@
 import React from 'react';
 import Sidebar from "@/app/components/lawyer/Sidebar";
 
-interface LawyerLayoutProps {
+export default function LawyerLayout({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-const LawyerLayout: React.FC<LawyerLayoutProps> = ({ children }) => {
+}) {
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="min-h-screen bg-white">
       <Sidebar />
-      <div className="flex-1">
+      <div className="lg:pl-64">
         {children}
       </div>
     </div>
   );
-};
-
-export default LawyerLayout;
+}
