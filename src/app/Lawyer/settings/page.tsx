@@ -51,8 +51,8 @@ export default function LawyerSettings() {
           : "bg-white text-gray-700"
       } rounded-lg shadow p-8`}
     >
-      <h1 className="text-3xl font-bold text-[#1A237E] mb-4">Page Title</h1>
-      <p className="text-gray-700 text-lg">Welcome to your stylish page!</p>
+      <h1 className="text-3xl font-bold text-[#1A237E] mb-4">Settings</h1>
+      <p className="text-gray-700 text-lg">Make changes to your account</p>
 
       {/* Theme Toggle */}
       <section className="mb-8">
