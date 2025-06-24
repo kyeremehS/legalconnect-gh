@@ -8,8 +8,8 @@ export default function LawyerLayout({
 }) {
   return (
     <div className="min-h-screen bg-white">
-      <Sidebar />
-      <div className="lg:pl-64">
+      
+      <div >
         {children}
       </div>
     </div>

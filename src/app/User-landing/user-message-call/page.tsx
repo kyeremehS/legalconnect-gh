@@ -1,98 +1,123 @@
 "use client";
-import React, { useState } from "react";
-
-// Example data types
-type Conversation = {
-  id: string;
-  lawyerName: string;
-  lastMessage: string;
-  unread: boolean;
-  timestamp: string;
-};
-
-type Message = {
-  id: string;
-  sender: "user" | "lawyer";
-  content: string;
-  timestamp: string;
-};
-
-type Call = {
-  id: string;
-  lawyerName: string;
-  scheduledAt: string;
-  status: "upcoming" | "completed" | "missed";
-};
-
-const exampleConversations: Conversation[] = [
-  {
-    id: "1",
-    lawyerName: "Jane Doe",
-    lastMessage: "Your documents are ready.",
-    unread: true,
-    timestamp: "2025-06-10 10:30",
-  },
-  {
-    id: "2",
-    lawyerName: "Kwame Mensah",
-    lastMessage: "Let's schedule a call.",
-    unread: false,
-    timestamp: "2025-06-09 15:20",
-  },
-];
-
-const exampleMessages: Message[] = [
-  {
-    id: "m1",
-    sender: "lawyer",
-    content: "Hello, how can I assist you today?",
-    timestamp: "2025-06-10 10:00",
-  },
-  {
-    id: "m2",
-    sender: "user",
-    content: "I need help with a land dispute.",
-    timestamp: "2025-06-10 10:01",
-  },
-];
-
-const exampleCalls: Call[] = [
-  {
-    id: "c1",
-    lawyerName: "Jane Doe",
-    scheduledAt: "2025-06-12 14:00",
-    status: "upcoming",
-  },
-  {
-    id: "c2",
-    lawyerName: "Kwame Mensah",
-    scheduledAt: "2025-06-08 11:00",
-    status: "completed",
-  },
-];
+import React, { useState, useRef, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useMessaging } from "../../../hooks/useMessaging";
+import { Phone, Video, Send, Paperclip, Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff } from "lucide-react";
+import { Chat, Message } from "../../../lib/messaging";
 
 export default function UserMessageCall() {
-  const [selectedConversation, setSelectedConversation] = useState<
-    string | null
-  >(exampleConversations[0]?.id || null);
-  const [messageInput, setMessageInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>(exampleMessages);
-  const [showCallModal, setShowCallModal] = useState(false);
+  const { user } = useUser();
+  const {
+    chats,
+    selectedChat,
+    messages,
+    isLoading,
+    error,
+    incomingCalls,
+    activeCall,
+    isInCall,
+    selectChat,
+    sendTextMessage,
+    markMessageAsRead,
+    startVoiceCall,
+    startVideoCall,
+    answerCall,
+    declineCall,
+    endCall,
+    toggleMute,
+    toggleVideo,
+    formatMessageTime,
+    getUnreadCountForChat,
+  } = useMessaging();
 
-  // Simulate sending a message
-  const handleSendMessage = () => {
+  const [messageInput, setMessageInput] = useState("");
+  const [showCallModal, setShowCallModal] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Mark messages as read when chat is selected
+  useEffect(() => {
+    if (selectedChat && messages.length > 0) {
+      messages.forEach((message) => {
+        if (!message.read && message.senderId !== user?.id) {
+          markMessageAsRead(message.id);
+        }
+      });
+    }
+  }, [selectedChat, messages, user?.id, markMessageAsRead]);
+
+  const handleSendMessage = async () => {
     if (!messageInput.trim()) return;
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `m${prev.length + 1}`,
-        sender: "user",
-        content: messageInput,
-        timestamp: new Date().toLocaleString(),
-      },
-    ]);
+    await sendTextMessage(messageInput);
     setMessageInput("");
   };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const handleStartVoiceCall = async () => {
+    if (!selectedChat) return;
+    
+    const otherParticipant = selectedChat.participants.find(p => p !== user?.id);
+    const otherParticipantName = otherParticipant ? selectedChat.participantNames[otherParticipant] : "Unknown";
+    
+    if (otherParticipant) {
+      await startVoiceCall(selectedChat.id, otherParticipant, otherParticipantName);
+    }
+  };
+
+  const handleStartVideoCall = async () => {
+    if (!selectedChat) return;
+    
+    const otherParticipant = selectedChat.participants.find(p => p !== user?.id);
+    const otherParticipantName = otherParticipant ? selectedChat.participantNames[otherParticipant] : "Unknown";
+    
+    if (otherParticipant) {
+      await startVideoCall(selectedChat.id, otherParticipant, otherParticipantName);
+    }
+  };
+
+  const handleToggleMute = async () => {
+    const muted = await toggleMute();
+    setIsMuted(muted);
+  };
+
+  const handleToggleVideo = async () => {
+    const videoOff = await toggleVideo();
+    setIsVideoOff(videoOff);
+  };
+
+  const getOtherParticipantName = (chat: Chat) => {
+    const otherParticipant = chat.participants.find(p => p !== user?.id);
+    return otherParticipant ? chat.participantNames[otherParticipant] : "Unknown";
+  };
+
+  const getLastMessagePreview = (chat: Chat) => {
+    if (!chat.lastMessage) return "No messages yet";
+    return chat.lastMessage.content.length > 50 
+      ? chat.lastMessage.content.substring(0, 50) + "..."
+      : chat.lastMessage.content;
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#F7F9FC] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-[#1A237E] mb-4">Please sign in to access messaging</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F7F9FC] flex flex-col md:flex-row">
@@ -104,93 +129,111 @@ export default function UserMessageCall() {
             Messages
           </h2>
           <ul>
-            {exampleConversations.map((conv) => (
+            {chats.map((chat) => {
+              const unreadCount = getUnreadCountForChat(chat);
+              const isSelected = selectedChat?.id === chat.id;
+              
+              return (
               <li
-                key={conv.id}
+                  key={chat.id}
                 className={`p-3 rounded cursor-pointer mb-2 transition-colors ${
-                  selectedConversation === conv.id
+                    isSelected
                     ? "bg-[#F9A825]/20 border-l-4 border-[#F9A825]"
                     : "hover:bg-gray-100"
                 }`}
-                onClick={() => setSelectedConversation(conv.id)}
-                aria-current={selectedConversation === conv.id}
+                  onClick={() => selectChat(chat)}
+                  aria-current={isSelected}
               >
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-[#1A237E]">
-                    {conv.lawyerName}
+                      {getOtherParticipantName(chat)}
+                    </span>
+                    {unreadCount > 0 && (
+                      <span className="ml-2 inline-block w-5 h-5 rounded-full bg-[#F9A825] text-white text-xs flex items-center justify-center">
+                        {unreadCount}
                   </span>
-                  {conv.unread && (
-                    <span
-                      className="ml-2 inline-block w-2 h-2 rounded-full bg-[#F9A825]"
-                      aria-label="unread message"
-                    ></span>
                   )}
                 </div>
                 <div className="text-sm text-gray-600 truncate">
-                  {conv.lastMessage}
+                    {getLastMessagePreview(chat)}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    {chat.lastMessageTime ? formatMessageTime(chat.lastMessageTime) : "No messages"}
                 </div>
-                <div className="text-xs text-gray-400">{conv.timestamp}</div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </section>
-        {/* Calls */}
+
+        {/* Incoming Calls */}
+        {incomingCalls.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-[#1A237E] mb-4">Calls</h2>
+            <h2 className="text-lg font-semibold text-[#1A237E] mb-4">Incoming Calls</h2>
           <ul>
-            {exampleCalls.map((call) => (
-              <li key={call.id} className="mb-3">
-                <div className="flex justify-between items-center">
+              {incomingCalls.map((call) => (
+                <li key={call.id} className="mb-3 p-3 bg-yellow-50 rounded border border-yellow-200">
+                  <div className="flex justify-between items-center mb-2">
                   <span className="font-medium text-[#1A237E]">
-                    {call.lawyerName}
+                      {call.callerName}
                   </span>
-                  <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      call.status === "upcoming"
-                        ? "bg-[#F9A825]/20 text-[#F9A825]"
-                        : call.status === "completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {call.status.charAt(0).toUpperCase() + call.status.slice(1)}
+                    <span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-700">
+                      {call.callType}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600">{call.scheduledAt}</div>
+                  <div className="flex gap-2">
+                    <button
+                      className="flex-1 bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition"
+                      onClick={() => answerCall(call)}
+                    >
+                      Answer
+                    </button>
+                    <button
+                      className="flex-1 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition"
+                      onClick={() => declineCall(call)}
+                    >
+                      Decline
+                    </button>
+                  </div>
               </li>
             ))}
           </ul>
-          <button
-            className="mt-2 w-full bg-[#F9A825] text-[#1A237E] font-semibold py-2 rounded hover:bg-[#F9A825]/90 transition"
-            onClick={() => setShowCallModal(true)}
-            aria-label="Request a call"
-          >
-            Request a Call
-          </button>
         </section>
+        )}
       </aside>
 
       {/* Main Panel: Chat */}
       <section className="flex-1 flex flex-col h-[80vh]">
-        {/* Lawyer Info Header */}
+        {selectedChat ? (
+          <>
+            {/* Chat Header */}
         <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
           <div>
             <h3 className="text-xl font-semibold text-[#1A237E]">
-              {exampleConversations.find((c) => c.id === selectedConversation)
-                ?.lawyerName || "Select a conversation"}
+                  {getOtherParticipantName(selectedChat)}
             </h3>
             <span className="text-sm text-gray-500">
-              {/* Placeholder for lawyer specialization or status */}
               Legal Practitioner
             </span>
           </div>
+              <div className="flex gap-2">
+                <button
+                  className="p-2 bg-[#F9A825] text-[#1A237E] rounded hover:bg-[#F9A825]/90 transition"
+                  onClick={handleStartVoiceCall}
+                  disabled={isInCall}
+                  title="Voice Call"
+                >
+                  <Phone className="w-5 h-5" />
+                </button>
           <button
-            className="bg-[#F9A825] text-[#1A237E] px-4 py-2 rounded font-medium hover:bg-[#F9A825]/90 transition"
-            onClick={() => setShowCallModal(true)}
-            aria-label="Schedule a call"
+                  className="p-2 bg-[#F9A825] text-[#1A237E] rounded hover:bg-[#F9A825]/90 transition"
+                  onClick={handleStartVideoCall}
+                  disabled={isInCall}
+                  title="Video Call"
           >
-            Schedule Call
+                  <Video className="w-5 h-5" />
           </button>
+              </div>
         </header>
 
         {/* Chat Messages */}
@@ -199,72 +242,117 @@ export default function UserMessageCall() {
             <div
               key={msg.id}
               className={`flex ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
+                    msg.senderId === user.id ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`max-w-xs px-4 py-2 rounded-lg shadow ${
-                  msg.sender === "user"
+                      msg.senderId === user.id
                     ? "bg-[#F9A825] text-[#1A237E] rounded-br-none"
                     : "bg-white text-gray-800 rounded-bl-none"
                 }`}
                 aria-label={
-                  msg.sender === "user" ? "Your message" : "Lawyer message"
+                      msg.senderId === user.id ? "Your message" : "Other message"
                 }
               >
                 <div className="text-sm">{msg.content}</div>
                 <div className="text-xs text-gray-500 mt-1 text-right">
-                  {msg.timestamp}
+                      {formatMessageTime(msg.timestamp)}
                 </div>
               </div>
             </div>
           ))}
+              <div ref={messagesEndRef} />
         </div>
 
         {/* Message Input */}
-        <form
-          className="bg-white border-t border-gray-200 p-4 flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSendMessage();
-          }}
-        >
+            <div className="bg-white border-t border-gray-200 p-4">
+              <div className="flex items-center gap-2">
+                <button className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <Paperclip className="w-5 h-5 text-gray-500" />
+                </button>
           <input
             type="text"
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
             placeholder="Type your message..."
-            className="flex-1 p-2 border rounded   text-gray-600 bg-focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
-            aria-label="Type your message"
+                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                  disabled={isLoading}
           />
           <button
-            type="submit"
-            className="bg-[#1A237E] text-white px-4 py-2 rounded hover:bg-[#3949ab] transition"
-            aria-label="Send message"
+                  onClick={handleSendMessage}
+                  disabled={isLoading || !messageInput.trim()}
+                  className="p-2 bg-[#F9A825] text-[#1A237E] rounded-lg hover:bg-[#F9A825]/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Send
+                  <Send className="w-5 h-5" />
           </button>
-        </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-[#F7F9FC]">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold text-[#1A237E] mb-2">
+                Select a conversation to start messaging
+              </h3>
+              <p className="text-gray-600">
+                Choose from your existing conversations or start a new one
+              </p>
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* Call Modal (simple placeholder) */}
-      {showCallModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4 text-[#1A237E]">
-              Request a Call
-            </h2>
-            <p className="mb-4 text-gray-700">
-              A lawyer will contact you at your preferred time.
-            </p>
+      {/* Active Call Overlay */}
+      {isInCall && activeCall && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-[#1A237E] mb-2">
+                {activeCall.callType === 'video' ? 'Video Call' : 'Voice Call'}
+              </h3>
+              <p className="text-gray-600">
+                {activeCall.callerId === user.id ? activeCall.receiverName : activeCall.callerName}
+              </p>
+            </div>
+            
+            <div className="flex justify-center gap-4 mb-6">
+              <button
+                onClick={handleToggleMute}
+                className={`p-3 rounded-full ${
+                  isMuted ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'
+                } hover:opacity-80 transition`}
+              >
+                {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+              </button>
+              
+              {activeCall.callType === 'video' && (
+                <button
+                  onClick={handleToggleVideo}
+                  className={`p-3 rounded-full ${
+                    isVideoOff ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'
+                  } hover:opacity-80 transition`}
+                >
+                  {isVideoOff ? <VideoOff className="w-6 h-6" /> : <VideoIcon className="w-6 h-6" />}
+                </button>
+              )}
+              
             <button
-              className="w-full bg-[#F9A825] text-[#1A237E] font-semibold py-2 rounded hover:bg-[#F9A825]/90 transition mb-2"
-              onClick={() => setShowCallModal(false)}
-              aria-label="Close call modal"
+                onClick={endCall}
+                className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
             >
-              Close
+                <PhoneOff className="w-6 h-6" />
             </button>
+            </div>
           </div>
+        </div>
+      )}
+
+      {/* Error Display */}
+      {error && (
+        <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+          {error}
         </div>
       )}
     </main>
