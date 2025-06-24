@@ -5,45 +5,48 @@ import React, { useState } from "react";
 
 // Example data types
 type Appointment = {
-  id: string;
-  userName: string;
+  id: number;
   date: string;
+  client: string;
   time: string;
-  type: "In-person" | "Phone" | "Video";
+  type: string;
   subject: string;
   status: "pending" | "confirmed" | "completed" | "canceled";
-  notes?: string;
+  notes: string; // Add this line
 };
 
 const exampleAppointments: Appointment[] = [
   {
-    id: "1",
-    userName: "Ama Mensah",
+    id: 1,
+    client: "Ama Mensah",
     date: "2025-06-15",
     time: "10:00",
     type: "Video",
     subject: "Land Dispute Consultation",
     status: "confirmed",
-    notes: "Bring all relevant documents.",
+    notes: "Bring all relevant documents",
   },
   {
-    id: "2",
-    userName: "Kwesi Boateng",
+    id: 2,
+    client: "Kwesi Boateng",
     date: "2025-06-16",
     time: "14:30",
     type: "In-person",
     subject: "Contract Review",
     status: "pending",
+    notes: "Discuss contract details and fees",
   },
 ];
 
 export default function LawyerAppointments() {
-  const [appointments, setAppointments] = useState<Appointment[]>(exampleAppointments);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [appointments, setAppointments] =
+    useState<Appointment[]>(exampleAppointments);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   // Handler for confirming/canceling appointments
-  const updateStatus = (id: string, status: Appointment["status"]) => {
+  const updateStatus = (id: number, status: Appointment["status"]) => {
     setAppointments((prev) =>
       prev.map((appt) => (appt.id === id ? { ...appt, status } : appt))
     );
@@ -63,13 +66,27 @@ export default function LawyerAppointments() {
           <div className="mb-8 bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center">
-                <svg className="w-8 h-8 text-[#d4a017]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg
+                  className="w-8 h-8 text-[#d4a017]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">Appointments</h1>
-                <p className="text-gray-600">Manage your upcoming consultations</p>
+                <h1 className="text-3xl font-bold text-gray-800">
+                  Appointments
+                </h1>
+                <p className="text-gray-600">
+                  Manage your upcoming consultations
+                </p>
               </div>
             </div>
           </div>
@@ -80,13 +97,27 @@ export default function LawyerAppointments() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Client</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Date</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Time</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Type</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Subject</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">Actions</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Client
+                    </th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Date
+                    </th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Time
+                    </th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Type
+                    </th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Subject
+                    </th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -97,19 +128,39 @@ export default function LawyerAppointments() {
                       animate={{ opacity: 1 }}
                       className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4">{appt.userName}</td>
-                      <td className="px-6 py-4">{appt.date}</td>
-                      <td className="px-6 py-4">{appt.time}</td>
-                      <td className="px-6 py-4">{appt.type}</td>
-                      <td className="px-6 py-4">{appt.subject}</td>
-                      <td className="px-6 py-4">
-                        <span className={`
+                      <td className="px-6 py-4 text-gray-600">{appt.client}</td>
+                      <td className="px-6 py-4 text-gray-600">{appt.date}</td>
+                      <td className="px-6 py-4 text-gray-600">{appt.time}</td>
+                      <td className="px-6 py-4 text-gray-600">{appt.type}</td>
+                      <td className="px-6 py-4 text-gray-600">
+                        {appt.subject}
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">
+                        <span
+                          className={`
                           px-3 py-1 rounded-full text-xs font-medium
-                          ${appt.status === "confirmed" ? "bg-green-100 text-green-700" : ""}
-                          ${appt.status === "pending" ? "bg-[#fff8eb] text-[#d4a017]" : ""}
-                          ${appt.status === "completed" ? "bg-blue-100 text-blue-700" : ""}
-                          ${appt.status === "canceled" ? "bg-red-100 text-red-700" : ""}
-                        `}>
+                          ${
+                            appt.status === "confirmed"
+                              ? "bg-green-100 text-green-700"
+                              : ""
+                          }
+                          ${
+                            appt.status === "pending"
+                              ? "bg-[#fff8eb] text-[#d4a017]"
+                              : ""
+                          }
+                          ${
+                            appt.status === "completed"
+                              ? "bg-blue-100 text-blue-700"
+                              : ""
+                          }
+                          ${
+                            appt.status === "canceled"
+                              ? "bg-red-100 text-red-700"
+                              : ""
+                          }
+                        `}
+                        >
                           {appt.status}
                         </span>
                       </td>
@@ -127,13 +178,17 @@ export default function LawyerAppointments() {
                           {appt.status === "pending" && (
                             <>
                               <button
-                                onClick={() => updateStatus(appt.id, "confirmed")}
+                                onClick={() =>
+                                  updateStatus(appt.id, "confirmed")
+                                }
                                 className="text-green-600 hover:text-green-700 transition-colors ml-2"
                               >
                                 Confirm
                               </button>
                               <button
-                                onClick={() => updateStatus(appt.id, "canceled")}
+                                onClick={() =>
+                                  updateStatus(appt.id, "canceled")
+                                }
                                 className="text-red-600 hover:text-red-700 transition-colors ml-2"
                               >
                                 Cancel
@@ -172,7 +227,7 @@ export default function LawyerAppointments() {
             </h2>
             <div className="mb-2 text-[#003049]">
               <span className="font-semibold">Client:</span>{" "}
-              {selectedAppointment.userName}
+              {selectedAppointment.client}
             </div>
             <div className="mb-2 text-[#003049]">
               <span className="font-semibold">Date:</span>{" "}

@@ -304,7 +304,11 @@ export default function MessagesAndCalls() {
 
                   <div className="p-4 bg-white border-t border-gray-200">
                     <div className="flex items-center gap-2 bg-[#fafafa] rounded-xl p-3 border border-gray-200">
-                      <button className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]">
+                      <button
+                        className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                        title="Attach file"
+                        aria-label="Attach file"
+                      >
                         <Paperclip className="w-5 h-5" />
                       </button>
                       <input

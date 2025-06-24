@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 import { motion } from "framer-motion";
 import { Video, Upload, ArrowLeft, Plus, PlayCircle } from "lucide-react";
 import { useState } from "react";
@@ -18,24 +18,27 @@ type VideoContent = {
   category: string;
 };
 
-const categories = ["Business Law", "Criminal Law", "Family Law", "Property Law"];
+const categories = [
+  "Business Law",
+  "Criminal Law",
+  "Family Law",
+  "Property Law",
+];
 
 export default function CreateContent() {
-  const [videos] = useState<VideoContent[]>(
-    [
-      {
-        id: "1",
-        title: "Understanding Business Contracts",
-        description: "A comprehensive guide to business contract basics",
-        duration: "15:30",
-        status: "published",
-        views: 245,
-        createdAt: "2024-02-15",
-        category: "Business Law"
-      },
-      // Add more mock data as needed
-    ]
-  );
+  const [videos] = useState<VideoContent[]>([
+    {
+      id: "1",
+      title: "Understanding Business Contracts",
+      description: "A comprehensive guide to business contract basics",
+      duration: "15:30",
+      status: "published",
+      views: 245,
+      createdAt: "2024-02-15",
+      category: "Business Law",
+    },
+    // Add more mock data as needed
+  ]);
 
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -51,15 +54,19 @@ export default function CreateContent() {
             {/* Navigation Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <Link 
+                <Link
                   href="/Lawyer"
                   className="inline-flex items-center gap-2 text-[#d4a017] hover:text-[#b17d25] mb-2 group transition-colors"
                 >
                   <ArrowLeft className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" />
                   <span className="font-medium">Back to Dashboard</span>
                 </Link>
-                <h1 className="text-3xl font-bold text-[#1a1a1a]">Content Studio</h1>
-                <p className="text-[#4a4a4a] font-medium">Create and manage your legal content</p>
+                <h1 className="text-3xl font-bold text-[#1a1a1a]">
+                  Content Studio
+                </h1>
+                <p className="text-[#4a4a4a] font-medium">
+                  Create and manage your legal content
+                </p>
               </div>
               <button className="flex items-center gap-2 bg-[#d4a017] text-white px-6 py-3 rounded-xl hover:bg-[#b17d25] transition-colors font-medium">
                 <Plus className="w-5 h-5" />
@@ -80,8 +87,12 @@ export default function CreateContent() {
                     <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center mx-auto mb-4">
                       <Upload className="w-8 h-8 text-[#d4a017]" />
                     </div>
-                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2">Quick Upload</h3>
-                    <p className="text-[#4a4a4a] mb-4">Drag and drop or browse files</p>
+                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-2">
+                      Quick Upload
+                    </h3>
+                    <p className="text-[#4a4a4a] mb-4">
+                      Drag and drop or browse files
+                    </p>
                     <button className="bg-[#d4a017] text-white px-6 py-2 rounded-lg hover:bg-[#b17d25] transition-colors font-medium">
                       Select Video
                     </button>
@@ -100,9 +111,12 @@ export default function CreateContent() {
                       "Use clear and concise titles",
                       "Add relevant thumbnails",
                       "Include detailed descriptions",
-                      "Tag with appropriate categories"
+                      "Tag with appropriate categories",
                     ].map((tip, index) => (
-                      <li key={index} className="flex items-center gap-3 text-[#4a4a4a]">
+                      <li
+                        key={index}
+                        className="flex items-center gap-3 text-[#4a4a4a]"
+                      >
                         <div className="w-2 h-2 rounded-full bg-[#d4a017]" />
                         {tip}
                       </li>
@@ -119,9 +133,11 @@ export default function CreateContent() {
                     <button
                       onClick={() => setActiveFilter("all")}
                       className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors
-                        ${activeFilter === "all" 
-                          ? "bg-[#fff8eb] text-[#d4a017] font-medium" 
-                          : "text-[#4a4a4a] hover:bg-gray-50"}`}
+                        ${
+                          activeFilter === "all"
+                            ? "bg-[#fff8eb] text-[#d4a017] font-medium"
+                            : "text-[#4a4a4a] hover:bg-gray-50"
+                        }`}
                     >
                       All Videos
                     </button>
@@ -130,9 +146,11 @@ export default function CreateContent() {
                         key={category}
                         onClick={() => setActiveFilter(category)}
                         className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors
-                          ${activeFilter === category 
-                            ? "bg-[#fff8eb] text-[#d4a017] font-medium" 
-                            : "text-[#4a4a4a] hover:bg-gray-50"}`}
+                          ${
+                            activeFilter === category
+                              ? "bg-[#fff8eb] text-[#d4a017] font-medium"
+                              : "text-[#4a4a4a] hover:bg-gray-50"
+                          }`}
                       >
                         {category}
                       </button>
@@ -161,10 +179,13 @@ export default function CreateContent() {
                           <h3 className="font-semibold text-[#1a1a1a] line-clamp-2">
                             {video.title}
                           </h3>
-                          <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap
-                            ${video.status === "published" 
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-700"}`}
+                          <span
+                            className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap
+                            ${
+                              video.status === "published"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
                           >
                             {video.status}
                           </span>

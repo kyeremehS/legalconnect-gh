@@ -17,7 +17,11 @@ import { useState } from "react";
 const navItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
   { name: "Appointments", href: "/Lawyer/appointments", icon: Calendar },
-  { name: "Messages & Calls", href: "/Lawyer/messages-calls", icon: MessageSquare },
+  {
+    name: "Messages & Calls",
+    href: "/Lawyer/messages-calls",
+    icon: MessageSquare,
+  },
   { name: "Videos", href: "/Lawyer/create-content", icon: FileText },
   { name: "Clients", href: "/lawyer/engagement", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
@@ -27,13 +31,23 @@ const navItems = [
 const statistics = [
   { label: "Active Cases", value: "24", change: "+2" },
   { label: "Pending Reviews", value: "12", change: "-3" },
-  { label: "Revenue", value: "$15,234", change: "+12%" }
+  { label: "Revenue", value: "$15,234", change: "+12%" },
 ];
 
 const recentActivities = [
   { id: 1, title: "New case assigned", time: "2 hours ago", type: "case" },
-  { id: 2, title: "Client meeting scheduled", time: "4 hours ago", type: "meeting" },
-  { id: 3, title: "Document review completed", time: "Yesterday", type: "document" }
+  {
+    id: 2,
+    title: "Client meeting scheduled",
+    time: "4 hours ago",
+    type: "meeting",
+  },
+  {
+    id: 3,
+    title: "Document review completed",
+    time: "Yesterday",
+    type: "document",
+  },
 ];
 
 const LawyerDashboard = () => {
@@ -117,7 +131,13 @@ const LawyerDashboard = () => {
                     <h3 className="text-3xl font-bold text-gray-800">
                       {stat.value}
                     </h3>
-                    <span className={`text-sm ${stat.change.startsWith("+") ? "text-green-500" : "text-red-500"}`}>
+                    <span
+                      className={`text-sm ${
+                        stat.change.startsWith("+")
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
                       {stat.change}
                     </span>
                   </div>
@@ -191,7 +211,9 @@ const LawyerDashboard = () => {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="text-gray-800 font-semibold">{activity.title}</p>
+                      <p className="text-gray-800 font-semibold">
+                        {activity.title}
+                      </p>
                       <p className="text-gray-500 text-sm">{activity.time}</p>
                     </div>
                   </motion.div>
@@ -203,7 +225,7 @@ const LawyerDashboard = () => {
 
         {/* Mobile Overlay */}
         {isMenuOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
