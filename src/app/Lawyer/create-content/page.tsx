@@ -39,8 +39,26 @@ export default function CreateContent() {
     },
     // Add more mock data as needed
   ]);
-
   const [activeFilter, setActiveFilter] = useState("all");
+
+  // Add a ref for the hidden file input
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Handler for the Select Video button
+  const handleSelectVideo = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // Handler for file selection
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // You can handle the selected file here (e.g., upload or preview)
+      alert(`Selected video: ${file.name}`);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -93,9 +111,21 @@ export default function CreateContent() {
                     <p className="text-[#4a4a4a] mb-4">
                       Drag and drop or browse files
                     </p>
-                    <button className="bg-[#d4a017] text-white px-6 py-2 rounded-lg hover:bg-[#b17d25] transition-colors font-medium">
+                    <button
+                      className="bg-[#d4a017] text-white px-6 py-2 rounded-lg hover:bg-[#b17d25] transition-colors font-medium"
+                      type="button"
+                      onClick={handleSelectVideo}
+                    >
                       Select Video
                     </button>
+                    {/* Hidden file input */}
+                    <input
+                      type="file"
+                      accept="video/*"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                    />
                   </div>
                 </motion.div>
 
