@@ -34,12 +34,11 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Header */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-30">
+      <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-50">
         <h1 className="text-xl font-bold text-[#d4a017]">LegalConnect</h1>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 hover:bg-gray-100 rounded-lg"
-          aria-label="Toggle menu"
         >
           {isOpen ? (
             <X className="w-6 h-6 text-gray-600" />
@@ -49,22 +48,20 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Sidebar for both mobile and desktop */}
+      {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 w-64 h-full bg-white border-r border-gray-200
+          fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           z-40
         `}
       >
-        {/* Logo - hidden on mobile */}
-        <div className="p-6 border-b border-gray-100 hidden lg:block">
+        <div className="h-16 items-center px-6 border-b border-gray-100 lg:flex hidden">
           <h1 className="text-2xl font-bold text-[#d4a017]">LegalConnect</h1>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="mt-16 lg:mt-6 px-3">
+        <nav className="mt-16 lg:mt-0 px-3">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -79,10 +76,10 @@ export default function Sidebar() {
         </nav>
       </aside>
 
-      {/* Mobile Overlay */}
+      {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20 lg:hidden"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
