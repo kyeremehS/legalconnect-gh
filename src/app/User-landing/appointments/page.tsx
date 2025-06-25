@@ -3,53 +3,84 @@
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 
-// Example data types
-type Appointment = {
+// Example lawyer data
+type Lawyer = {
   id: number;
-  date: string;
-  client: string;
-  time: string;
-  type: string;
-  subject: string;
-  status: "pending" | "confirmed" | "completed" | "canceled";
-  notes: string; // Add this line
+  name: string;
+  specialty: string;
+  email: string;
+  image: string;
 };
 
-const exampleAppointments: Appointment[] = [
+const availableLawyers: Lawyer[] = [
   {
     id: 1,
-    client: "Ama Mensah",
-    date: "2025-06-15",
-    time: "10:00",
-    type: "Video",
-    subject: "Land Dispute Consultation",
-    status: "confirmed",
-    notes: "Bring all relevant documents",
+    name: "Ama Kwarteng",
+    specialty: "Land Disputes",
+    email: "ama.kwarteng@legalconnect.com",
+    image: "/lawyer-icon.png",
   },
   {
     id: 2,
-    client: "Kwesi Boateng",
-    date: "2025-06-16",
-    time: "14:30",
-    type: "In-person",
-    subject: "Contract Review",
-    status: "pending",
-    notes: "Discuss contract details and fees",
+    name: "Kwesi Boateng",
+    specialty: "Contract Law",
+    email: "kwesi.boateng@legalconnect.com",
+    image: "/lawyer-icon.png",
+  },
+  {
+    id: 3,
+    name: "Akosua Mensah",
+    specialty: "Family Law",
+    email: "akosua.mensah@legalconnect.com",
+    image: "/lawyer-icon.png",
   },
 ];
 
-export default function LawyerAppointments() {
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(exampleAppointments);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(null);
-  const [showModal, setShowModal] = useState(false);
+// Appointment type
+type Appointment = {
+  id: number;
+  lawyer: Lawyer;
+  date: string;
+  time: string;
+  type: string;
+  subject: string;
+  status: "pending" | "confirmed";
+};
 
-  // Handler for confirming/canceling appointments
-  const updateStatus = (id: number, status: Appointment["status"]) => {
-    setAppointments((prev) =>
-      prev.map((appt) => (appt.id === id ? { ...appt, status } : appt))
-    );
+export default function UserBookAppointment() {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
+
+  // Form state
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [apptType, setApptType] = useState("Video");
+  const [subject, setSubject] = useState("");
+
+  const openModal = (lawyer: Lawyer) => {
+    setSelectedLawyer(lawyer);
+    setShowModal(true);
+    setDate("");
+    setTime("");
+    setApptType("Video");
+    setSubject("");
+  };
+
+  const handleBook = () => {
+    if (!selectedLawyer || !date || !time || !subject) return;
+    setAppointments((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        lawyer: selectedLawyer,
+        date,
+        time,
+        type: apptType,
+        subject,
+        status: "pending",
+      },
+    ]);
     setShowModal(false);
   };
 
@@ -60,7 +91,7 @@ export default function LawyerAppointments() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="max-w-7xl mx-auto"
+          className="max-w-4xl mx-auto"
         >
           {/* Header */}
           <div className="mb-8 bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
@@ -82,210 +113,191 @@ export default function LawyerAppointments() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-800">
-                  Appointments
+                  Book an Appointment
                 </h1>
                 <p className="text-gray-600">
-                  Manage your upcoming consultations
+                  Choose a lawyer and schedule your consultation
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Appointments Table */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Client
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Date
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Time
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Type
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Subject
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {appointments.map((appt) => (
-                    <motion.tr
-                      key={appt.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-6 py-4 text-gray-600">{appt.client}</td>
-                      <td className="px-6 py-4 text-gray-600">{appt.date}</td>
-                      <td className="px-6 py-4 text-gray-600">{appt.time}</td>
-                      <td className="px-6 py-4 text-gray-600">{appt.type}</td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {appt.subject}
-                      </td>
-                      <td className="px-6 py-4 text-gray-600">
-                        <span
-                          className={`
-                          px-3 py-1 rounded-full text-xs font-medium
-                          ${
-                            appt.status === "confirmed"
-                              ? "bg-green-100 text-green-700"
-                              : ""
-                          }
-                          ${
-                            appt.status === "pending"
-                              ? "bg-[#fff8eb] text-[#d4a017]"
-                              : ""
-                          }
-                          ${
-                            appt.status === "completed"
-                              ? "bg-blue-100 text-blue-700"
-                              : ""
-                          }
-                          ${
-                            appt.status === "canceled"
-                              ? "bg-red-100 text-red-700"
-                              : ""
-                          }
-                        `}
-                        >
-                          {appt.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedAppointment(appt);
-                              setShowModal(true);
-                            }}
-                            className="text-[#d4a017] hover:text-[#b17d25] transition-colors"
-                          >
-                            View
-                          </button>
-                          {appt.status === "pending" && (
-                            <>
-                              <button
-                                onClick={() =>
-                                  updateStatus(appt.id, "confirmed")
-                                }
-                                className="text-green-600 hover:text-green-700 transition-colors ml-2"
-                              >
-                                Confirm
-                              </button>
-                              <button
-                                onClick={() =>
-                                  updateStatus(appt.id, "canceled")
-                                }
-                                className="text-red-600 hover:text-red-700 transition-colors ml-2"
-                              >
-                                Cancel
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Available Lawyers */}
+          <div className="mb-10">
+            <h2 className="text-xl font-semibold text-[#d4a017] mb-4">
+              Available Lawyers
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {availableLawyers.map((lawyer) => (
+                <motion.div
+                  key={lawyer.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: lawyer.id * 0.07 }}
+                  className="bg-[#fff8eb] border border-[#d4a017] rounded-2xl p-6 flex flex-col items-center shadow"
+                >
+                  <img
+                    src={lawyer.image}
+                    alt={lawyer.name}
+                    className="w-16 h-16 rounded-full mb-3 object-cover"
+                  />
+                  <div className="font-bold text-[#1a1a1a] text-lg mb-1">
+                    {lawyer.name}
+                  </div>
+                  <div className="text-[#d4a017] font-medium mb-1">
+                    {lawyer.specialty}
+                  </div>
+                  <div className="text-gray-500 text-sm mb-4">
+                    {lawyer.email}
+                  </div>
+                  <button
+                    className="bg-[#d4a017] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#b17d25] transition"
+                    onClick={() => openModal(lawyer)}
+                  >
+                    Book Appointment
+                  </button>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </motion.div>
-      </main>
 
-      {/* Modal - Updated styling */}
-      {showModal && selectedAppointment && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => setShowModal(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.95 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.95 }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full"
-          >
-            <h2 className="text-xl font-bold mb-4 text-[#1A237E]">
-              Appointment Details
-            </h2>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Client:</span>{" "}
-              {selectedAppointment.client}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Date:</span>{" "}
-              {selectedAppointment.date}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Time:</span>{" "}
-              {selectedAppointment.time}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Type:</span>{" "}
-              {selectedAppointment.type}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Subject:</span>{" "}
-              {selectedAppointment.subject}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Status:</span>{" "}
-              <span className="capitalize">{selectedAppointment.status}</span>
-            </div>
-            {selectedAppointment.notes && (
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Notes:</span>{" "}
-                {selectedAppointment.notes}
+          {/* User's Booked Appointments */}
+          {appointments.length > 0 && (
+            <div className="mb-10">
+              <h2 className="text-xl font-semibold text-[#d4a017] mb-4">
+                Your Appointments
+              </h2>
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-100">
+                      <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                        Lawyer
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                        Date
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                        Time
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                        Type
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                        Subject
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-gray-600">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {appointments.map((appt) => (
+                      <tr key={appt.id} className="border-b border-gray-100">
+                        <td className="px-6 py-4 text-gray-700 font-medium">
+                          {appt.lawyer.name}
+                        </td>
+                        <td className="px-6 py-4 text-gray-600">{appt.date}</td>
+                        <td className="px-6 py-4 text-gray-600">{appt.time}</td>
+                        <td className="px-6 py-4 text-gray-600">{appt.type}</td>
+                        <td className="px-6 py-4 text-gray-600">{appt.subject}</td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              appt.status === "confirmed"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-[#fff8eb] text-[#d4a017]"
+                            }`}
+                          >
+                            {appt.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-            <div className="flex gap-4 mt-6 justify-end">
-              <button
-                className="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded hover:bg-gray-300 transition"
-                onClick={() => setShowModal(false)}
+            </div>
+          )}
+
+          {/* Booking Modal */}
+          {showModal && selectedLawyer && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setShowModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full"
               >
-                Close
-              </button>
-              {selectedAppointment.status === "pending" && (
-                <>
-                  <button
-                    className="bg-green-600 text-white font-semibold px-4 py-2 rounded hover:bg-green-700 transition"
-                    onClick={() =>
-                      updateStatus(selectedAppointment.id, "confirmed")
-                    }
+                <h2 className="text-xl font-bold mb-4 text-[#d4a017]">
+                  Book Appointment with {selectedLawyer.name}
+                </h2>
+                <div className="mb-3">
+                  <label className="block text-gray-700 mb-1">Date</label>
+                  <input
+                    type="date"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-gray-700 mb-1">Time</label>
+                  <input
+                    type="time"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-gray-700 mb-1">Type</label>
+                  <select
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    value={apptType}
+                    onChange={(e) => setApptType(e.target.value)}
                   >
-                    Confirm
-                  </button>
+                    <option value="Video">Video</option>
+                    <option value="In-person">In-person</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-gray-700 mb-1">Subject</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="e.g. Contract Review"
+                  />
+                </div>
+                <div className="flex gap-4 mt-6 justify-end">
                   <button
-                    className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 transition"
-                    onClick={() =>
-                      updateStatus(selectedAppointment.id, "canceled")
-                    }
+                    className="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded hover:bg-gray-300 transition"
+                    onClick={() => setShowModal(false)}
                   >
                     Cancel
                   </button>
-                </>
-              )}
-            </div>
-          </motion.div>
+                  <button
+                    className="bg-[#d4a017] text-white font-semibold px-4 py-2 rounded hover:bg-[#b17d25] transition"
+                    onClick={handleBook}
+                    disabled={!date || !time || !subject}
+                  >
+                    Book
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
         </motion.div>
-      )}
+      </main>
     </div>
   );
 }

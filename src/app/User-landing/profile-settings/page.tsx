@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 
 export default function ProfileSettings() {
-  // Example state for form fields
   const [profile, setProfile] = useState({
     name: "John Doe",
     email: "johndoe@email.com",
@@ -25,7 +24,6 @@ export default function ProfileSettings() {
     confirm: false,
   });
 
-  // Handlers for form fields
   const handleProfileChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -57,20 +55,18 @@ export default function ProfileSettings() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    // Save logic here
     alert("Profile updated!");
   };
 
   const handlePasswordSave = (e: React.FormEvent) => {
     e.preventDefault();
-    // Password change logic here
     alert("Password changed!");
   };
 
   return (
-    <main className="min-h-screen bg-[#F7F9FC] py-8 px-4 flex justify-center">
-      <div className="w-full max-w-2xl bg-white rounded-lg shadow p-8">
-        <h1 className="text-3xl font-bold text-[#1A237E] mb-6 text-center">
+    <main className="min-h-screen bg-[#fafafa] py-8 px-4 flex justify-center">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow p-8 border border-[#d4a017]/20">
+        <h1 className="text-3xl font-bold text-[#d4a017] mb-6 text-center">
           Profile Settings
         </h1>
         {/* Profile Info */}
@@ -78,9 +74,9 @@ export default function ProfileSettings() {
           <div className="flex flex-col items-center mb-6">
             <label htmlFor="avatar" className="cursor-pointer">
               <img
-                src={profile.avatar || "/default-avatar.png"}
+                src={profile.avatar || "/lawyer-icon.png"}
                 alt="Profile avatar"
-                className="w-24 h-24 rounded-full object-cover border-2 border-[#F9A825] text-gray-700 mb-2"
+                className="w-24 h-24 rounded-full object-cover border-4 border-[#d4a017] mb-2"
               />
               <input
                 id="avatar"
@@ -98,7 +94,7 @@ export default function ProfileSettings() {
             <div>
               <label
                 htmlFor="name"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Full Name
               </label>
@@ -108,14 +104,14 @@ export default function ProfileSettings() {
                 type="text"
                 value={profile.name}
                 onChange={handleProfileChange}
-                className="w-full p-2 border rounded  text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                 required
               />
             </div>
             <div>
               <label
                 htmlFor="email"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Email Address
               </label>
@@ -125,14 +121,14 @@ export default function ProfileSettings() {
                 type="email"
                 value={profile.email}
                 onChange={handleProfileChange}
-                className="w-full p-2 border rounded  text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                 required
               />
             </div>
             <div>
               <label
                 htmlFor="phone"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Phone Number
               </label>
@@ -142,13 +138,13 @@ export default function ProfileSettings() {
                 type="tel"
                 value={profile.phone}
                 onChange={handleProfileChange}
-                className="w-full p-2 border rounded  text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
               />
             </div>
             <div>
               <label
                 htmlFor="dob"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Date of Birth
               </label>
@@ -158,13 +154,13 @@ export default function ProfileSettings() {
                 type="date"
                 value={profile.dob}
                 onChange={handleProfileChange}
-                className="w-full p-2 border rounded text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
               />
             </div>
             <div>
               <label
                 htmlFor="gender"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Gender
               </label>
@@ -173,7 +169,7 @@ export default function ProfileSettings() {
                 name="gender"
                 value={profile.gender}
                 onChange={handleProfileChange}
-                className="w-full p-2 border rounded text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
               >
                 <option value="">Select</option>
                 <option value="male">Male</option>
@@ -184,7 +180,7 @@ export default function ProfileSettings() {
           </div>
           {/* Notification Preferences */}
           <div>
-            <h2 className="text-lg font-semibold text-[#1A237E] mb-2">
+            <h2 className="text-lg font-semibold text-[#d4a017] mb-2">
               Notification Preferences
             </h2>
             <div className="flex flex-col gap-2">
@@ -194,7 +190,7 @@ export default function ProfileSettings() {
                   name="emailNotifications"
                   checked={profile.emailNotifications}
                   onChange={handleProfileChange}
-                  className="accent-[#F9A825]  mr-2"
+                  className="accent-[#d4a017] mr-2"
                 />
                 Email Notifications
               </label>
@@ -204,7 +200,7 @@ export default function ProfileSettings() {
                   name="smsNotifications"
                   checked={profile.smsNotifications}
                   onChange={handleProfileChange}
-                  className="accent-[#F9A825] mr-2"
+                  className="accent-[#d4a017] mr-2"
                 />
                 SMS Notifications
               </label>
@@ -214,7 +210,7 @@ export default function ProfileSettings() {
                   name="pushNotifications"
                   checked={profile.pushNotifications}
                   onChange={handleProfileChange}
-                  className="accent-[#F9A825] text-gray-700 mr-2"
+                  className="accent-[#d4a017] mr-2"
                 />
                 Push Notifications
               </label>
@@ -223,13 +219,13 @@ export default function ProfileSettings() {
           <div className="flex gap-4 justify-end">
             <button
               type="submit"
-              className="bg-[#F9A825] text-[#1A237E] font-semibold px-6 py-2 rounded hover:bg-[#F9A825]/90 transition"
+              className="bg-[#d4a017] text-white font-semibold px-6 py-2 rounded-lg hover:bg-[#b17d25] transition"
             >
               Save Changes
             </button>
             <button
               type="reset"
-              className="bg-gray-200 text-gray-700 font-semibold px-6 py-2 rounded hover:bg-gray-300 transition"
+              className="bg-gray-200 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-300 transition"
               onClick={() => window.location.reload()}
             >
               Cancel
@@ -241,7 +237,7 @@ export default function ProfileSettings() {
           onSubmit={handlePasswordSave}
           className="mt-10 space-y-4 border-t pt-8"
         >
-          <h2 className="text-lg font-semibold text-[#1A237E] mb-2">
+          <h2 className="text-lg font-semibold text-[#d4a017] mb-2">
             Change Password
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -249,7 +245,7 @@ export default function ProfileSettings() {
             <div>
               <label
                 htmlFor="current"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Current Password
               </label>
@@ -260,12 +256,12 @@ export default function ProfileSettings() {
                   type={showPassword.current ? "text" : "password"}
                   value={passwords.current}
                   onChange={handlePasswordChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-[#03071e]"
+                  className="w-full p-2 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] text-[#03071e]"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-[#1A237E] focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-[#d4a017] focus:outline-none"
                   onClick={() =>
                     setShowPassword((prev) => ({
                       ...prev,
@@ -285,7 +281,7 @@ export default function ProfileSettings() {
             <div>
               <label
                 htmlFor="new"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 New Password
               </label>
@@ -296,12 +292,12 @@ export default function ProfileSettings() {
                   type={showPassword.new ? "text" : "password"}
                   value={passwords.new}
                   onChange={handlePasswordChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                  className="w-full p-2 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-[#1A237E] focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-[#d4a017] focus:outline-none"
                   onClick={() =>
                     setShowPassword((prev) => ({
                       ...prev,
@@ -321,7 +317,7 @@ export default function ProfileSettings() {
             <div>
               <label
                 htmlFor="confirm"
-                className="block font-medium text-[#1A237E] mb-1"
+                className="block font-medium text-[#d4a017] mb-1"
               >
                 Confirm New Password
               </label>
@@ -332,12 +328,12 @@ export default function ProfileSettings() {
                   type={showPassword.confirm ? "text" : "password"}
                   value={passwords.confirm}
                   onChange={handlePasswordChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#F9A825]"
+                  className="w-full p-2 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-[#1A237E] focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-[#d4a017] focus:outline-none"
                   onClick={() =>
                     setShowPassword((prev) => ({
                       ...prev,
@@ -357,7 +353,7 @@ export default function ProfileSettings() {
           <div className="flex gap-4 justify-end">
             <button
               type="submit"
-              className="bg-[#1A237E] text-white font-semibold px-6 py-2 rounded hover:bg-[#3949ab] transition"
+              className="bg-[#d4a017] text-white font-semibold px-6 py-2 rounded-lg hover:bg-[#b17d25] transition"
             >
               Change Password
             </button>
@@ -369,7 +365,7 @@ export default function ProfileSettings() {
             Danger Zone
           </h2>
           <button
-            className="bg-red-600 text-white font-semibold px-6 py-2 rounded hover:bg-red-700 transition"
+            className="bg-red-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-red-700 transition"
             onClick={() =>
               alert("Account deletion not implemented in this demo.")
             }
