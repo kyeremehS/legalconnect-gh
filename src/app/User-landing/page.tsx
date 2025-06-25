@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Sidebar from "../components/lawyer/Sidebar";
 import { motion } from "framer-motion";
+import ChatModal from "../components/ChatModal";
+import { useState } from "react";
 
 const features = [
   {
@@ -42,15 +44,11 @@ const features = [
     href: "/User-landing/user-education",
     icon: "/law.png",
   },
-  {
-    name: "Legal Chat Bot",
-    description: "Ask legal questions and get instant answers.",
-    href: "/legal-chatbot",
-    icon: "/chat-bot.png",
-  },
-];
 
+];
 export default function UserDashboard() {
+  const [showChatModal, setShowChatModal] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
       <Sidebar role="user" />
@@ -143,22 +141,22 @@ export default function UserDashboard() {
           className="mb-10"
         >
           <h2 className="text-xl font-bold mb-2 text-[#1a1a1a]">
-            Ask the Legal Chat Bot
+            Quick Legal Chat Bot
           </h2>
-          <form className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Type your legal question..."
-              className="flex-1 border border-[#d4a017] rounded-lg px-4 py-2 focus:outline-none focus:border-[#d4a017] text-[#1a1a1a] bg-[#fff8eb]"
-            />
-            <button
-              type="submit"
-              className="bg-[#d4a017] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#b17d25] transition"
-            >
-              Ask
-            </button>
-          </form>
+          <p className="text-[#4a4a4a] mb-4">
+            Need quick legal advice? Chat with our AI-powered legal assistant.
+          </p>
+        <ChatModal isOpen={showChatModal} onClose={() => setShowChatModal(false)} />
         </motion.section>
+        <button
+
+          className="fixed bottom-6 right-6 z-50 bg-[#d4a017] hover:bg-[#b17d25] text-white rounded-full shadow-lg p-4 flex items-center gap-2 transition"
+          onClick={() => setShowChatModal(true)}
+          aria-label="Open Legal Chat Bot"
+        >
+          <img src="/chat-bot.png" alt="Chat Bot" className="w-6 h-6" />
+          <span className="hidden md:inline font-semibold">Chat Bot</span>
+        </button>
       </main>
     </div>
   );
