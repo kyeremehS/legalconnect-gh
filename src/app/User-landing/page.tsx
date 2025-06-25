@@ -97,7 +97,10 @@ export default function UserDashboard() {
                 <p> Settings</p>
               </button>
             </Link>
-            <button className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
+            <button
+              title="button"
+              className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
+            >
               <UserButton />
             </button>
           </div>
