@@ -1,137 +1,236 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { Heart, MessageCircle, Share } from "lucide-react";
+import { METHODS } from "node:http";
 
-// Example categories and videos
 const categories = [
-  {
-    label: "Land Law",
-    description: "Videos about land rights, disputes, and property law.",
-    videos: [
-      {
-        title: "Understanding Land Ownership in Ghana",
-        url: "https://www.youtube.com/embed/your_land_video_id",
-        lawyer: "Ama Kwarteng, Esq.",
-      },
-      {
-        title: "Resolving Land Disputes",
-        url: "https://www.youtube.com/embed/your_land_dispute_video_id",
-        lawyer: "Kwame Mensah, Esq.",
-      },
-    ],
-  },
-  {
-    label: "Family Law",
-    description:
-      "Videos about marriage, divorce, child custody, and related issues.",
-    videos: [
-      {
-        title: "Marriage and Divorce Laws",
-        url: "https://www.youtube.com/embed/your_family_video_id",
-        lawyer: "Abena Owusu, Esq.",
-      },
-      {
-        title: "Child Custody Explained",
-        url: "https://www.youtube.com/embed/your_custody_video_id",
-        lawyer: "Kojo Asante, Esq.",
-      },
-    ],
-  },
-  {
-    label: "Employment Law",
-    description:
-      "Videos about employee rights, contracts, and workplace issues.",
-    videos: [
-      {
-        title: "Your Rights as an Employee",
-        url: "https://www.youtube.com/embed/your_employment_video_id",
-        lawyer: "Efua Boateng, Esq.",
-      },
-      {
-        title: "Understanding Employment Contracts",
-        url: "https://www.youtube.com/embed/your_contract_video_id",
-        lawyer: "Yaw Adu, Esq.",
-      },
-    ],
-  },
+	{
+		label: "Land Law",
+		description: "Videos about land rights, disputes, and property law.",
+		videos: [
+			{
+				title: "Understanding Land Ownership in Ghana",
+				url: "https://www.youtube.com/embed/your_land_video_id",
+				lawyer: "Ama Kwarteng, Esq.",
+			},
+			{
+				title: "Resolving Land Disputes",
+				url: "https://www.youtube.com/embed/your_land_dispute_video_id",
+				lawyer: "Kwame Mensah, Esq.",
+			},
+		],
+	},
+	{
+		label: "Family Law",
+		description:
+			"Videos about marriage, divorce, child custody, and related issues.",
+		videos: [
+			{
+				title: "Marriage and Divorce Laws",
+				url: "https://www.youtube.com/embed/your_family_video_id",
+				lawyer: "Abena Owusu, Esq.",
+			},
+			{
+				title: "Child Custody Explained",
+				url: "https://www.youtube.com/embed/your_custody_video_id",
+				lawyer: "Kojo Asante, Esq.",
+			},
+		],
+	},
+	{
+		label: "Employment Law",
+		description:
+			"Videos about employee rights, contracts, and workplace issues.",
+		videos: [
+			{
+				title: "Your Rights as an Employee",
+				url: "https://www.youtube.com/embed/your_employment_video_id",
+				lawyer: "Efua Boateng, Esq.",
+			},
+			{
+				title: "Understanding Employment Contracts",
+				url: "https://www.youtube.com/embed/your_contract_video_id",
+				lawyer: "Yaw Adu, Esq.",
+			},
+		],
+	},
 ];
 
+type VideoItem = {
+	title: string;
+	url: string;
+	lawyer: string;
+	category: string;
+};
+
+function flattenVideos() {
+	const videos: VideoItem[] = [];
+	for (const cat of categories) {
+		for (const vid of cat.videos) {
+			videos.push({ ...vid, category: cat.label });
+		}
+	}
+	return videos;
+}
+
 export default function LegalContentPage() {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0].label);
+	const videos = flattenVideos();
+	const [current, setCurrent] = useState(0);
+	const [likes, setLikes] = useState(Array(videos.length).fill(0));
+	const [comments, setComments] = useState(Array(videos.length).fill(0));
+	const [shares, setShares] = useState(Array(videos.length).fill(0));
+	const touchStartY = useRef<number | null>(null);
 
-  const activeCategory = categories.find(
-    (cat) => cat.label === selectedCategory
-  );
+	// Handle scroll/swipe (for desktop and mobile)
+	const handleWheel = (e: React.WheelEvent) => {
+		if (e.deltaY > 0 && current < videos.length - 1) {
+			setCurrent((c) => c + 1);
+		} else if (e.deltaY < 0 && current > 0) {
+			setCurrent((c) => c - 1);
+		}
+	};
 
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-[#F7F9FC] via-[#e3e8f7] to-[#cfd8fd] py-8 px-2 md:px-6 flex flex-col items-center">
-      {/* Hero Section */}
-      <section className="w-full max-w-4xl text-center mb-8 md:mb-12 px-2">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-[#1A237E] mb-4 drop-shadow-lg">
-          Legal Video Library
-        </h1>
-        <p className="text-base md:text-xl text-gray-700 mb-6">
-          Watch educational videos categorized by legal issue and lawyer
-          expertise.
-        </p>
-      </section>
+	// Touch swipe for mobile
+	const handleTouchStart = (e: React.TouchEvent) => {
+		touchStartY.current = e.touches[0].clientY;
+	};
+	const handleTouchEnd = (e: React.TouchEvent) => {
+		if (touchStartY.current === null) return;
+		const touchEndY = e.changedTouches[0].clientY;
+		if (touchStartY.current - touchEndY > 50 && current < videos.length - 1) {
+			setCurrent((c) => c + 1);
+		} else if (touchEndY - touchStartY.current > 50 && current > 0) {
+			setCurrent((c) => c - 1);
+		}
+		touchStartY.current = null;
+	};
 
-      {/* Category Tabs */}
-      <nav className="w-full max-w-3xl flex flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-10">
-        {categories.map((cat) => (
-          <button
-            key={cat.label}
-            onClick={() => setSelectedCategory(cat.label)}
-            className={`px-4 md:px-6 py-2 rounded-full font-semibold shadow transition
-              ${
-                selectedCategory === cat.label
-                  ? "bg-[#F9A825] text-[#1A237E]"
-                  : "bg-white text-[#1A237E] border border-[#F9A825] hover:bg-[#f9a825]/10"
-              }`}
-            aria-current={selectedCategory === cat.label ? "page" : undefined}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </nav>
+	// Optional: Keyboard navigation
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "ArrowDown" && current < videos.length - 1) {
+			setCurrent((c) => c + 1);
+		} else if (e.key === "ArrowUp" && current > 0) {
+			setCurrent((c) => c - 1);
+		}
+	};
 
-      {/* Category Description */}
-      <section className="w-full max-w-3xl text-center mb-6 md:mb-8 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-[#1A237E] mb-2">
-          {activeCategory?.label}
-        </h2>
-        <p className="text-gray-700">{activeCategory?.description}</p>
-      </section>
+	// Action handlers
+	const handleLike = () => {
+		setLikes((prev) => {
+			const arr = [...prev];
+			arr[current]++;
+			return arr;
+		});
+	};
+	const handleComment = () => {
+		setComments((prev) => {
+			const arr = [...prev];
+			arr[current]++;
+			return arr;
+		});
+	};
+	const handleShare = () => {
+		setShares((prev) => {
+			const arr = [...prev];
+			arr[current]++;
+			return arr;
+		});
+		alert("Link copied to clipboard!");
+	};
 
-      {/* Videos Grid */}
-      <section className="w-full max-w-6xl flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
-          {activeCategory?.videos.map((video, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-lg p-4 md:p-6 flex flex-col items-center hover:shadow-2xl transition"
-            >
-              <div className="w-full aspect-video mb-3 rounded overflow-hidden flex justify-center items-center">
-                <iframe
-                  src={video.url}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-48 md:h-56 rounded"
-                />
-              </div>
-              <h3 className="text-base md:text-lg font-bold text-[#1A237E] mb-1 text-center">
-                {video.title}
-              </h3>
-              <span className="text-xs md:text-sm text-gray-500 mb-1 text-center block">
-                By {video.lawyer}
-              </span>
-              <span className="inline-block bg-[#F9A825]/20 text-[#1A237E] px-3 py-1 rounded text-xs font-semibold">
-                {activeCategory.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-    </main>
-  );
+	return (
+		<main
+			className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center"
+			tabIndex={0}
+			onKeyDown={handleKeyDown}
+		>
+			<div
+				className="relative w-full h-[80vh] max-w-md mx-auto overflow-hidden rounded-2xl shadow-lg bg-black"
+				onWheel={handleWheel}
+				onTouchStart={handleTouchStart}
+				onTouchEnd={handleTouchEnd}
+				style={{ scrollSnapType: "y mandatory" }}
+			>
+				{videos.map((video, idx) => (
+					<div
+						key={idx}
+						className={`absolute inset-0 transition-all duration-500 ${
+							idx === current
+								? "opacity-100 z-10"
+								: "opacity-0 z-0 pointer-events-none"
+						}`}
+						style={{
+							scrollSnapAlign: "start",
+							background: "#000",
+							display: idx === current ? "block" : "none",
+						}}
+					>
+						<div className="flex flex-col h-full">
+							<div className="flex-1 flex items-center justify-center">
+								<iframe
+									src={video.url}
+									title={video.title}
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowFullScreen
+									className="w-full h-[50vh] md:h-[60vh] rounded-xl bg-black"
+								/>
+							</div>
+							<div className="flex justify-between items-end px-4 pb-6 pt-2">
+								{/* Video Info */}
+								<div>
+									<div className="text-white font-bold text-lg mb-1">
+										{video.title}
+									</div>
+									<div className="text-[#d4a017] font-semibold text-sm mb-1">
+										{video.lawyer}
+									</div>
+									<div className="text-xs text-white/80 mb-2">
+										#{video.category}
+									</div>
+								</div>
+								{/* Actions */}
+								<div className="flex flex-col items-center gap-4">
+									<button
+										className="flex flex-col items-center text-white hover:text-[#d4a017] transition"
+										onClick={handleLike}
+									>
+										<Heart className="w-7 h-7 mb-1" />
+										<span className="text-xs">{likes[idx]}</span>
+									</button>
+									<button
+										className="flex flex-col items-center text-white hover:text-[#d4a017] transition"
+										onClick={handleComment}
+									>
+										<MessageCircle className="w-7 h-7 mb-1" />
+										<span className="text-xs">{comments[idx]}</span>
+									</button>
+									<button
+										className="flex flex-col items-center text-white hover:text-[#d4a017] transition"
+										onClick={handleShare}
+									>
+										<Share className="w-7 h-7 mb-1" />
+										<span className="text-xs">{shares[idx]}</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				))}
+				{/* Progress Indicator */}
+				<div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+					{videos.map((_, idx) => (
+						<span
+							key={idx}
+							className={`w-2 h-2 rounded-full ${
+								idx === current ? "bg-[#d4a017]" : "bg-white/40"
+							}`}
+						/>
+					))}
+				</div>
+			</div>
+			<div className="mt-4 text-gray-600 text-sm">
+				Scroll, swipe, or use ↑/↓ keys for more videos
+			</div>
+		</main>
+	);
 }
