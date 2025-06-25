@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Video, Upload, ArrowLeft, Plus, PlayCircle } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import styles from "./page.module.css";
 
 type VideoContent = {
   id: string;
@@ -118,13 +119,18 @@ export default function CreateContent() {
                     >
                       Select Video
                     </button>
-                    {/* Hidden file input */}
+                    <label htmlFor="video-upload" className="sr-only">
+                      Upload Video
+                    </label>
                     <input
+                      id="video-upload"
                       type="file"
                       accept="video/*"
                       ref={fileInputRef}
                       onChange={handleFileChange}
-                      style={{ display: "none" }}
+                      className="hidden-input"
+                      title="Upload Video"
+                      placeholder="Select a video file"
                     />
                   </div>
                 </motion.div>
