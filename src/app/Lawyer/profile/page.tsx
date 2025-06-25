@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { User, Mail, Phone, MapPin, Book, Star, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 
 type LawyerProfile = {
   name: string;
@@ -41,9 +41,24 @@ export default function Profile() {
     ],
     languages: ["English", "Twi", "French"],
   });
-
   const [editMode, setEditMode] = useState(false);
   const [editProfile, setEditProfile] = useState(profile);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+
+  // Ref for hidden file input
+  const profilePicInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle profile picture change
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setProfilePic(ev.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleEditChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -91,8 +106,35 @@ export default function Profile() {
               {/* Basic Info Card */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200">
                 <div className="flex flex-col md:flex-row items-start gap-6">
-                  <div className="w-24 h-24 rounded-full bg-[#fff8eb] flex items-center justify-center">
-                    <User className="w-12 h-12 text-[#d4a017]" />
+                  {/* Profile Picture */}
+                  <div
+                    className="w-24 h-24 rounded-full bg-[#fff8eb] flex items-center justify-center cursor-pointer group relative overflow-hidden"
+                    title="Click to upload profile picture"
+                    onClick={() => profilePicInputRef.current?.click()}
+                  >
+                    {profilePic ? (
+                      <img
+                        src={profilePic}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <User className="w-12 h-12 text-[#d4a017]" />
+                    )}
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                      <span className="text-white text-xs font-semibold">
+                        Change Photo
+                      </span>
+                    </div>
+                    {/* Hidden file input for profile picture */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={profilePicInputRef}
+                      onChange={handleProfilePicChange}
+                      className="hidden"
+                      aria-label="Upload profile picture"
+                    />
                   </div>
                   <div className="flex-1">
                     {editMode ? (
