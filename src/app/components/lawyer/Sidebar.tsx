@@ -10,11 +10,17 @@ import {
   Settings,
   Menu,
   X,
+  User,
+  Bell,
+  Video,
+  Phone,
+  BookOpen,
+  Bot,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-const navItems = [
+const lawyerNavItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
   { name: "Appointments", href: "/Lawyer/appointments", icon: Calendar },
   {
@@ -28,8 +34,29 @@ const navItems = [
   { name: "Settings", href: "/Lawyer/settings", icon: Settings },
 ];
 
-export default function Sidebar() {
+const userNavItems = [
+  { name: "Dashboard", href: "/User-landing", icon: Activity },
+  { name: "Legal Videos", href: "/legal-content", icon: Video },
+  { name: "Book Appointment", href: "/user/appointments", icon: Calendar },
+  {
+    name: "Message & Call Lawyer",
+    href: "/User-landing/user-message-call",
+    icon: Phone,
+  },
+  { name: "Profile Settings", href: "/User-landing/profile-settings", icon: User },
+  { name: "Notifications", href: "/user/notifications", icon: Bell },
+  { name: "Legal Education", href: "/User-landing/user-education", icon: BookOpen },
+  { name: "Legal Chat Bot", href: "/legal-chatbot", icon: Bot },
+  { name: "Settings", href: "/user/settings", icon: Settings },
+];
+
+type SidebarProps = {
+  role: "lawyer" | "user";
+};
+
+export default function Sidebar({ role }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const navItems = role === "lawyer" ? lawyerNavItems : userNavItems;
 
   return (
     <>
