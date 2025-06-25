@@ -70,7 +70,7 @@ const LawyerDashboard = () => {
               Here's what's happening with your practice today.
             </p>
           </div>
-          <Sidebar />
+          <Sidebar role="lawyer" />
           {/* Statistics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {statistics.map((stat) => (

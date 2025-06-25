@@ -2,214 +2,161 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import Sidebar from "../components/lawyer/Sidebar";
+import { motion } from "framer-motion";
+import ChatModal from "../components/ChatModal";
+import { useState } from "react";
+import { UserButton } from "@clerk/nextjs";
 const features = [
   {
     name: "Watch Legal Videos",
     description: "Browse and watch legal education videos.",
-    href: "/legal-content",
+    href: "User-landing/legal-content",
     icon: "/video.png",
-    color: "bg-blue-100 text-blue-800",
   },
   {
     name: "Book Appointment",
     description: "Schedule a meeting with a lawyer.",
-    href: "/user/appointments",
+    href: "/User-landing/appointments",
     icon: "/appointment-book.png",
-    color: "bg-green-100 text-green-800",
   },
   {
     name: "Message & Call Lawyer",
     description: "Chat or call your lawyer directly.",
     href: "/User-landing/user-message-call",
     icon: "/phone.png",
-    color: "bg-yellow-100 text-yellow-800",
   },
   {
     name: "Profile Settings",
     description: "Update your personal information.",
     href: "/User-landing/profile-settings",
     icon: "/user-setting.png",
-    color: "bg-purple-100 text-purple-800",
   },
   {
     name: "Notifications",
     description: "View your latest notifications.",
     href: "/user/notifications",
     icon: "/bell.png",
-    color: "bg-pink-100 text-pink-800",
   },
   {
     name: "Legal Education",
     description: "Access articles and resources.",
     href: "/User-landing/user-education",
     icon: "/law.png",
-    color: "bg-orange-100 text-orange-800",
   },
-  {
-    name: "Legal Chat Bot",
-    description: "Ask legal questions and get instant answers.",
-    href: "/legal-chatbot",
-    icon: "/chat-bot.png",
-    color: "bg-indigo-100 text-indigo-800",
-  },
+
 ];
-
 export default function UserDashboard() {
-  return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <aside className="bg-[#1A237E] text-white w-64 p-6 hidden md:flex flex-col gap-6">
-        <div className="flex items-center gap-3 mb-8">
-          <Image
-            src="/legalb.jpg"
-            alt="LegalConnect Logo"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-          <span className="text-xl font-bold">LegalConnect</span>
-        </div>
-        <nav className="flex flex-col gap-3">
-          <Link
-            href="/User-landing"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/legal-content"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Legal Videos
-          </Link>
-          <Link
-            href="/user/appointments"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Appointments
-          </Link>
-          <Link
-            href="/user/messages"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Messages & Calls
-          </Link>
-          <Link
-            href="/user/notifications"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Notifications
-          </Link>
-          <Link
-            href="/user/education"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Education
-          </Link>
-          <Link
-            href="/user/profile"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/user/settings"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Settings
-          </Link>
-          <Link
-            href="/legal-chatbot"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Legal Chat Bot
-          </Link>
-        </nav>
-      </aside>
+  const [showChatModal, setShowChatModal] = useState(false);
 
+  return (
+    <div className="min-h-screen bg-[#fafafa] flex">
+      <Sidebar role="user" />
       {/* Main Content */}
-      <main className="flex-1 p-8">
-        <header className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+      <main className="flex-1 p-4 sm:p-8 lg:ml-64">
+        <motion.header
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4"
+        >
           <div>
-            <h1 className="text-3xl font-bold text-[#1A237E]">
+            <h1 className="text-3xl font-bold text-[#1a1a1a]">
               Welcome, User!
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-[#4a4a4a] mt-1">
               Your legal tools and resources in one place.
             </p>
           </div>
           <div className="flex gap-2">
             <Link
               href="/user/settings"
-              className="bg-[#F9A825] text-[#1A237E] px-4 py-2 rounded font-semibold hover:bg-[#fbc02d] transition"
+              className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
             >
               Settings
             </Link>
-            <button className="bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600 transition">
-              Logout
+            <button className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
+              <UserButton/>
             </button>
           </div>
-        </header>
+        </motion.header>
 
         {/* Feature Cards */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {features.map((feature) => (
-            <Link
+          {features.map((feature, idx) => (
+            <motion.div
               key={feature.name}
-              href={feature.href}
-              className={`rounded-xl p-6 shadow bg-white hover:shadow-lg transition flex flex-col gap-3 border-t-4 ${feature.color}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.08 }}
             >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={feature.icon}
-                  alt={feature.name}
-                  width={32}
-                  height={32}
-                />
-                <span className="text-lg font-bold">{feature.name}</span>
-              </div>
-              <p className="text-gray-700 text-sm">{feature.description}</p>
-            </Link>
+              <Link
+                href={feature.href}
+                className="rounded-2xl p-6 shadow bg-[#fff8eb] border-t-4 border-[#d4a017] hover:shadow-lg transition flex flex-col gap-3"
+              >
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={feature.icon}
+                    alt={feature.name}
+                    width={32}
+                    height={32}
+                  />
+                  <span className="text-lg font-bold text-[#d4a017]">
+                    {feature.name}
+                  </span>
+                </div>
+                <p className="text-[#4a4a4a] text-sm">{feature.description}</p>
+              </Link>
+            </motion.div>
           ))}
         </section>
 
         {/* Notifications Example */}
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-2 text-[#1A237E]">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-10"
+        >
+          <h2 className="text-xl font-bold mb-2 text-[#1a1a1a]">
             Recent Notifications
           </h2>
-          <ul className="bg-white rounded-lg shadow p-4 space-y-2">
-            <li className="text-gray-700">
+          <ul className="bg-[#fff8eb] rounded-2xl shadow p-4 space-y-2 border border-[#d4a017]">
+            <li className="text-[#4a4a4a]">
               Your appointment with Lawyer Ama is confirmed for tomorrow at 2pm.
             </li>
-            <li className="text-gray-700">
+            <li className="text-[#4a4a4a]">
               New legal video: "Understanding Your Rights in Ghana" is now
               available.
             </li>
-            <li className="text-gray-700">Profile updated successfully.</li>
+            <li className="text-[#4a4a4a]">Profile updated successfully.</li>
           </ul>
-        </section>
+        </motion.section>
 
         {/* Quick Chat Bot Interface Example */}
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-2 text-[#1A237E]">
-            Ask the Legal Chat Bot
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mb-10"
+        >
+          <h2 className="text-xl font-bold mb-2 text-[#1a1a1a]">
+            Quick Legal Chat Bot
           </h2>
-          <form className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Type your legal question..."
-              className="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-[#1A237E] text-[#0d1b2a]"
-            />
-            <button
-              type="submit"
-              className="bg-[#1A237E] text-white px-6 py-2 rounded font-semibold hover:bg-[#283593] transition"
-            >
-              Ask
-            </button>
-          </form>
-        </section>
+          <p className="text-[#4a4a4a] mb-4">
+            Need quick legal advice? Chat with our AI-powered legal assistant.
+          </p>
+        <ChatModal isOpen={showChatModal} onClose={() => setShowChatModal(false)} />
+        </motion.section>
+        <button
+
+          className="fixed bottom-6 right-6 z-50 bg-[#d4a017] hover:bg-[#b17d25] text-white rounded-full shadow-lg p-4 flex items-center gap-2 transition"
+          onClick={() => setShowChatModal(true)}
+          aria-label="Open Legal Chat Bot"
+        >
+          <img src="/chat-bot.png" alt="Chat Bot" className="w-6 h-6" />
+          <span className="hidden md:inline font-semibold">Chat Bot</span>
+        </button>
       </main>
     </div>
   );
