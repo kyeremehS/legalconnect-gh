@@ -35,7 +35,7 @@ const features = [
   {
     name: "Notifications",
     description: "View your latest notifications.",
-    href: "/user/notifications",
+    href: "/User-landing/notifications",
     icon: "/bell.png",
   },
   {
@@ -44,7 +44,6 @@ const features = [
     href: "/User-landing/user-education",
     icon: "/law.png",
   },
-
 ];
 export default function UserDashboard() {
   const [showChatModal, setShowChatModal] = useState(false);
@@ -70,13 +69,16 @@ export default function UserDashboard() {
           </div>
           <div className="flex gap-2">
             <Link
-              href="/user/settings"
+              href="/User-landing/settings"
               className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
             >
               Settings
             </Link>
-            <button className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
-              <UserButton/>
+            <button
+              title="link"
+              className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
+            >
+              <UserButton />
             </button>
           </div>
         </motion.header>
@@ -146,10 +148,12 @@ export default function UserDashboard() {
           <p className="text-[#4a4a4a] mb-4">
             Need quick legal advice? Chat with our AI-powered legal assistant.
           </p>
-        <ChatModal isOpen={showChatModal} onClose={() => setShowChatModal(false)} />
+          <ChatModal
+            isOpen={showChatModal}
+            onClose={() => setShowChatModal(false)}
+          />
         </motion.section>
         <button
-
           className="fixed bottom-6 right-6 z-50 bg-[#d4a017] hover:bg-[#b17d25] text-white rounded-full shadow-lg p-4 flex items-center gap-2 transition"
           onClick={() => setShowChatModal(true)}
           aria-label="Open Legal Chat Bot"

@@ -103,8 +103,8 @@ export default function LegalContentPage() {
       </section>
 
       {/* Videos Grid */}
-      <section className="w-full max-w-6xl flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
+      <section className="w-full flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl justify-items-center">
           {activeCategory?.videos.map((video, idx) => (
             <div
               key={idx}
@@ -117,7 +117,7 @@ export default function LegalContentPage() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="w-full h-48 md:h-56 rounded"
-                />
+                ></iframe>
               </div>
               <h3 className="text-base md:text-lg font-bold text-[#1A237E] mb-1 text-center">
                 {video.title}

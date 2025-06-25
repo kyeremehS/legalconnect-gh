@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import { X, Search, User } from 'lucide-react';
-import { createChat } from '../lib/messaging';
+import React, { useState } from "react";
+import { X, Search, User } from "lucide-react";
+import { createChat } from "../lib/messaging";
 
 interface CreateChatModalProps {
   isOpen: boolean;
@@ -14,17 +14,37 @@ interface CreateChatModalProps {
 
 // Mock data - replace with actual user/lawyer data from your system
 const mockLawyers = [
-  { id: 'lawyer1', name: 'Jane Doe', specialization: 'Corporate Law', avatar: 'JD' },
-  { id: 'lawyer2', name: 'Kwame Mensah', specialization: 'Criminal Law', avatar: 'KM' },
-  { id: 'lawyer3', name: 'Sarah Johnson', specialization: 'Family Law', avatar: 'SJ' },
-  { id: 'lawyer4', name: 'Michael Chen', specialization: 'Real Estate Law', avatar: 'MC' },
+  {
+    id: "lawyer1",
+    name: "Jane Doe",
+    specialization: "Corporate Law",
+    avatar: "JD",
+  },
+  {
+    id: "lawyer2",
+    name: "Kwame Mensah",
+    specialization: "Criminal Law",
+    avatar: "KM",
+  },
+  {
+    id: "lawyer3",
+    name: "Sarah Johnson",
+    specialization: "Family Law",
+    avatar: "SJ",
+  },
+  {
+    id: "lawyer4",
+    name: "Michael Chen",
+    specialization: "Real Estate Law",
+    avatar: "MC",
+  },
 ];
 
 const mockUsers = [
-  { id: 'user1', name: 'John Smith', avatar: 'JS' },
-  { id: 'user2', name: 'Alice Brown', avatar: 'AB' },
-  { id: 'user3', name: 'Robert Wilson', avatar: 'RW' },
-  { id: 'user4', name: 'Emily Davis', avatar: 'ED' },
+  { id: "user1", name: "John Smith", avatar: "JS" },
+  { id: "user2", name: "Alice Brown", avatar: "AB" },
+  { id: "user3", name: "Robert Wilson", avatar: "RW" },
+  { id: "user4", name: "Emily Davis", avatar: "ED" },
 ];
 
 export default function CreateChatModal({
@@ -34,24 +54,31 @@ export default function CreateChatModal({
   currentUserName,
   onChatCreated,
 }: CreateChatModalProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState<'lawyers' | 'users'>('lawyers');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState<"lawyers" | "users">(
+    "lawyers"
+  );
   const [isCreating, setIsCreating] = useState(false);
 
-  const filteredLawyers = mockLawyers.filter(lawyer =>
-    lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    lawyer.specialization.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredLawyers = mockLawyers.filter(
+    (lawyer) =>
+      lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lawyer.specialization.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredUsers = mockUsers.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-    user.id !== currentUserId
+  const filteredUsers = mockUsers.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      user.id !== currentUserId
   );
 
-  const handleCreateChat = async (participantId: string, participantName: string) => {
+  const handleCreateChat = async (
+    participantId: string,
+    participantName: string
+  ) => {
     try {
       setIsCreating(true);
-      
+
       const participants = [currentUserId, participantId];
       const participantNames = {
         [currentUserId]: currentUserName,
@@ -62,8 +89,8 @@ export default function CreateChatModal({
       onChatCreated(chatId);
       onClose();
     } catch (error) {
-      console.error('Error creating chat:', error);
-      alert('Failed to create chat. Please try again.');
+      console.error("Error creating chat:", error);
+      alert("Failed to create chat. Please try again.");
     } finally {
       setIsCreating(false);
     }
@@ -82,6 +109,8 @@ export default function CreateChatModal({
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            title="Close"
+            aria-label="Close"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -102,21 +131,21 @@ export default function CreateChatModal({
 
           <div className="flex gap-2">
             <button
-              onClick={() => setSelectedType('lawyers')}
+              onClick={() => setSelectedType("lawyers")}
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-                selectedType === 'lawyers'
-                  ? 'bg-[#F9A825] text-[#1A237E]'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                selectedType === "lawyers"
+                  ? "bg-[#F9A825] text-[#1A237E]"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
               Lawyers
             </button>
             <button
-              onClick={() => setSelectedType('users')}
+              onClick={() => setSelectedType("users")}
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-                selectedType === 'users'
-                  ? 'bg-[#F9A825] text-[#1A237E]'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                selectedType === "users"
+                  ? "bg-[#F9A825] text-[#1A237E]"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
               Users
@@ -126,7 +155,7 @@ export default function CreateChatModal({
 
         {/* Results */}
         <div className="flex-1 overflow-y-auto max-h-96">
-          {selectedType === 'lawyers' ? (
+          {selectedType === "lawyers" ? (
             <div className="p-4 space-y-3">
               {filteredLawyers.length === 0 ? (
                 <div className="text-center text-gray-500 py-8">
@@ -146,14 +175,18 @@ export default function CreateChatModal({
                       </span>
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-[#1A237E]">{lawyer.name}</h3>
-                      <p className="text-sm text-gray-600">{lawyer.specialization}</p>
+                      <h3 className="font-medium text-[#1A237E]">
+                        {lawyer.name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {lawyer.specialization}
+                      </p>
                     </div>
                     <button
                       className="px-3 py-1 bg-[#F9A825] text-[#1A237E] rounded-full text-sm font-medium hover:bg-[#F9A825]/90 transition-colors"
                       disabled={isCreating}
                     >
-                      {isCreating ? 'Creating...' : 'Start Chat'}
+                      {isCreating ? "Creating..." : "Start Chat"}
                     </button>
                   </div>
                 ))
@@ -179,14 +212,16 @@ export default function CreateChatModal({
                       </span>
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-[#1A237E]">{user.name}</h3>
+                      <h3 className="font-medium text-[#1A237E]">
+                        {user.name}
+                      </h3>
                       <p className="text-sm text-gray-600">User</p>
                     </div>
                     <button
                       className="px-3 py-1 bg-[#F9A825] text-[#1A237E] rounded-full text-sm font-medium hover:bg-[#F9A825]/90 transition-colors"
                       disabled={isCreating}
                     >
-                      {isCreating ? 'Creating...' : 'Start Chat'}
+                      {isCreating ? "Creating..." : "Start Chat"}
                     </button>
                   </div>
                 ))
@@ -207,4 +242,4 @@ export default function CreateChatModal({
       </div>
     </div>
   );
-} 
+}
