@@ -1,6 +1,6 @@
 "use client";
-
-import { motion } from "framer-motion";
+import { useState } from "react";
+import Link from "next/link";
 import {
   MessageSquare,
   Search,
@@ -15,6 +15,8 @@ import {
   VideoOff,
   PhoneOff,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { div } from "framer-motion/client";
 // import { useState, useRef, useEffect } from "react";
 // import { useUser } from "@clerk/nextjs";
 // import { useMessaging } from "../../../hooks/useMessaging";
@@ -22,6 +24,8 @@ import {
 
 export default function MessagesAndCalls() {
   // const { user } = useUser();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
   // const {
   //   chats,
   //   selectedChat,
@@ -134,23 +138,93 @@ export default function MessagesAndCalls() {
   // }
 
   return (
-    <div className="min-h-screen overflow-y-auto bg-white">
-      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="h-[calc(100vh-100px)]"
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* Hamburger Menu (Mobile) */}
+      <div
+        className={`fixed top-0 left-0 w-64 h-full bg-blue-800 text-white p-4 transform ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 md:hidden`}
+      >
+        <button
+          onClick={toggleMenu}
+          className="text-white text-2xl mb-4"
+          aria-label="Close Menu"
         >
-          {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-[#1a1a1a]">
+          ✕
+        </button>
+        <nav className="space-y-2">
+          <Link
+            href="/lawyer/dashboard"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/Lawyer/appointments"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Appointments
+          </Link>
+          <Link
+            href="/Lawyer/messages"
+            onClick={toggleMenu}
+            className="block p-2 bg-blue-700 rounded"
+          >
+            Messages & Calls
+          </Link>
+          <Link
+            href="/Lawyer/videos"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Videos
+          </Link>
+          <Link
+            href="/Lawyer/engagement"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Engagement
+          </Link>
+          <Link
+            href="/Lawyer/profile"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Profile
+          </Link>
+          <Link
+            href="/Lawyer/settings"
+            onClick={toggleMenu}
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            Settings
+          </Link>
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1">
+        {/* Header */}
+        <header className="flex justify-between items-center p-6 bg-white shadow">
+          <div className="flex items-center">
+            <button
+              onClick={toggleMenu}
+              className="block md:hidden text-blue-800 text-2xl mr-4"
+              aria-label="Toggle Menu"
+            >
+              ☰
+            </button>
+            <h1 className="text-2xl font-bold text-blue-800">
               Messages & Calls
             </h1>
-            <p className="text-[#4a4a4a] font-medium">
-              Manage your communications
-            </p>
           </div>
+          <Link href="/Lawyer" className="text-blue-500 hover:underline">
+            Back to Dashboard
+          </Link>
+        </header>
 
           {/* Main Chat Interface */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-[calc(100%-80px)]">
@@ -297,8 +371,7 @@ export default function MessagesAndCalls() {
               </div>
             </div>
           </div>
-        </motion.div>
-      </main>
+      </div>
     </div>
   );
 }
