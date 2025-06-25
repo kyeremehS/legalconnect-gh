@@ -36,7 +36,7 @@ const lawyerNavItems = [
 
 const userNavItems = [
   { name: "Dashboard", href: "/User-landing", icon: Activity },
-  { name: "Legal Videos", href: "/legal-content", icon: Video },
+  { name: "Legal Videos", href: "User-landing/legal-content", icon: Video },
   { name: "Book Appointment", href: "/user/appointments", icon: Calendar },
   {
     name: "Message & Call Lawyer",
@@ -46,7 +46,6 @@ const userNavItems = [
   { name: "Profile Settings", href: "/User-landing/profile-settings", icon: User },
   { name: "Notifications", href: "/user/notifications", icon: Bell },
   { name: "Legal Education", href: "/User-landing/user-education", icon: BookOpen },
-  { name: "Legal Chat Bot", href: "/legal-chatbot", icon: Bot },
   { name: "Settings", href: "/user/settings", icon: Settings },
 ];
 

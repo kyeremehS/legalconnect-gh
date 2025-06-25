@@ -6,18 +6,18 @@ import Sidebar from "../components/lawyer/Sidebar";
 import { motion } from "framer-motion";
 import ChatModal from "../components/ChatModal";
 import { useState } from "react";
-
+import { UserButton } from "@clerk/nextjs";
 const features = [
   {
     name: "Watch Legal Videos",
     description: "Browse and watch legal education videos.",
-    href: "/legal-content",
+    href: "User-landing/legal-content",
     icon: "/video.png",
   },
   {
     name: "Book Appointment",
     description: "Schedule a meeting with a lawyer.",
-    href: "/user/appointments",
+    href: "/User-landing/appointments",
     icon: "/appointment-book.png",
   },
   {
@@ -76,7 +76,7 @@ export default function UserDashboard() {
               Settings
             </Link>
             <button className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
-              Logout
+              <UserButton/>
             </button>
           </div>
         </motion.header>
