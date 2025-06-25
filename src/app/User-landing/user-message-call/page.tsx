@@ -221,7 +221,7 @@ export default function MessagesAndCalls() {
               Messages & Calls
             </h1>
           </div>
-          <Link href="/Lawyer" className="text-blue-500 hover:underline">
+          <Link href="/User-landing" className="text-blue-500 hover:underline">
             Back to Dashboard
           </Link>
         </header>
