@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import ChatModal from "../components/ChatModal";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
+import { Bot } from "lucide-react";
 const features = [
   {
     name: "Watch Legal Videos",
@@ -45,6 +46,29 @@ const features = [
     icon: "/law.png",
   },
 ];
+
+const userStatistics = [
+  { label: "Appointments", value: "5", change: "+1" },
+  { label: "Messages", value: "12", change: "+3" },
+  { label: "Videos Watched", value: "8", change: "+2" },
+];
+
+const userRecentActivities = [
+  {
+    id: 1,
+    title: "Appointment booked with Ama Kwarteng",
+    time: "2 hours ago",
+    type: "appointment",
+  },
+  {
+    id: 2,
+    title: "Watched: Understanding Land Ownership",
+    time: "Yesterday",
+    type: "video",
+  },
+  { id: 3, title: "Profile updated", time: "2 days ago", type: "profile" },
+];
+
 export default function UserDashboard() {
   const [showChatModal, setShowChatModal] = useState(false);
 
@@ -68,99 +92,98 @@ export default function UserDashboard() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Link
-              href="/User-landing/settings"
-              className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
-            >
-              Settings
+            <Link href="/user/settings">
+              <button className="p-2 rounded-lg items-center justify-center font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
+                <p> Settings</p>
+              </button>
             </Link>
-            <button
-              title="link"
-              className="px-4 py-2 rounded-lg font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
-            >
+            <button className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
               <UserButton />
             </button>
           </div>
         </motion.header>
 
-        {/* Feature Cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {features.map((feature, idx) => (
+        {/* Statistics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {userStatistics.map((stat) => (
             <motion.div
-              key={feature.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: idx * 0.08 }}
+              key={stat.label}
+              whileHover={{ y: -5 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg"
             >
-              <Link
-                href={feature.href}
-                className="rounded-2xl p-6 shadow bg-[#fff8eb] border-t-4 border-[#d4a017] hover:shadow-lg transition flex flex-col gap-3"
-              >
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={feature.icon}
-                    alt={feature.name}
-                    width={32}
-                    height={32}
-                  />
-                  <span className="text-lg font-bold text-[#d4a017]">
-                    {feature.name}
-                  </span>
-                </div>
-                <p className="text-[#4a4a4a] text-sm">{feature.description}</p>
-              </Link>
+              <p className="text-gray-600 text-sm">{stat.label}</p>
+              <div className="flex items-end gap-2 mt-2">
+                <h3 className="text-3xl font-bold text-gray-800">
+                  {stat.value}
+                </h3>
+                <span
+                  className={`text-sm ${
+                    stat.change.startsWith("+")
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {stat.change}
+                </span>
+              </div>
             </motion.div>
           ))}
-        </section>
+        </div>
 
-        {/* Notifications Example */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mb-10"
-        >
-          <h2 className="text-xl font-bold mb-2 text-[#1a1a1a]">
-            Recent Notifications
+        {/* Recent Activity */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 mb-10">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Recent Activity
           </h2>
-          <ul className="bg-[#fff8eb] rounded-2xl shadow p-4 space-y-2 border border-[#d4a017]">
-            <li className="text-[#4a4a4a]">
-              Your appointment with Lawyer Ama is confirmed for tomorrow at 2pm.
-            </li>
-            <li className="text-[#4a4a4a]">
-              New legal video: "Understanding Your Rights in Ghana" is now
-              available.
-            </li>
-            <li className="text-[#4a4a4a]">Profile updated successfully.</li>
-          </ul>
-        </motion.section>
-
-        {/* Quick Chat Bot Interface Example */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mb-10"
-        >
-          <h2 className="text-xl font-bold mb-2 text-[#1a1a1a]">
-            Quick Legal Chat Bot
-          </h2>
-          <p className="text-[#4a4a4a] mb-4">
-            Need quick legal advice? Chat with our AI-powered legal assistant.
-          </p>
-          <ChatModal
-            isOpen={showChatModal}
-            onClose={() => setShowChatModal(false)}
-          />
-        </motion.section>
+          <div className="space-y-4">
+            {userRecentActivities.map((activity) => (
+              <motion.div
+                key={activity.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center gap-4 p-4 rounded-lg hover:bg-[#f9f9f9] transition-all"
+              >
+                <div className="flex-shrink-0">
+                  {/* Icon based on activity type */}
+                  {activity.type === "appointment" && (
+                    <span className="w-6 h-6 rounded-full bg-[#d4a017]/20 flex items-center justify-center text-[#d4a017] font-bold">
+                      A
+                    </span>
+                  )}
+                  {activity.type === "video" && (
+                    <span className="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                      V
+                    </span>
+                  )}
+                  {activity.type === "profile" && (
+                    <span className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-green-600 font-bold">
+                      P
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-800 font-semibold">
+                    {activity.title}
+                  </p>
+                  <p className="text-gray-500 text-sm">{activity.time}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
         <button
           className="fixed bottom-6 right-6 z-50 bg-[#d4a017] hover:bg-[#b17d25] text-white rounded-full shadow-lg p-4 flex items-center gap-2 transition"
           onClick={() => setShowChatModal(true)}
           aria-label="Open Legal Chat Bot"
         >
-          <img src="/chat-bot.png" alt="Chat Bot" className="w-6 h-6" />
+          <Bot />
           <span className="hidden md:inline font-semibold">Chat Bot</span>
         </button>
+        <ChatModal
+          isOpen={showChatModal}
+          onClose={() => setShowChatModal(false)}
+        />
       </main>
     </div>
   );
