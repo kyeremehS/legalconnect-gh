@@ -37,16 +37,28 @@ const lawyerNavItems = [
 const userNavItems = [
   { name: "Dashboard", href: "/User-landing", icon: Activity },
   { name: "Legal Videos", href: "User-landing/legal-content", icon: Video },
-  { name: "Book Appointment", href: "/user/appointments", icon: Calendar },
+  {
+    name: "Book Appointment",
+    href: "/User-landing/appointments",
+    icon: Calendar,
+  },
   {
     name: "Message & Call Lawyer",
     href: "/User-landing/user-message-call",
     icon: Phone,
   },
-  { name: "Profile Settings", href: "/User-landing/profile-settings", icon: User },
-  { name: "Notifications", href: "/user/notifications", icon: Bell },
-  { name: "Legal Education", href: "/User-landing/user-education", icon: BookOpen },
-  { name: "Settings", href: "/user/settings", icon: Settings },
+  {
+    name: "Profile Settings",
+    href: "/User-landing/profile-settings",
+    icon: User,
+  },
+  { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
+  {
+    name: "Legal Education",
+    href: "/User-landing/user-education",
+    icon: BookOpen,
+  },
+  { name: "Settings", href: "/User-landing/settings", icon: Settings },
 ];
 
 type SidebarProps = {

@@ -92,7 +92,7 @@ export default function UserDashboard() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Link href="/user/settings">
+            <Link href="/User-landing/settings">
               <button className="p-2 rounded-lg items-center justify-center font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
                 <p> Settings</p>
               </button>
