@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.23.1",
     "@heroicons/react": "^2.2.0",
     "framer-motion": "^12.17.0",
     "lucide-react": "^0.508.0",
@@ -21,7 +22,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.21",
+    "tailwindcss": "^4.1.11",
     "typescript": "^5"
   }
 }
