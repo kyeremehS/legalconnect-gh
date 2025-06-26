@@ -1,107 +1,181 @@
 "use client";
 
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Menu,
+  X,
+  Activity,
+  Users,
+  Calendar,
+  FileText,
+  MessageSquare,
+  Settings,
+} from "lucide-react";
 import Link from "next/link";
-import SidebarLayout from "@/components/SidebarLayout";
+import { useState } from "react";
+import Sidebar from "../components/lawyer/Sidebar";
 
 const navItems = [
-  { name: "Dashboard", href: "/Lawyer" },
-  { name: "Appointments", href: "/lawyer/appointments" },
-  { name: "Messages & Calls", href: "/Lawyer/messages-calls" },
-  { name: "Videos", href: "/Lawyer/create-content" },
-  { name: "Engagement", href: "/lawyer/engagement" },
-  { name: "Profile", href: "/lawyer/profile" },
-  { name: "Settings", href: "/lawyer/settings" },
+  { name: "Dashboard", href: "/Lawyer", icon: Activity },
+  { name: "Appointments", href: "/Lawyer/appointments", icon: Calendar },
+  {
+    name: "Messages & Calls",
+    href: "/Lawyer/messages-calls",
+    icon: MessageSquare,
+  },
+  { name: "Videos", href: "/Lawyer/create-content", icon: FileText },
+  { name: "Clients", href: "/lawyer/engagement", icon: Users },
+  { name: "Profile", href: "/Lawyer/profile", icon: Users },
+  { name: "Settings", href: "/Lawyer/settings", icon: Settings },
 ];
 
-interface User {
-  displayName: string;
-  role: string;
-}
+const statistics = [
+  { label: "Active Cases", value: "24", change: "+2" },
+  { label: "Pending Reviews", value: "12", change: "-3" },
+  { label: "Revenue", value: "$15,234", change: "+12%" },
+];
 
-const LawyerDashboard: React.FC = () => {
-  const [user] = useState<User>({ displayName: "Ama Kwarteng", role: "lawyer" });
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const recentActivities = [
+  { id: 1, title: "New case assigned", time: "2 hours ago", type: "case" },
+  {
+    id: 2,
+    title: "Client meeting scheduled",
+    time: "4 hours ago",
+    type: "meeting",
+  },
+  {
+    id: 3,
+    title: "Document review completed",
+    time: "Yesterday",
+    type: "document",
+  },
+];
 
-  if (!user) return <div>Loading...</div>;
+const LawyerDashboard = () => {
+  const [user] = useState({
+    displayName: "Ama Kwarteng",
+    role: "Senior Legal Counsel",
+  });
 
   return (
-    <SidebarLayout navItems={navItems} active="Dashboard">
-      <div className="min-h-screen bg-gray-100 flex">
-        {/* Mobile Sidebar Toggle Button */}
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="md:hidden bg-blue-500 text-white p-2 fixed top-4 left-4"
-        >
-          {isSidebarOpen ? "✕" : "☰"}
-        </button>
-
-        {/* Main Content */}
-        <div className="flex-1 p-6">
-          <header className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-[#000814]">
-              {/* Updated color */}
-              Welcome, Lawyer {user.displayName}
+    <div className="min-h-screen bg-white lg:ml-64">
+      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">
+              Welcome back, {user.displayName}
             </h1>
-            <div className="space-x-4">
-              <button className="bg-blue-500 text-blue px-4 py-2 rounded">
-                Settings
-              </button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded">
-                Logout
-              </button>
-            </div>
-          </header>
-
-          {/* Example Content */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold text-[#000814]">Active Clients</h3> {/* Updated color */}
-              <p className="text-2xl text-[#000814]">5</p> {/* Updated color */}
-            </div>
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold text-[#000814]">Upcoming Meetings</h3> {/* Updated color */}
-              <p className="text-2xl text-[#000814]">2</p> {/* Updated color */}
-            </div>
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold text-[#000814]">Recent Messages</h3> {/* Updated color */}
-              <p className="text-2xl text-[#000814]">3</p> {/* Updated color */}
-            </div>
+            <p className="text-gray-600">
+              Here's what's happening with your practice today.
+            </p>
+          </div>
+          <Sidebar role="lawyer" />
+          {/* Statistics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {statistics.map((stat) => (
+              <motion.div
+                key={stat.label}
+                whileHover={{ y: -5 }}
+                className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg"
+              >
+                <p className="text-gray-600 text-sm">{stat.label}</p>
+                <div className="flex items-end gap-2 mt-2">
+                  <h3 className="text-3xl font-bold text-gray-800">
+                    {stat.value}
+                  </h3>
+                  <span
+                    className={`text-sm ${
+                      stat.change.startsWith("+")
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {stat.change}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          {/* Quick Actions */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold mb-2 text-[#000814]">Quick Actions</h2>
-            <div className="space-x-4">
-              <button className="bg-green-500 text-white px-4 py-2 rounded">
-                Go Online
-              </button>
-              <Link
-                href="/lawyer/profile"
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                View Profile
-              </Link>
-              <Link
-                href="/lawyer/videos"
-                className="bg-purple-500 text-white px-4 py-2 rounded"
-              >
-                Upload New Tip
-              </Link>
+          {/* Recent Activity */}
+          <div className="bg-white p-6 rounded-2xl border border-gray-100">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Recent Activity
+            </h2>
+            <div className="space-y-4">
+              {recentActivities.map((activity, index) => (
+                <motion.div
+                  key={activity.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex items-center gap-4 p-4 rounded-lg hover:bg-[#f9f9f9] transition-all"
+                >
+                  <div className="flex-shrink-0">
+                    {/* Icon based on activity type */}
+                    {activity.type === "case" && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 text-blue-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 3h18M3 12h18M3 21h18"
+                        />
+                      </svg>
+                    )}
+                    {activity.type === "meeting" && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v8m4-4H8"
+                        />
+                      </svg>
+                    )}
+                    {activity.type === "document" && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 text-red-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 8v8m4-4H8"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-gray-800 font-semibold">
+                      {activity.title}
+                    </p>
+                    <p className="text-gray-500 text-sm">{activity.time}</p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </div>
-
-          {/* Notifications */}
-          <div>
-            <h2 className="text-xl font-bold mb-2 text-[#000814]">Notifications</h2>
-            <ul className="bg-white p-4 rounded shadow space-y-2">
-              <li className="text-[#000814]">New client request (10 min ago)</li>
-              <li className="text-[#000814]">Schedule updated (Tomorrow, 2 PM)</li>
-            </ul>
           </div>
         </div>
-      </div>
-    </SidebarLayout>
+      </main>
+    </div>
   );
 };
 

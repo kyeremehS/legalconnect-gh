@@ -97,16 +97,17 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-6 right-6 z-50">
-      <div className="w-[400px] h-[600px] bg-white rounded-lg shadow-xl flex flex-col">
+    <div className="fixed bottom-24 right-6 z-50">
+      <div className="w-[400px] h-[450px] bg-white rounded-lg shadow-xl flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl  text-gray-700  font-semibold">
+          <h2 className="text-xl text-gray-700  font-semibold">
             Chat with Legal Assistant
           </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close chat"
           >
             <X className="w-5 h-5 text-gray-700" />
           </button>
@@ -124,7 +125,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
               <div
                 className={`max-w-[85%] rounded-lg p-3 ${
                   message.sender === "user"
-                    ? "bg-[#1A237E] text-white"
+                    ? "bg-amber-600 text-white"
                     : "bg-gray-100 text-gray-800"
                 }`}
               >
@@ -159,17 +160,18 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              className=" text-gray-700 flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A237E] text-sm"
+              className=" text-gray-700 flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b98a11] text-sm"
               disabled={isLoading}
             />
             <button
               onClick={handleSendMessage}
               disabled={isLoading}
-              className={`p-2 bg-[#1A237E] text-white rounded-lg transition-colors ${
+              className={`p-2 bg-[#b98a11] text-white rounded-lg transition-colors ${
                 isLoading
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-[#1A237E]/90"
+                  : "hover:bg-amber-600/90"
               }`}
+              aria-label="Send message"
             >
               <Send className="w-5 h-5" />
             </button>

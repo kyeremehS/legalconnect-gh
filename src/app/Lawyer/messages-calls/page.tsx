@@ -2,108 +2,140 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  MagnifyingGlassIcon,
-  ChatBubbleLeftRightIcon,
-  PhoneIcon,
-} from "@heroicons/react/24/outline";
+  MessageSquare,
+  Search,
+  MoreVertical,
+  Send,
+  Paperclip,
+  Phone,
+  Video,
+  Mic,
+  MicOff,
+  Video as VideoIcon,
+  VideoOff,
+  PhoneOff,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { div } from "framer-motion/client";
+// import { useState, useRef, useEffect } from "react";
+// import { useUser } from "@clerk/nextjs";
+// import { useMessaging } from "../../../hooks/useMessaging";
+// import { Chat, Message } from "../../../lib/messaging";
 
-export default function Messages() {
-  type Message = {
-    id: number;
-    client: string;
-    subject: string;
-    text: string;
-    timestamp: string;
-    unread: boolean;
-  };
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileMessageView, setIsMobileMessageView] = useState(false);
+export default function MessagesAndCalls() {
+  // const { user } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  // const {
+  //   chats,
+  //   selectedChat,
+  //   messages,
+  //   isLoading,
+  //   error,
+  //   incomingCalls,
+  //   activeCall,
+  //   isInCall,
+  //   selectChat,
+  //   sendTextMessage,
+  //   markMessageAsRead,
+  //   startVoiceCall,
+  //   startVideoCall,
+  //   answerCall,
+  //   declineCall,
+  //   endCall,
+  //   toggleMute,
+  //   toggleVideo,
+  //   formatMessageTime,
+  //   getUnreadCountForChat,
+  // } = useMessaging();
 
-  // Mock message data
-  const messages = [
-    {
-      id: 1,
-      client: "Kwame Asante",
-      subject: "Divorce Consultation",
-      text: "I need advice on divorce proceedings.",
-      timestamp: "2025-05-23 10:00 AM",
-      unread: true,
-    },
-    {
-      id: 2,
-      client: "Ama Kwarteng",
-      subject: "Contract Review",
-      text: "Can you review my employment contract?",
-      timestamp: "2025-05-22 3:15 PM",
-      unread: false,
-    },
-    {
-      id: 3,
-      client: "Kofi Mensah",
-      subject: "Land Dispute",
-      text: "I have a dispute over inherited land.",
-      timestamp: "2025-05-21 9:30 AM",
-      unread: false,
-    },
-  ];
+  // const [newMessage, setNewMessage] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [isMuted, setIsMuted] = useState(false);
+  // const [isVideoOff, setIsVideoOff] = useState(false);
+  // const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Mock call request data
-  const callRequests = [
-    {
-      id: 1,
-      client: "Kwame Asante",
-      time: "2025-05-23 2:00 PM",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      client: "Ama Kwarteng",
-      time: "2025-05-24 10:00 AM",
-      status: "Pending",
-    },
-  ];
+  // useEffect(() => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages]);
 
-  // Filter messages based on search query
-  const filteredMessages = messages.filter(
-    (msg) =>
-      msg.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      msg.subject.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // useEffect(() => {
+  //   if (selectedChat && messages.length > 0) {
+  //     messages.forEach((message) => {
+  //       if (!message.read && message.senderId !== user?.id) {
+  //         markMessageAsRead(message.id);
+  //       }
+  //     });
+  //   }
+  // }, [selectedChat, messages, user?.id, markMessageAsRead]);
 
-  // Handle message selection
-  const handleSelectMessage = (message: {
-    id: number;
-    client: string;
-    subject: string;
-    text: string;
-    timestamp: string;
-    unread: boolean;
-  }) => {
-    setSelectedMessage(message);
-    setIsMobileMessageView(true);
-  };
+  // const handleSendMessage = async () => {
+  //   if (!newMessage.trim()) return;
+  //   await sendTextMessage(newMessage);
+  //   setNewMessage("");
+  // };
 
-  // Simulate reply action
-  const handleSendReply = () => {
-    const replyTextArea = document.getElementById(
-      "reply-text"
-    ) as HTMLTextAreaElement | null;
-    if (replyTextArea) {
-      console.log("Reply sent:", replyTextArea.value);
-      replyTextArea.value = "";
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent) => {
+  //   if (e.key === "Enter" && !e.shiftKey) {
+  //     e.preventDefault();
+  //     handleSendMessage();
+  //   }
+  // };
 
-  // Simulate call request actions
-  const handleAcceptCall = (id: number) =>
-    console.log(`Accepted call request ${id}`);
-  const handleRejectCall = (id: number) =>
-    console.log(`Rejected call request ${id}`);
+  // const handleStartVoiceCall = async () => {
+  //   if (!selectedChat) return;
+  //   const otherParticipant = selectedChat.participants.find(p => p !== user?.id);
+  //   const otherParticipantName = otherParticipant ? selectedChat.participantNames[otherParticipant] : "Unknown";
+  //   if (otherParticipant) {
+  //     await startVoiceCall(selectedChat.id, otherParticipant, otherParticipantName);
+  //   }
+  // };
 
-  // Toggle hamburger menu
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  // const handleStartVideoCall = async () => {
+  //   if (!selectedChat) return;
+  //   const otherParticipant = selectedChat.participants.find(p => p !== user?.id);
+  //   const otherParticipantName = otherParticipant ? selectedChat.participantNames[otherParticipant] : "Unknown";
+  //   if (otherParticipant) {
+  //     await startVideoCall(selectedChat.id, otherParticipant, otherParticipantName);
+  //   }
+  // };
+
+  // const handleToggleMute = async () => {
+  //   const muted = await toggleMute();
+  //   setIsMuted(muted);
+  // };
+
+  // const handleToggleVideo = async () => {
+  //   const videoOff = await toggleVideo();
+  //   setIsVideoOff(videoOff);
+  // };
+
+  // const getOtherParticipantName = (chat: Chat) => {
+  //   const otherParticipant = chat.participants.find(p => p !== user?.id);
+  //   return otherParticipant ? chat.participantNames[otherParticipant] : "Unknown";
+  // };
+
+  // const getLastMessagePreview = (chat: Chat) => {
+  //   if (!chat.lastMessage) return "No messages yet";
+  //   return chat.lastMessage.content.length > 50
+  //     ? chat.lastMessage.content.substring(0, 50) + "..."
+  //     : chat.lastMessage.content;
+  // };
+
+  // const filteredChats = chats.filter(chat => {
+  //   const participantName = getOtherParticipantName(chat);
+  //   return participantName.toLowerCase().includes(searchQuery.toLowerCase());
+  // });
+
+  // if (!user) {
+  //   return (
+  //     <div className="min-h-screen bg-white flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h2 className="text-2xl font-semibold text-[#1a1a1a] mb-4">Please sign in to access messaging</h2>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -194,162 +226,152 @@ export default function Messages() {
           </Link>
         </header>
 
-        {/* Messages and Calls Content */}
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Messages List (Sidebar) */}
-            <div
-              className={`bg-white rounded shadow p-4 ${
-                isMobileMessageView ? "hidden md:block" : "block"
-              }`}
-            >
-              <h2 className="text-lg font-semibold mb-4 flex items-center">
-                <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2 text-blue-500" />{" "}
-                Messages
-              </h2>
-              <div className="mb-4">
+        {/* Main Chat Interface */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-[calc(100%-80px)]">
+          <div className="flex h-full flex-col lg:flex-row">
+            {/* Chat List */}
+            <div className="md:w-[320px] w-full border-r border-gray-200 flex flex-col">
+              <div className="p-4 border-b border-gray-200 bg-white">
                 <div className="relative">
-                  <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-3 text-gray-400" />
+                  <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
                   <input
                     type="text"
-                    placeholder="Search messages..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 pl-10 border rounded focus:ring-blue-500 focus:border-blue-500"
-                    aria-label="Search messages"
+                    placeholder="Search chats"
+                    // value={searchQuery}
+                    // onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-lg border border-gray-200 
+                        focus:outline-none focus:ring-2 focus:ring-[#d4a1a1] text-[#1a1a1a]"
                   />
                 </div>
               </div>
-              <ul className="space-y-2">
-                {filteredMessages.length === 0 ? (
-                  <li className="text-gray-500">No messages found.</li>
-                ) : (
-                  filteredMessages.map((msg) => (
-                    <li
-                      key={msg.id}
-                      onClick={() => handleSelectMessage(msg)}
-                      className={`p-3 rounded cursor-pointer hover:bg-blue-100 ${
-                        selectedMessage?.id === msg.id ? "bg-blue-200" : ""
-                      } ${msg.unread ? "font-semibold" : ""}`}
-                    >
-                      <div className="flex justify-between">
-                        <div>
-                          <p className="text-sm font-medium">{msg.client}</p>
-                          <p className="text-xs text-gray-500 truncate">
-                            {msg.subject}
-                          </p>
-                        </div>
-                        <p className="text-xs text-gray-400">{msg.timestamp}</p>
-                      </div>
-                    </li>
-                  ))
-                )}
-              </ul>
+
+              <div className="overflow-y-auto flex-1">
+                {/* Chat list items would go here */}
+                <div className="flex items-center gap-3 p-4 border-b border-gray-100">
+                  <div className="w-12 h-12 rounded-full bg-[#d4a017] flex items-center justify-center">
+                    <span className="text-white font-semibold text-lg">A</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-baseline mb-1">
+                      <h3 className="font-semibold text-[#1a1a1a] truncate">
+                        Ama Kwarteng
+                      </h3>
+                      <span className="text-xs font-medium text-[#4a4a4a]">
+                        2:30 PM
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#4a4a4a] truncate">
+                      Hello, I need legal advice regarding my business
+                      contract...
+                    </p>
+                  </div>
+                  <span
+                    className="bg-[#d4a017] text-white text-xs font-bold rounded-full 
+                      w-5 h-5 flex items-center justify-center"
+                  >
+                    2
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Message View and Call Requests (Main Panel) */}
-            <div
-              className={`md:col-span-2 bg-white rounded shadow p-4 ${
-                isMobileMessageView ? "block" : "hidden md:block"
-              }`}
-            >
-              {isMobileMessageView && (
-                <button
-                  onClick={() => setIsMobileMessageView(false)}
-                  className="mb-4 text-blue-500 hover:underline"
-                  aria-label="Back to messages list"
-                >
-                  Back to Messages
-                </button>
-              )}
-              {selectedMessage ? (
-                <div>
-                  <h2 className="text-lg font-semibold mb-4">
-                    Message from {selectedMessage.client}
-                  </h2>
-                  <div className="border-b pb-4 mb-4">
-                    <p className="text-sm font-medium">
-                      {selectedMessage.subject}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {selectedMessage.timestamp}
-                    </p>
-                    <p className="mt-2 text-sm">{selectedMessage.text}</p>
+            {/* Chat Area */}
+            <div className="flex-1 flex flex-col bg-[#fafafa]">
+              <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#d4a017] flex items-center justify-center">
+                    <span className="text-white font-semibold">A</span>
                   </div>
-                  <div>
-                    <textarea
-                      id="reply-text"
-                      placeholder="Type your reply..."
-                      className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                      rows={4}
-                      aria-label="Reply to message"
-                    />
-                    <button
-                      onClick={handleSendReply}
-                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      Send Reply
-                    </button>
-                  </div>
+                  <h2 className="font-semibold text-[#1a1a1a]">Ama Kwarteng</h2>
                 </div>
-              ) : (
-                <div className="text-gray-500 text-center">
-                  Select a message to view details.
+                <div className="flex items-center gap-2">
+                  <button
+                    className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                    title="Voice Call"
+                  >
+                    <Phone className="w-5 h-5" />
+                  </button>
+                  <button
+                    className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                    title="Video Call"
+                  >
+                    <Video className="w-5 h-5" />
+                  </button>
+                  <button
+                    className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                    title="More options"
+                    aria-label="More options"
+                  >
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
                 </div>
-              )}
+              </div>
 
-              {/* Call Requests */}
-              <div className="mt-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center">
-                  <PhoneIcon className="h-5 w-5 mr-2 text-blue-500" /> Call
-                  Requests
-                </h2>
-                {callRequests.length === 0 ? (
-                  <p className="text-gray-500">No pending call requests.</p>
-                ) : (
-                  <ul className="space-y-4">
-                    {callRequests.map((call) => (
-                      <li
-                        key={call.id}
-                        className="p-4 border rounded flex justify-between items-center"
-                      >
-                        <div>
-                          <p className="text-sm font-medium text-black">
-                            {call.client}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Requested: {call.time}
-                          </p>
-                        </div>
-                        <div className="space-x-2">
-                          <button
-                            onClick={() => handleAcceptCall(call.id)}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            onClick={() => handleRejectCall(call.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              <div className="flex-1 overflow-y-auto p-4">
+                {/* Example message */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="max-w-[70%] mb-4 ml-auto"
+                >
+                  <div className="p-3 rounded-xl shadow-sm bg-[#d4a017] text-white">
+                    <p className="text-white">
+                      Of course, I'd be happy to help. Could you provide more
+                      details about your situation?
+                    </p>
+                    <span className="text-xs block text-right mt-1 text-white/80">
+                      2:31 PM
+                    </span>
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="max-w-[70%] mb-4 mr-auto"
+                >
+                  <div className="p-3 rounded-xl shadow-sm bg-white border border-gray-200 text-[#1a1a1a]">
+                    <p>
+                      Hello, I need legal advice regarding my business contract.
+                    </p>
+                    <span className="text-xs block text-right mt-1 text-[#4a4a4a]">
+                      2:30 PM
+                    </span>
+                  </div>
+                </motion.div>
+                <div />
+              </div>
+
+              <div className="p-4 bg-white border-t border-gray-200">
+                <div className="flex items-center gap-2 bg-[#fafafa] rounded-xl p-3 border border-gray-200">
+                  <button
+                    className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017]"
+                    title="Attach file"
+                    aria-label="Attach file"
+                  >
+                    <Paperclip className="w-5 h-5" />
+                  </button>
+                  <input
+                    type="text"
+                    // value={newMessage}
+                    // onChange={(e) => setNewMessage(e.target.value)}
+                    // onKeyPress={handleKeyPress}
+                    placeholder="Type a message"
+                    className="flex-1 bg-transparent focus:outline-none text-[#1a1a1a] placeholder-[#4a4a4a]"
+                    // disabled={isLoading}
+                  />
+                  <button
+                    title="Send message"
+                    // onClick={handleSendMessage}
+                    // disabled={isLoading || !newMessage.trim()}
+                    className="p-2 hover:bg-[#fff8eb] rounded-full text-[#d4a017] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Send className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="p-6 text-center">
-          <Link href="/help" className="text-blue-500 hover:underline">
-            Messaging Guidelines
-          </Link>
-        </footer>
       </div>
     </div>
   );

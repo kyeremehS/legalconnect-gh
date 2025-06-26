@@ -1,214 +1,192 @@
 "use client";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import SidebarLayout from "@/components/SidebarLayout";
+import Sidebar from "../components/lawyer/Sidebar";
+import { motion } from "framer-motion";
+import ChatModal from "../components/ChatModal";
+import { useState } from "react";
+import { UserButton } from "@clerk/nextjs";
+import { Bot } from "lucide-react";
 const features = [
   {
     name: "Watch Legal Videos",
     description: "Browse and watch legal education videos.",
-    href: "/legal-content",
+    href: "User-landing/legal-content",
     icon: "/video.png",
-    color: "bg-blue-100 text-blue-800",
   },
   {
     name: "Book Appointment",
     description: "Schedule a meeting with a lawyer.",
-    href: "/user/appointments",
+    href: "/User-landing/appointments",
     icon: "/appointment-book.png",
-    color: "bg-green-100 text-green-800",
   },
   {
     name: "Message & Call Lawyer",
     description: "Chat or call your lawyer directly.",
-    href: "/user/messages",
+    href: "/User-landing/user-message-call",
     icon: "/phone.png",
-    color: "bg-yellow-100 text-yellow-800",
   },
   {
     name: "Profile Settings",
     description: "Update your personal information.",
-    href: "/user/profile",
+    href: "/User-landing/profile-settings",
     icon: "/user-setting.png",
-    color: "bg-purple-100 text-purple-800",
   },
   {
     name: "Notifications",
     description: "View your latest notifications.",
-    href: "/user/notifications",
+    href: "/User-landing/notifications",
     icon: "/bell.png",
-    color: "bg-pink-100 text-pink-800",
   },
   {
     name: "Legal Education",
     description: "Access articles and resources.",
-    href: "/user/education",
+    href: "/User-landing/user-education",
     icon: "/law.png",
-    color: "bg-orange-100 text-orange-800",
-  },
-  {
-    name: "Legal Chat Bot",
-    description: "Ask legal questions and get instant answers.",
-    href: "/legal-chatbot",
-    icon: "/chat-bot.png",
-    color: "bg-indigo-100 text-indigo-800",
   },
 ];
 
-export default function UserDashboard() {
-  return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <aside className="bg-[#1A237E] text-white w-64 p-6 hidden md:flex flex-col gap-6">
-        <div className="flex items-center gap-3 mb-8">
-          <Image
-            src="/legalb.jpg"
-            alt="LegalConnect Logo"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-          <span className="text-xl font-bold">LegalConnect</span>
-        </div>
-        <nav className="flex flex-col gap-3">
-          <Link
-            href="/User-landing"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/legal-content"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Legal Videos
-          </Link>
-          <Link
-            href="/user/appointments"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Appointments
-          </Link>
-          <Link
-            href="/user/messages"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Messages & Calls
-          </Link>
-          <Link
-            href="/user/notifications"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Notifications
-          </Link>
-          <Link
-            href="/user/education"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Education
-          </Link>
-          <Link
-            href="/user/profile"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/user/settings"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Settings
-          </Link>
-          <Link
-            href="/legal-chatbot"
-            className="hover:bg-[#283593] px-4 py-2 rounded transition"
-          >
-            Legal Chat Bot
-          </Link>
-        </nav>
-      </aside>
+const userStatistics = [
+  { label: "Appointments", value: "5", change: "+1" },
+  { label: "Messages", value: "12", change: "+3" },
+  { label: "Videos Watched", value: "8", change: "+2" },
+];
 
+const userRecentActivities = [
+  {
+    id: 1,
+    title: "Appointment booked with Ama Kwarteng",
+    time: "2 hours ago",
+    type: "appointment",
+  },
+  {
+    id: 2,
+    title: "Watched: Understanding Land Ownership",
+    time: "Yesterday",
+    type: "video",
+  },
+  { id: 3, title: "Profile updated", time: "2 days ago", type: "profile" },
+];
+
+export default function UserDashboard() {
+  const [showChatModal, setShowChatModal] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-[#fafafa] flex">
+      <Sidebar role="user" />
       {/* Main Content */}
-      <main className="flex-1 p-8">
-        <header className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+      <main className="flex-1 p-4 sm:p-8 lg:ml-64">
+        <motion.header
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4"
+        >
           <div>
-            <h1 className="text-3xl font-bold text-[#1A237E]">
+            <h1 className="text-3xl font-bold text-[#1a1a1a]">
               Welcome, User!
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-[#4a4a4a] mt-1">
               Your legal tools and resources in one place.
             </p>
           </div>
           <div className="flex gap-2">
-            <Link
-              href="/user/settings"
-              className="bg-[#F9A825] text-[#1A237E] px-4 py-2 rounded font-semibold hover:bg-[#fbc02d] transition"
-            >
-              Settings
+            <Link href="/User-landing/settings">
+              <button className="p-2 rounded-lg items-center justify-center font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
+                <p> Settings</p>
+              </button>
             </Link>
-            <button className="bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600 transition">
-              Logout
+            <button
+              title="button"
+              className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition"
+            >
+              <UserButton />
             </button>
           </div>
-        </header>
+        </motion.header>
 
-        {/* Feature Cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {features.map((feature) => (
-            <Link
-              key={feature.name}
-              href={feature.href}
-              className={`rounded-xl p-6 shadow bg-white hover:shadow-lg transition flex flex-col gap-3 border-t-4 ${feature.color}`}
+        {/* Statistics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {userStatistics.map((stat) => (
+            <motion.div
+              key={stat.label}
+              whileHover={{ y: -5 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg"
             >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={feature.icon}
-                  alt={feature.name}
-                  width={32}
-                  height={32}
-                />
-                <span className="text-lg font-bold">{feature.name}</span>
+              <p className="text-gray-600 text-sm">{stat.label}</p>
+              <div className="flex items-end gap-2 mt-2">
+                <h3 className="text-3xl font-bold text-gray-800">
+                  {stat.value}
+                </h3>
+                <span
+                  className={`text-sm ${
+                    stat.change.startsWith("+")
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {stat.change}
+                </span>
               </div>
-              <p className="text-gray-700 text-sm">{feature.description}</p>
-            </Link>
+            </motion.div>
           ))}
-        </section>
+        </div>
 
-        {/* Notifications Example */}
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-2 text-[#1A237E]">
-            Recent Notifications
+        {/* Recent Activity */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 mb-10">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Recent Activity
           </h2>
-          <ul className="bg-white rounded-lg shadow p-4 space-y-2">
-            <li className="text-gray-700">
-              Your appointment with Lawyer Ama is confirmed for tomorrow at 2pm.
-            </li>
-            <li className="text-gray-700">
-              New legal video: "Understanding Your Rights in Ghana" is now
-              available.
-            </li>
-            <li className="text-gray-700">Profile updated successfully.</li>
-          </ul>
-        </section>
-
-        {/* Quick Chat Bot Interface Example */}
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-2 text-[#1A237E]">
-            Ask the Legal Chat Bot
-          </h2>
-          <form className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Type your legal question..."
-              className="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-[#1A237E] text-[#0d1b2a]"
-            />
-            <button
-              type="submit"
-              className="bg-[#1A237E] text-white px-6 py-2 rounded font-semibold hover:bg-[#283593] transition"
-            >
-              Ask
-            </button>
-          </form>
-        </section>
+          <div className="space-y-4">
+            {userRecentActivities.map((activity) => (
+              <motion.div
+                key={activity.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center gap-4 p-4 rounded-lg hover:bg-[#f9f9f9] transition-all"
+              >
+                <div className="flex-shrink-0">
+                  {/* Icon based on activity type */}
+                  {activity.type === "appointment" && (
+                    <span className="w-6 h-6 rounded-full bg-[#d4a017]/20 flex items-center justify-center text-[#d4a017] font-bold">
+                      A
+                    </span>
+                  )}
+                  {activity.type === "video" && (
+                    <span className="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                      V
+                    </span>
+                  )}
+                  {activity.type === "profile" && (
+                    <span className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-green-600 font-bold">
+                      P
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-800 font-semibold">
+                    {activity.title}
+                  </p>
+                  <p className="text-gray-500 text-sm">{activity.time}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+        <button
+          className="fixed bottom-6 right-6 z-50 bg-[#d4a017] hover:bg-[#b17d25] text-white rounded-full shadow-lg p-4 flex items-center gap-2 transition"
+          onClick={() => setShowChatModal(true)}
+          aria-label="Open Legal Chat Bot"
+        >
+          <Bot />
+          <span className="hidden md:inline font-semibold">Chat Bot</span>
+        </button>
+        <ChatModal
+          isOpen={showChatModal}
+          onClose={() => setShowChatModal(false)}
+        />
       </main>
     </div>
   );
