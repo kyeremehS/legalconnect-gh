@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function ProfileSettings() {
   const [profile, setProfile] = useState({
@@ -64,19 +65,24 @@ export default function ProfileSettings() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fafafa] py-8 px-4 flex justify-center">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow p-8 border border-[#d4a017]/20">
-        <h1 className="text-3xl font-bold text-[#d4a017] mb-6 text-center">
+    <main className="min-h-screen bg-[#fafafa] flex items-center justify-center py-12 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-2xl bg-white rounded-2xl shadow-lg border border-[#d4a017]/30 p-8"
+      >
+        <h1 className="text-3xl font-bold text-[#d4a017] mb-8 text-center">
           Profile Settings
         </h1>
         {/* Profile Info */}
-        <form onSubmit={handleSave} className="space-y-6">
+        <form onSubmit={handleSave} className="space-y-8">
           <div className="flex flex-col items-center mb-6">
             <label htmlFor="avatar" className="cursor-pointer">
               <img
                 src={profile.avatar || "/lawyer-icon.png"}
                 alt="Profile avatar"
-                className="w-24 h-24 rounded-full object-cover border-4 border-[#d4a017] mb-2"
+                className="w-24 h-24 rounded-full object-cover border-4 border-[#d4a017] mb-2 shadow"
               />
               <input
                 id="avatar"
@@ -90,7 +96,7 @@ export default function ProfileSettings() {
             </label>
             <span className="text-sm text-gray-600">Click to change photo</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 htmlFor="name"
@@ -104,7 +110,7 @@ export default function ProfileSettings() {
                 type="text"
                 value={profile.name}
                 onChange={handleProfileChange}
-                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                 required
               />
             </div>
@@ -121,7 +127,7 @@ export default function ProfileSettings() {
                 type="email"
                 value={profile.email}
                 onChange={handleProfileChange}
-                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                 required
               />
             </div>
@@ -138,7 +144,7 @@ export default function ProfileSettings() {
                 type="tel"
                 value={profile.phone}
                 onChange={handleProfileChange}
-                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
               />
             </div>
             <div>
@@ -154,7 +160,7 @@ export default function ProfileSettings() {
                 type="date"
                 value={profile.dob}
                 onChange={handleProfileChange}
-                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
               />
             </div>
             <div>
@@ -169,7 +175,7 @@ export default function ProfileSettings() {
                 name="gender"
                 value={profile.gender}
                 onChange={handleProfileChange}
-                className="w-full p-2 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
               >
                 <option value="">Select</option>
                 <option value="male">Male</option>
@@ -256,7 +262,7 @@ export default function ProfileSettings() {
                   type={showPassword.current ? "text" : "password"}
                   value={passwords.current}
                   onChange={handlePasswordChange}
-                  className="w-full p-2 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] text-[#03071e]"
+                  className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] text-[#03071e]"
                   required
                 />
                 <button
@@ -292,7 +298,7 @@ export default function ProfileSettings() {
                   type={showPassword.new ? "text" : "password"}
                   value={passwords.new}
                   onChange={handlePasswordChange}
-                  className="w-full p-2 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                  className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                   required
                 />
                 <button
@@ -328,7 +334,7 @@ export default function ProfileSettings() {
                   type={showPassword.confirm ? "text" : "password"}
                   value={passwords.confirm}
                   onChange={handlePasswordChange}
-                  className="w-full p-2 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
+                  className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017]"
                   required
                 />
                 <button
@@ -373,7 +379,7 @@ export default function ProfileSettings() {
             Delete Account
           </button>
         </div>
-      </div>
+      </motion.div>
     </main>
   );
 }
