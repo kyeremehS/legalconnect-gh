@@ -77,7 +77,7 @@ type SidebarProps = {
   role: "lawyer" | "user" | "admin";
 };
 
-export default function Sidebar({ role }: SidebarProps) {
+export default function Sidebar({ role } : SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Choose nav items based on role
