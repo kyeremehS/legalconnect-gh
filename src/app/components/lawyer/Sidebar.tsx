@@ -16,6 +16,7 @@ import {
   Phone,
   BookOpen,
   Bot,
+  BarChart2,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -61,13 +62,31 @@ const userNavItems = [
   { name: "Settings", href: "/User-landing/settings", icon: Settings },
 ];
 
+const adminNavItems = [
+  { name: "Dashboard", href: "/Admin", icon: Activity },
+  { name: "Analytics", href: "/Admin/analytics", icon: BarChart2 },
+  { name: "Users", href: "/Admin/users", icon: Users },
+  { name: "Lawyers", href: "/Admin/lawyers", icon: User },
+  { name: "Cases", href: "/Admin/cases", icon: FileText },
+  { name: "Messages", href: "/Admin/messages", icon: MessageSquare },
+  { name: "Notifications", href: "/Admin/notifications", icon: Bell },
+  { name: "Settings", href: "/Admin/settings", icon: Settings },
+];
+
 type SidebarProps = {
-  role: "lawyer" | "user"| "admin";
+  role: "lawyer" | "user" | "admin";
 };
 
 export default function Sidebar({ role }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const navItems = role === "lawyer" || role === "admin" ? lawyerNavItems : userNavItems;
+
+  // Choose nav items based on role
+  const navItems =
+    role === "lawyer"
+      ? lawyerNavItems
+      : role === "admin"
+      ? adminNavItems
+      : userNavItems;
 
   return (
     <>
