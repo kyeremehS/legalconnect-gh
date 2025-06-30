@@ -62,12 +62,12 @@ const userNavItems = [
 ];
 
 type SidebarProps = {
-  role: "lawyer" | "user";
+  role: "lawyer" | "user"| "admin";
 };
 
 export default function Sidebar({ role }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const navItems = role === "lawyer" ? lawyerNavItems : userNavItems;
+  const navItems = role === "lawyer" || role === "admin" ? lawyerNavItems : userNavItems;
 
   return (
     <>
