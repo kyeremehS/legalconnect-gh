@@ -64,13 +64,14 @@ const userNavItems = [
 
 const adminNavItems = [
   { name: "Dashboard", href: "/Admin", icon: Activity },
-  { name: "Analytics", href: "/Admin/analytics", icon: BarChart2 },
-  { name: "Users", href: "/Admin/users", icon: Users },
+  { name: "User Management", href: "/Admin/users", icon: Users },
   { name: "Lawyers", href: "/Admin/lawyers", icon: User },
-  { name: "Cases", href: "/Admin/cases", icon: FileText },
-  { name: "Messages", href: "/Admin/messages", icon: MessageSquare },
-  { name: "Notifications", href: "/Admin/notifications", icon: Bell },
-  { name: "Settings", href: "/Admin/settings", icon: Settings },
+  { name: "Clients", href: "/Admin/clients", icon: User },
+  { name: "Case Oversight", href: "/Admin/cases", icon: FileText },
+  { name: "Billing & Reports", href: "/Admin/billing", icon: FileText },
+  { name: "Platform Usage Analytics", href: "/Admin/analytics", icon: BarChart2 },
+  { name: "Content Management", href: "/Admin/content", icon: BookOpen },
+  { name: "Platform Settings", href: "/Admin/settings", icon: Settings },
 ];
 
 type SidebarProps = {

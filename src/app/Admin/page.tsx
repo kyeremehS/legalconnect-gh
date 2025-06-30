@@ -2,7 +2,19 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Sidebar from "../components/lawyer/Sidebar";
-import { BarChart2, Users, FileText, MessageCircle, UserCheck, Shield } from "lucide-react";
+import {
+  Users,
+  UserCheck,
+  Briefcase,
+  DollarSign,
+  BarChart2,
+  BookOpen,
+  Settings,
+  Shield,
+  Bell,
+  MessageCircle,
+  FileText,
+} from "lucide-react";
 
 const analytics = [
   {
@@ -95,11 +107,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* Analytics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             {analytics.map((stat) => (
               <motion.div
                 key={stat.label}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -5, scale: 1.03 }}
                 className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg flex flex-col gap-2"
               >
                 <div className="flex items-center gap-3">
@@ -141,19 +153,29 @@ export default function AdminDashboard() {
                   <div className="flex-shrink-0">
                     {/* Icon based on activity type */}
                     {activity.type === "user" && (
-                      <span className="w-6 h-6  rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">U</span>
+                      <span className="w-6 h-6  rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                        U
+                      </span>
                     )}
                     {activity.type === "lawyer" && (
-                      <span className="w-6 h-6 rounded-full bg-[#d4a017]/20 flex items-center justify-center text-[#d4a017] font-bold">L</span>
+                      <span className="w-6 h-6 rounded-full bg-[#d4a017]/20 flex items-center justify-center text-[#d4a017] font-bold">
+                        L
+                      </span>
                     )}
                     {activity.type === "case" && (
-                      <span className="w-6 h-6 rounded-full bg-red-200 flex items-center justify-center text-red-600 font-bold">C</span>
+                      <span className="w-6 h-6 rounded-full bg-red-200 flex items-center justify-center text-red-600 font-bold">
+                        C
+                      </span>
                     )}
                     {activity.type === "security" && (
-                      <span className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-green-600 font-bold">S</span>
+                      <span className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-green-600 font-bold">
+                        S
+                      </span>
                     )}
                     {activity.type === "feedback" && (
-                      <span className="w-6 h-6 rounded-full bg-purple-200 flex items-center justify-center text-purple-600 font-bold">F</span>
+                      <span className="w-6 h-6 rounded-full bg-purple-200 flex items-center justify-center text-purple-600 font-bold">
+                        F
+                      </span>
                     )}
                   </div>
                   <div className="flex-1">
@@ -167,5 +189,5 @@ export default function AdminDashboard() {
         </div>
       </main>
     </div>
-    );
-  }
+  );
+}
