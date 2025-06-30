@@ -5,7 +5,7 @@ import { Settings, Shield, Bell, Edit } from "lucide-react";
 
 export default function AdminSettings() {
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col lg:flex-row  lg:ml-64">
       <Sidebar role="admin" />
       <main className="flex-1 p-4 lg:p-8 pt-20 lg:pt-8">
         <div className="max-w-7xl mx-auto">
