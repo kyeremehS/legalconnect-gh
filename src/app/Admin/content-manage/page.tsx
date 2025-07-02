@@ -29,13 +29,23 @@ export default function AdminContent() {
                   </thead>
                   <tbody>
                     <tr className="border-b hover:bg-[#fff8eb]">
-                      <td className="py-2 pr-4">How do I hire a lawyer?</td>
-                      <td className="py-2 pr-4">Register, then request a consultation...</td>
+                      <td className="py-2 pr-4 text-gray-700">
+                        How do I hire a lawyer?
+                      </td>
+                      <td className="py-2 pr-4 text-gray-700">
+                        Register, then request a consultation...
+                      </td>
                       <td className="py-2 flex gap-2">
-                        <button className="p-1 rounded hover:bg-gray-100" title="Edit">
+                        <button
+                          className="p-1 rounded hover:bg-gray-100"
+                          title="Edit"
+                        >
                           <Edit className="w-4 h-4 text-[#d4a017]" />
                         </button>
-                        <button className="p-1 rounded hover:bg-gray-100" title="Delete">
+                        <button
+                          className="p-1 rounded hover:bg-gray-100"
+                          title="Delete"
+                        >
                           <Ban className="w-4 h-4 text-red-500" />
                         </button>
                       </td>
@@ -53,7 +63,10 @@ export default function AdminContent() {
                   <FileText className="w-5 h-5" /> Terms & Privacy Policies
                 </h3>
                 <div className="text-gray-700 text-sm mb-2">
-                  <span className="italic">Upload or edit markdown/rich text content. Version control enabled.</span>
+                  <span className="italic">
+                    Upload or edit markdown/rich text content. Version control
+                    enabled.
+                  </span>
                 </div>
                 <div className="flex gap-2">
                   <button className="px-3 py-1 bg-[#d4a017] text-white rounded hover:bg-[#b98a11] text-sm">

@@ -22,16 +22,22 @@ export default function AdminBilling() {
                 <table className="min-w-full text-sm">
                   <tbody>
                     <tr>
-                      <td className="py-2 pr-4 font-medium">Total Revenue</td>
+                      <td className="py-2 pr-4 font-medium text-gray-700">
+                        Total Revenue
+                      </td>
                       <td className="py-2 text-green-700 font-bold">$12,000</td>
                     </tr>
                     <tr>
-                      <td className="py-2 pr-4 font-medium">Commission Earned</td>
+                      <td className="py-2 pr-4 font-medium text-gray-700">
+                        Commission Earned
+                      </td>
                       <td className="py-2 text-[#d4a017] font-bold">$1,200</td>
                     </tr>
                     <tr>
-                      <td className="py-2 pr-4 font-medium">Pending Payments</td>
-                      <td className="py-2 text-yellow-600 font-bold">$2,000</td>
+                      <td className="py-2 pr-4 font-medium text-gray-700">
+                        Pending Payments
+                      </td>
+                      <td className="py-2 text-red-600 font-bold">$2,000</td>
                     </tr>
                   </tbody>
                 </table>
@@ -43,12 +49,20 @@ export default function AdminBilling() {
                 </h3>
                 <div className="h-32 flex items-center justify-center text-gray-400">
                   {/* Placeholder for chart */}
-                  <span className="italic">[Chart.js or Recharts chart here]</span>
+                  <span className="italic text-gray-400">
+                    [Chart.js or Recharts chart here]
+                  </span>
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button className="px-2 py-1 rounded bg-gray-100 text-xs">This Month</button>
-                  <button className="px-2 py-1 rounded bg-gray-100 text-xs">Last Month</button>
-                  <button className="px-2 py-1 rounded bg-gray-100 text-xs">Custom Range</button>
+                  <button className="px-2 py-1 rounded bg-gray-400 text-xs">
+                    This Month
+                  </button>
+                  <button className="px-2 py-1 rounded bg-gray-400 text-xs">
+                    Last Month
+                  </button>
+                  <button className="px-2 py-1 rounded bg-gray-400 text-xs">
+                    Custom Range
+                  </button>
                 </div>
               </div>
             </div>

@@ -41,9 +41,13 @@ export default function LawyerVerification() {
                 <input
                   type="text"
                   placeholder="Search lawyers..."
-                  className="border border-gray-200 rounded px-2 py-1 text-sm"
+                  className="border border-gray-200 rounded px-2 py-1 text-sm text-gray-600"
                 />
-                <button className="p-1 rounded hover:bg-gray-100">
+                <button
+                  className="p-1 rounded hover:bg-gray-100"
+                  title="Search"
+                  aria-label="Search"
+                >
                   <Search className="w-4 h-4 text-gray-500" />
                 </button>
               </div>
@@ -63,12 +67,22 @@ export default function LawyerVerification() {
                 <tbody>
                   {pendingLawyers.map((lawyer) => (
                     <tr key={lawyer.id} className="border-b hover:bg-[#fff8eb]">
-                      <td className="py-2 pr-4 font-medium">{lawyer.name}</td>
-                      <td className="py-2 pr-4">{lawyer.email}</td>
-                      <td className="py-2 pr-4">{lawyer.license}</td>
-                      <td className="py-2 pr-4">{lawyer.submitted}</td>
-                      <td className="py-2 pr-4">
-                        <span className="text-yellow-600 font-semibold">{lawyer.status}</span>
+                      <td className="py-2 pr-4 font-medium text-gray-600">
+                        {lawyer.name}
+                      </td>
+                      <td className="py-2 pr-4 text-gray-600">
+                        {lawyer.email}
+                      </td>
+                      <td className="py-2 pr-4 text-gray-600">
+                        {lawyer.license}
+                      </td>
+                      <td className="py-2 pr-4 text-gray-600">
+                        {lawyer.submitted}
+                      </td>
+                      <td className="py-2 pr-4 text-gray-600">
+                        <span className="text-yellow-600 font-semibold">
+                          {lawyer.status}
+                        </span>
                       </td>
                       <td className="py-2 flex gap-2">
                         <button
@@ -94,7 +108,10 @@ export default function LawyerVerification() {
                   ))}
                   {pendingLawyers.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-4 text-center text-gray-400">
+                      <td
+                        colSpan={6}
+                        className="py-4 text-center text-gray-400"
+                      >
                         No pending lawyer applications.
                       </td>
                     </tr>
