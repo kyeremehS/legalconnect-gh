@@ -339,7 +339,7 @@ export default function UserBookAppointment() {
                   <label className="block text-gray-700 mb-1">Date</label>
                   <input
                     type="date"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017] text-gray-600"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     min={getToday()}
@@ -361,7 +361,7 @@ export default function UserBookAppointment() {
                   <label className="block text-gray-700 mb-1">Time</label>
                   <input
                     type="time"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017] text-gray-600"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     min="09:00"
@@ -385,7 +385,7 @@ export default function UserBookAppointment() {
                   </label>
                   <select
                     id="appointment-type"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017] text-gray-600"
                     value={apptType}
                     onChange={(e) => setApptType(e.target.value)}
                   >
@@ -397,7 +397,7 @@ export default function UserBookAppointment() {
                   <label className="block text-gray-700 mb-1">Subject</label>
                   <input
                     type="text"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017]"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#d4a017] text-gray-600"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="e.g. Contract Review"
