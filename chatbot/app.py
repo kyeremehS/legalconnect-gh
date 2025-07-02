@@ -1,25 +1,32 @@
-# app.py
-from flask import Flask, render_template, jsonify, request
-from dotenv import load_dotenv
 import os
+from flask import Flask, render_template, request, session
+from dotenv import load_dotenv
 
-# LangChain Community Imports (Modern Versions)
+# LangChain imports
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.llms import LlamaCpp
+from langchain_pinecone import PineconeVectorStore
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.chains import create_retrieval_chain
 
-from langchain.prompts import PromptTemplate
-from langchain.chains import RetrievalQA
+# Custom system prompt
+from src.prompt import system_prompt
 
-from src.prompt import prompt_template
-from src.helper import format_response
-
-# Initialize Flask app
+# === Flask App Setup ===
 app = Flask(__name__)
+app.secret_key = '184ccad403ee59c6e9af9eb310c975effd738cff43eb998aefb79ab133fd955b'  # Needed for session handling
 
-# Load environment variables
+# === Load environment variables ===
 load_dotenv()
+PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+if not PINECONE_API_KEY or not OPENAI_API_KEY:
+    raise ValueError("Missing PINECONE_API_KEY or OPENAI_API_KEY in .env")
+
+os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # === Embeddings ===
 def download_hugging_face_embeddings():
@@ -27,71 +34,55 @@ def download_hugging_face_embeddings():
 
 embeddings = download_hugging_face_embeddings()
 
-# === Chroma Vector Store ===
-CHROMA_DIR = "chroma_db"
-docsearch = Chroma(
-    persist_directory=CHROMA_DIR,
-    embedding_function=embeddings
+# === Pinecone Vector Store ===
+index_name = "legalconnect-bot"
+docsearch = PineconeVectorStore.from_existing_index(
+    index_name=index_name,
+    embedding=embeddings
 )
-docsearch.persist()
+retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
-# === Prompt Template ===
-PROMPT = PromptTemplate(
-    template=prompt_template,
-    input_variables=["context", "question"]
-)
-chain_type_kwargs = {"prompt": PROMPT}
+# === LLM & Prompt ===
+llm = ChatOpenAI(temperature=0.4, max_tokens=500)
+prompt = ChatPromptTemplate.from_messages([
+    ("system", system_prompt),
+    ("human", "{input}"),
+])
 
-# === LLM Setup ===
-llm = LlamaCpp(
-    model_path="c:\Users\hp\Downloads\mistral-7b-instruct-v0.1.Q4_K_M.gguf",
-    temperature=0.7,
-    max_tokens=256,
-    top_p=1,
-    n_ctx=2048,
-    verbose=True,
-    n_batch=128,
-    n_threads=8,
-    f16_kv=True,  # Enable half-precision for key/value cache
-    repeat_penalty=1.1,  # Slightly penalize repetition
-    n_gpu_layers=0  # CPU only for now
-)
+# === RAG Chain ===
+question_answer_chain = create_stuff_documents_chain(llm, prompt)
+rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
-# === QA Chain ===
-qa = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=docsearch.as_retriever(search_kwargs={'k': 2}),
-    return_source_documents=True,
-    chain_type_kwargs=chain_type_kwargs
-)
-
-# # === Routes ===
-# @app.route("/")
-# def index():
-#     return render_template('chat.html')
-
+# === Chat Route ===
 @app.route("/get", methods=["GET", "POST"])
 def chat():
-    msg = request.form["msg"]
-    print("Query:", msg)
+    msg = request.form.get("msg", "").strip()
+    if not msg:
+        return "Please enter a question."
+
+    # Detect follow-up intent
+    follow_ups = ["elaborate", "elaborate more", "what do you mean", "explain further", "tell me more"]
+    previous_msg = session.get("previous_msg", "")
+
+    if msg.lower() in follow_ups and previous_msg:
+        msg = previous_msg + " Can you elaborate more?"
+
+    # Save current message as previous for next round
+    session["previous_msg"] = msg
+
+    print("Input:", msg)
+
     try:
-        # Use invoke instead of __call__
-        qa_result = qa.invoke({"query": msg})
-        # Extract the result from the QA response
-        response = qa_result.get('result', '')
-        # Format the response
-        formatted_response = format_response(response)
-        return formatted_response
+        response = rag_chain.invoke({"input": msg})
+        answer = response.get("answer", "I don't have enough information to answer that.")
+        print("Response:", answer)
+        return str(answer)
     except Exception as e:
-        error_message = f"Error: {str(e)}"
-        print("Error:", error_message)
-        return error_message
+        print("Error:", str(e))
+        return "Error: " + str(e)
 
 # === Run Server ===
 if __name__ == '__main__':
-    # Enable CORS for development
     from flask_cors import CORS
     CORS(app)
-    
     app.run(host="0.0.0.0", port=8080, debug=True)

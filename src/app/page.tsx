@@ -229,7 +229,8 @@ export default function Home() {
       </motion.section>
       {/* CTA Section */}
       <motion.section
-        className="py-20 bg-[#d4a017] text-white relative overflow-hidden"
+        // className="py-20 bg-[#d4a017] text-white relative overflow-hidden"
+        className="py-20 bg-[#090501] text-white relative overflow-hidden"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -255,7 +256,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/schedule-demo"
-                className="bg-[#b17d25] text-white px-8 py-4 rounded-xl hover:bg-[#8b6514] transition-all border border-white/20"
+                className="bg-[#FFFFFF] text-amber-600 px-8 py-4 rounded-xl hover:bg-[#8b6514] transition-all border border-white/20"
               >
                 Learn More
               </Link>
@@ -365,22 +366,22 @@ const audience = [
   {
     number: "Individuals",
     label: "Personal Legal Matters",
-    icon: <Users2 className="w-6 h-6 text-[#d4a017] mb-4" />,
+    icon: <Users2 className="w-6 h-6 text-[#050401] mb-4" />,
   },
   {
     number: "Small Business",
     label: "Business Legal Support",
-    icon: <Briefcase className="w-6 h-6 text-[#d4a017] mb-4" />,
+    icon: <Briefcase className="w-6 h-6 text-[#050401] mb-4" />,
   },
   {
     number: "Students",
     label: "Legal Education",
-    icon: <BookOpen className="w-6 h-6 text-[#d4a017] mb-4" />,
+    icon: <BookOpen className="w-6 h-6 text-[#050401] mb-4" />,
   },
   {
     number: "Families",
     label: "Family Legal Matters",
-    icon: <Users className="w-6 h-6 text-[#d4a017] mb-4" />,
+    icon: <Users className="w-6 h-6 text-[#050401] mb-4" />,
   },
 ];
 
