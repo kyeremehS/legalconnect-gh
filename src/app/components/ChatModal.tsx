@@ -160,13 +160,13 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              className=" text-gray-700 flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 text-sm"
+              className=" text-gray-700 flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b98a11] text-sm"
               disabled={isLoading}
             />
             <button
               onClick={handleSendMessage}
               disabled={isLoading}
-              className={`p-2 bg-amber-600 text-white rounded-lg transition-colors ${
+              className={`p-2 bg-[#b98a11] text-white rounded-lg transition-colors ${
                 isLoading
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:bg-amber-600/90"

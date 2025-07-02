@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+// tailwind.config.js
+module.exports = {
   darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,7 +15,7 @@ const config: Config = {
           200: "#f3d18d",
           300: "#edb957",
           400: "#e7a221",
-          500: "#d4a017", // Our primary color
+          500: "#d4a017",
           600: "#b17d25",
           700: "#8e5f1d",
           800: "#6b4715",
@@ -37,15 +36,13 @@ const config: Config = {
           950: "#070c1a",
         },
         text: {
-          primary: "#6b7280", // gray-500
-          secondary: "#6b7280", // gray-500
-          tertiary: "#6b7280", // gray-500
-          light: "#6b7280", // gray-500
+          primary: "#6b7280",
+          secondary: "#6b7280",
+          tertiary: "#6b7280",
+          light: "#6b7280",
         },
       },
     },
   },
   plugins: [],
 };
-
-export default config;
