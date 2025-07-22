@@ -76,18 +76,18 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/get-started"
+                href="/sign-up"
                 className="bg-gray-900 text-white px-8 py-4 rounded-xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group"
               >
-                Get Started Free{" "}
+                Get Started Free
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link
+              {/* <Link
                 href="/demo"
                 className="bg-white text-gray-700 px-8 py-4 rounded-xl hover:bg-gray-50 transition-all border border-gray-200 flex items-center justify-center gap-2"
               >
                 Watch Demo <BrainCircuit className="w-5 h-5" />
-              </Link>
+              </Link> */}
             </div>
 
             {/* Hero Image */}

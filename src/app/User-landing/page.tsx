@@ -8,6 +8,8 @@ import ChatModal from "../components/ChatModal";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { Bot } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 const features = [
   {
     name: "Watch Legal Videos",
@@ -48,7 +50,7 @@ const features = [
 ];
 
 const userStatistics = [
-  { label: "Appointments", value: "5", change: "+1" },
+  { label: "Appointments", value: "5", change: "+1"},
   { label: "Messages", value: "12", change: "+3" },
   { label: "Videos Watched", value: "8", change: "+2" },
 ];
@@ -71,6 +73,7 @@ const userRecentActivities = [
 
 export default function UserDashboard() {
   const [showChatModal, setShowChatModal] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
@@ -112,7 +115,12 @@ export default function UserDashboard() {
             <motion.div
               key={stat.label}
               whileHover={{ y: -5 }}
-              className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg"
+              className={`bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg cursor-pointer`}
+              onClick={() => {
+                if (stat.label === "Appointments") {
+                  router.push("/User-landing/appointments");
+                }
+              }}
             >
               <p className="text-gray-600 text-sm">{stat.label}</p>
               <div className="flex items-end gap-2 mt-2">
