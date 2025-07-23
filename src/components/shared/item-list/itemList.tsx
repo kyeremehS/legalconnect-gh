@@ -9,8 +9,8 @@ const itemList = ({children, title, action: Action}: Props) => {
   return (
     <Card className='h-full min-h-[95vh] w-80
     lg:flex-none p-2'>
-        <div className='mb-4 flex items-center justify-between'>
-            <h1 className='text-2xl font-semibold tracking-tight'>
+        <div className='mb-4 flex text-center items-center justify-center'>
+            <h1 className='text-2xl text-center font-semibold tracking-tight'>
                 {title}
             </h1>
             {Action ? Action: null}

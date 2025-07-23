@@ -14,8 +14,7 @@ const ConversationPage = (props: Props) => {
         
         {/* Content */}
         <div className="flex-1 p-4 w-full">
-          <ItemList title='Conversations' /> 
-          <p>Coversation Page</p>
+          <ItemList title='Conversations' />
         </div>
       </div>
     </div>

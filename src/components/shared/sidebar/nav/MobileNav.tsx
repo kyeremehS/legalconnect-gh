@@ -15,7 +15,7 @@ const MobileNav = () => {
   const pathname = usePathname();
 
   return (
-    <Card className="fixed bottom-4 w-[calc(100vw-32px)] flex items-center justify-center h-16 p-2 lg:hidden">
+    <Card className="fixed bottom-4 w-[calc(100vw-32px)] flex mx-auto items-center justify-center h-16 p-2 lg:hidden">
       <div className="flex flex-row items-center justify-evenly w-full px-4">
         {/* Navigation paths */}
         {paths.map((path) => {
