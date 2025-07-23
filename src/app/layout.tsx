@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -24,7 +25,9 @@ export default function RootLayout({
         <head>
           <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
         </head>
-        <body className={outfit.variable}>{children}</body>
+        <body className={outfit.variable}>
+          <TooltipProvider>{children}</TooltipProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

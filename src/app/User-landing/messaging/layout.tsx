@@ -1,10 +1,13 @@
 import React from 'react'
+import  SidebarWrapper  from "@/components/shared/sidebar/SidebarWrapper"
 
-export default function FriendsLayout({ children }: { children: React.ReactNode }) {
+
+type Props = React.PropsWithChildren<{}>;
+const Layout = ({ children }: Props) => {
   return (
-    <div>
-      {/* You can add navbars/sidebars specific to this section here */}
+    <SidebarWrapper>
       {children}
-    </div>
+    </SidebarWrapper>
   )
-}
+};
+export default Layout;
