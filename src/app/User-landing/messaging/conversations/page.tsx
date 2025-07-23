@@ -1,20 +1,23 @@
 import React from 'react'
 import ItemList from '@/components/shared/item-list/itemList'
+import ConversationFallback from '@/components/shared/conversation/ConversationFallback'
 
 type Props = {}
 
 const ConversationPage = (props: Props) => {
   return (
     <div className="h-full w-full lg:ml-20 mb-20 lg:mb-0">
-      <div className="h-full bg-gray-50 flex flex-col">
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200 p-4 w-full">
-          <h1 className="text-xl font-semibold text-gray-800">Conversations</h1>
+      <div className="h-full flex bg-gray-50">
+        {/* Conversations List - Left side */}
+        <div className="w-full lg:w-80 flex-shrink-0">
+          <ItemList title='Conversations'>
+            {/* Add conversation items here */}
+          </ItemList>
         </div>
         
-        {/* Content */}
-        <div className="flex-1 p-4 w-full">
-          <ItemList title='Conversations' />
+        {/* Conversation Area - Right side (only on desktop) */}
+        <div className="flex-1 hidden lg:block">
+          <ConversationFallback />
         </div>
       </div>
     </div>
