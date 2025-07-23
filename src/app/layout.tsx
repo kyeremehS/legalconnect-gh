@@ -19,16 +19,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <ClerkProvider>
-      <html lang="en" className={`${outfit.variable} antialiased`}>
-        <head>
-          <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
-        </head>
-        <body className={outfit.variable}>
-          <TooltipProvider>{children}</TooltipProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+  const content = (
+    <html lang="en" className={`${outfit.variable} antialiased`}>
+      <head>
+        <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
+      </head>
+      <body className={outfit.variable}>
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
+    </html>
   );
+
+  // Always wrap with ClerkProvider for messaging/user areas
+  return <ClerkProvider>{content}</ClerkProvider>;
 }

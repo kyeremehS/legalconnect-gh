@@ -5,18 +5,19 @@ import { useNavigation } from "../../../../../hooks/useNavigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Settings } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 type Props = {}
 
-const DesktopNav = () => {
+const MobileNav = () => {
   const paths = useNavigation();
   const pathname = usePathname();
 
   return (
-    <Card className="hidden lg:flex lg:flex-col lg:justify-between lg:items-center lg:h-[calc(100vh-2rem)] lg:w-16 lg:px-2 lg:py-4 lg:fixed lg:left-4 lg:top-4">
-      {/* Top section - Navigation items */}
-      <div className="flex flex-col items-center space-y-4">
+    <Card className="fixed bottom-4 w-[calc(100vw-32px)] flex items-center justify-center h-16 p-2 lg:hidden">
+      <div className="flex flex-row items-center justify-evenly w-full px-4">
+        {/* Navigation paths */}
         {paths.map((path) => {
           const isActive = pathname === path.href;
           
@@ -25,36 +26,51 @@ const DesktopNav = () => {
               <TooltipTrigger asChild>
                 <Link
                   href={path.href}
-                  className={`p-2 rounded-lg transition-colors hover:bg-gray-100 ${
+                  className={`flex flex-col items-center justify-center p-3 rounded-lg transition-colors hover:bg-gray-100 flex-1 max-w-[80px] ${
                     isActive ? "bg-blue-500 text-white" : "text-gray-600"
                   }`}
                 >
                   {React.cloneElement(path.icon, { className: "w-5 h-5" })}
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="top">
                 <p>{path.name}</p>
               </TooltipContent>
             </Tooltip>
           );
         })}
-      </div>
-      
-      {/* Bottom section - User Profile */}
-      <div className="flex flex-col items-center">
+
+        {/* Settings
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="p-1">
+            <Link
+              href="/settings"
+              className={`flex flex-col items-center justify-center p-3 rounded-lg transition-colors hover:bg-gray-100 flex-1 max-w-[80px] ${
+                pathname === "/settings" ? "bg-blue-500 text-white" : "text-gray-600"
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>Settings</p>
+          </TooltipContent>
+        </Tooltip> */}
+
+        {/* User Profile - Show actual logged in account */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex flex-col items-center justify-center p-3 rounded-lg transition-colors hover:bg-gray-100 flex-1 max-w-[80px]">
               <UserButton 
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8"
+                    avatarBox: "w-5 h-5"
                   }
                 }}
               />
             </div>
           </TooltipTrigger>
-          <TooltipContent side="right">
+          <TooltipContent side="top">
             <p>Profile & Settings</p>
           </TooltipContent>
         </Tooltip>
@@ -63,4 +79,4 @@ const DesktopNav = () => {
   );
 };
 
-export default DesktopNav;
+export default MobileNav;
