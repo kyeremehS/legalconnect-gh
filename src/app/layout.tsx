@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
+// import { ThemeProvider } from "@/components/ui/theme/theme-provider"; // Fixed typo
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -18,14 +20,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <ClerkProvider>
-      <html lang="en" className={`${outfit.variable} antialiased`}>
-        <head>
-          <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
-        </head>
-        <body className={outfit.variable}>{children}</body>
-      </html>
-    </ClerkProvider>
+  const content = (
+    <html lang="en" className={`${outfit.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
+      </head>
+      <body className={outfit.variable} suppressHydrationWarning>
+        {/* <ThemeProvider */}
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        {/* > */}
+          <TooltipProvider>{children}</TooltipProvider>
+        {/* </ThemeProvider> */}
+      </body>
+    </html>
   );
+
+  return <ClerkProvider>{content}</ClerkProvider>;
 }
