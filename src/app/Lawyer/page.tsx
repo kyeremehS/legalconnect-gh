@@ -10,6 +10,7 @@ import {
   FileText,
   MessageSquare,
   Settings,
+  FileBadge2Icon
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -27,6 +28,7 @@ const navItems = [
   { name: "Clients", href: "/lawyer/engagement", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
   { name: "Settings", href: "/Lawyer/settings", icon: Settings },
+
 ];
 
 const statistics = [

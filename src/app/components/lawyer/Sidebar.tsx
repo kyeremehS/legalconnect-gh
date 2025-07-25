@@ -17,6 +17,7 @@ import {
   BookOpen,
   Bot,
   BarChart2,
+  BookOpenText
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -37,6 +38,7 @@ const lawyerNavItems = [
 
 const userNavItems = [
   { name: "Dashboard", href: "/User-landing", icon: Activity },
+  { name: "Legal Directory", href: "/User-landing/network", icon: BookOpenText },
   { name: "Legal Videos", href: "User-landing/legal-content", icon: Video },
   {
     name: "Book Appointment",
@@ -60,6 +62,7 @@ const userNavItems = [
     icon: BookOpen,
   },
   { name: "Settings", href: "/User-landing/settings", icon: Settings },
+   
 ];
 
 const adminNavItems = [

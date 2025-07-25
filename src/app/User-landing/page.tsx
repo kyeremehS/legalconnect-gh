@@ -46,7 +46,7 @@ const features = [
     description: "Access articles and resources.",
     href: "/User-landing/user-education",
     icon: "/law.png",
-  },
+  }
 ];
 
 const userStatistics = [

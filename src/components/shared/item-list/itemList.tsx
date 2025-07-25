@@ -13,7 +13,7 @@ type Props = React.PropsWithChildren<{
 const itemList = ({children, title, action: Action}: Props) => {
   const {isActive} = useConversation();
   return (
-    <Card className={cn('h-full w-full bg-white border-r border-gray-200 rounded-none',
+    <Card className={cn('lg:h-[calc(100vh-2rem)] w-full bg-white border-r border-gray-200 rounded-none',
       {"block": !isActive,
         "lg:block": isActive,
       }
@@ -24,7 +24,7 @@ const itemList = ({children, title, action: Action}: Props) => {
             </h1>
             {Action ? Action: null}
         </div>
-        <div className='w-full h-full flex flex-col items-start justify-start p-4 overflow-auto'>
+        <div className='w-full h-full flex flex-col items-start justify-start p-4'>
             {children}
         </div>
     </Card>

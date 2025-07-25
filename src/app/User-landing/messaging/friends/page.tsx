@@ -6,7 +6,7 @@ type Props = {}
 
 const FriendsPage = (props: Props) => {
   return (
-    <div className="h-full w-full lg:ml-20 mb-20 lg:mb-0">
+    <div className="h-full w-full overflow-x-hidden lg:ml-20 mb-20 lg:mb-0">
       <div className="h-full flex bg-gray-50">
         {/* Friends List - Left side */}
         <div className="w-full lg:w-80 flex-shrink-0">
