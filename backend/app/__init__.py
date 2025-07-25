@@ -1,1 +1,0 @@
-# LegalConnect-GH Backend Application 
