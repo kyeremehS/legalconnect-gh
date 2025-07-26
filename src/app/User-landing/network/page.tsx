@@ -22,6 +22,10 @@ import {
   BookOpen,
   Award,
   Building,
+  Eye,
+  Star,
+  Mail,
+  Globe,
 } from "lucide-react";
 
 // Configure Inter font
@@ -47,9 +51,16 @@ interface Lawyer {
   isConnected: boolean;
   isPending: boolean;
   connectionCount: number;
-  professionalSummary: string; // Changed from promotional "bio"
-  publications?: string[]; // Educational content they've published
-  calendlyLink?: string; // Add this line
+  professionalSummary: string;
+  publications?: string[];
+  calendlyLink?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  detailedBio?: string;
+  specializations?: string[];
+  awards?: string[];
+  languages?: string[];
 }
 
 // Sample lawyers data (regulation compliant)
@@ -71,7 +82,14 @@ const lawyers: Lawyer[] = [
     connectionCount: 500,
     professionalSummary: "Legal practitioner specializing in corporate and commercial matters.",
     publications: ["Understanding Corporate Governance in Ghana", "Contract Law Basics"],
-    calendlyLink: "https://calendly.com/affum3331/30min", // Add unique link
+    calendlyLink: "https://calendly.com/affum3331/30min",
+    email: "ama@kwartenglaw.com",
+    phone: "+233 24 123 4567",
+    website: "www.kwartenglaw.com",
+    detailedBio: "Ama Kwarteng is a highly experienced corporate lawyer with over 15 years of practice in Ghana. She specializes in corporate governance, mergers and acquisitions, and commercial litigation. She has advised numerous multinational corporations and local businesses on complex legal matters.",
+    specializations: ["Mergers & Acquisitions", "Securities Law", "International Trade"],
+    awards: ["Ghana Law Awards - Corporate Lawyer of the Year 2022", "Outstanding Legal Practitioner 2021"],
+    languages: ["English", "Twi", "French"]
   },
   {
     id: "2",
@@ -90,7 +108,13 @@ const lawyers: Lawyer[] = [
     connectionCount: 342,
     professionalSummary: "Legal practitioner with focus on land and property law matters.",
     publications: ["Land Rights in Ghana: A Guide"],
-    calendlyLink: "https://calendly.com/kwame-mensah/consultation", // Add unique link
+    calendlyLink: "https://calendly.com/kwame-mensah/consultation",
+    email: "kwame@mensahlegal.com",
+    phone: "+233 20 987 6543",
+    detailedBio: "Kwame Mensah has dedicated his career to property and land law in Ghana. He has successfully handled over 200 land disputes and property transactions, making him one of the most sought-after property lawyers in the Ashanti region.",
+    specializations: ["Land Disputes", "Property Transactions", "Real Estate Development"],
+    awards: ["Best Property Lawyer - Ashanti Region 2020"],
+    languages: ["English", "Twi", "Asante Twi"]
   },
   {
     id: "3",
@@ -109,7 +133,13 @@ const lawyers: Lawyer[] = [
     connectionCount: 278,
     professionalSummary: "Legal practitioner focusing on family and matrimonial law.",
     publications: ["Family Law in Ghana: Know Your Rights"],
-    calendlyLink: "https://calendly.com/abena-owusu/family-law-session", // Add unique link
+    calendlyLink: "https://calendly.com/abena-owusu/family-law-session",
+    email: "abena@owusufamilylaw.com",
+    phone: "+233 31 456 7890",
+    detailedBio: "Abena Owusu is a compassionate family law practitioner who has helped hundreds of families navigate complex legal situations. She specializes in divorce proceedings, child custody, and domestic violence cases.",
+    specializations: ["Divorce & Separation", "Child Custody", "Domestic Violence"],
+    awards: ["Family Law Excellence Award 2021"],
+    languages: ["English", "Fante", "Twi"]
   },
   {
     id: "4",
@@ -128,7 +158,14 @@ const lawyers: Lawyer[] = [
     connectionCount: 612,
     professionalSummary: "Legal practitioner with experience in criminal and constitutional matters.",
     publications: ["Understanding Your Rights Under Ghana's Constitution", "Criminal Procedure Guide"],
-    calendlyLink: "https://calendly.com/kojo-asante/criminal-defense", // Add unique link
+    calendlyLink: "https://calendly.com/kojo-asante/criminal-defense",
+    email: "kojo@asantedefense.com",
+    phone: "+233 26 789 0123",
+    website: "www.asantedefense.com",
+    detailedBio: "Kojo Asante is a renowned criminal defense lawyer with an impressive track record in high-profile criminal and constitutional cases. He has successfully defended clients in the Supreme Court and is known for his expertise in human rights law.",
+    specializations: ["Criminal Defense", "Constitutional Law", "Human Rights Advocacy"],
+    awards: ["Criminal Defense Lawyer of the Year 2019", "Human Rights Advocate 2020"],
+    languages: ["English", "Twi", "Ga"]
   },
   {
     id: "5",
@@ -147,7 +184,13 @@ const lawyers: Lawyer[] = [
     connectionCount: 289,
     professionalSummary: "Legal practitioner specializing in employment and labour law.",
     publications: ["Workers' Rights in Ghana: An Overview"],
-    calendlyLink: "https://calendly.com/efua-boateng/employment-consultation", // Add unique link
+    calendlyLink: "https://calendly.com/efua-boateng/employment-consultation",
+    email: "efua@boatenglegal.com",
+    phone: "+233 30 234 5678",
+    detailedBio: "Efua Boateng is a dedicated employment lawyer who advocates for workers' rights and helps businesses navigate complex employment regulations. She has extensive experience in labor disputes and employment contract negotiations.",
+    specializations: ["Employment Contracts", "Labor Disputes", "Workplace Rights"],
+    awards: ["Rising Star in Employment Law 2022"],
+    languages: ["English", "Twi", "Ewe"]
   },
 ];
 
@@ -172,26 +215,297 @@ const locationFilters = [
   "Cape Coast",
 ];
 
-// Lawyer Card Component (regulation compliant)
-function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
-  const [isConnected, setIsConnected] = useState(lawyer.isConnected);
-  const [isPending, setIsPending] = useState(lawyer.isPending);
+// Lawyer Profile Modal Component
+function LawyerProfileModal({ 
+  lawyer, 
+  isOpen, 
+  onClose 
+}: { 
+  lawyer: Lawyer; 
+  isOpen: boolean; 
+  onClose: () => void; 
+}) {
   const [showBookingModal, setShowBookingModal] = useState(false);
 
-  const handleConnect = () => {
-    if (!isConnected && !isPending) {
-      setIsPending(true);
-    }
-  };
+  if (!isOpen) return null;
 
-  const handleMessage = () => {
-    // Navigate to messaging for professional consultation
-    console.log("Professional consultation request:", lawyer.name);
-  };
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#d4a017] to-[#b8941f] p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                  {lawyer.name.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold">{lawyer.name}</h2>
+                  <p className="text-xl opacity-90">{lawyer.title}</p>
+                  <p className="text-lg opacity-80">{lawyer.firm}</p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
 
-  const handleCall = () => {
-    // Professional contact
-    console.log("Professional contact:", lawyer.name);
+          {/* Content */}
+          <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Main Info */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Professional Summary */}
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-[#d4a017]" />
+                    Professional Summary
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {lawyer.detailedBio || lawyer.professionalSummary}
+                  </p>
+                </div>
+
+                {/* Practice Areas */}
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Briefcase className="w-5 h-5 text-[#d4a017]" />
+                    Practice Areas
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {lawyer.practiceAreas.map((area, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1 bg-[#d4a017]/10 text-[#d4a017] rounded-full font-medium text-sm"
+                      >
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Specializations */}
+                {lawyer.specializations && (
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                      <Star className="w-5 h-5 text-[#d4a017]" />
+                      Specializations
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {lawyer.specializations.map((spec, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-[#d4a017] rounded-full" />
+                          <span className="text-gray-700">{spec}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Publications */}
+                {lawyer.publications && lawyer.publications.length > 0 && (
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                      <BookOpen className="w-5 h-5 text-[#d4a017]" />
+                      Publications
+                    </h3>
+                    <div className="space-y-2">
+                      {lawyer.publications.map((pub, idx) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-[#d4a017] rounded-full mt-2" />
+                          <span className="text-gray-700">{pub}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Awards */}
+                {lawyer.awards && lawyer.awards.length > 0 && (
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                      <Award className="w-5 h-5 text-[#d4a017]" />
+                      Awards & Recognition
+                    </h3>
+                    <div className="space-y-2">
+                      {lawyer.awards.map((award, idx) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <Award className="w-4 h-4 text-yellow-500 mt-0.5" />
+                          <span className="text-gray-700">{award}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column - Contact & Details */}
+              <div className="space-y-6">
+                {/* Quick Stats */}
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <h3 className="font-bold text-gray-900 mb-3">Quick Facts</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">{lawyer.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">{lawyer.experience} years experience</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">Bar: {lawyer.barAdmissionYear}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Building className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">{lawyer.barAssociation}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Education */}
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4" />
+                    Education
+                  </h3>
+                  <p className="text-sm text-gray-700">{lawyer.education}</p>
+                </div>
+
+                {/* Languages */}
+                {lawyer.languages && (
+                  <div className="bg-gray-50 rounded-2xl p-4">
+                    <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                      <Globe className="w-4 h-4" />
+                      Languages
+                    </h3>
+                    <div className="flex flex-wrap gap-1">
+                      {lawyer.languages.map((lang, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs"
+                        >
+                          {lang}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Contact Information */}
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <h3 className="font-bold text-gray-900 mb-3">Contact</h3>
+                  <div className="space-y-2">
+                    {lawyer.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm text-gray-700">{lawyer.email}</span>
+                      </div>
+                    )}
+                    {lawyer.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm text-gray-700">{lawyer.phone}</span>
+                      </div>
+                    )}
+                    {lawyer.website && (
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm text-gray-700">{lawyer.website}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Book Appointment Button */}
+                {lawyer.calendlyLink && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-[#d4a017] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
+                    onClick={() => setShowBookingModal(true)}
+                  >
+                    <Calendar className="w-5 h-5" />
+                    Book Consultation
+                  </motion.button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Booking Modal */}
+          {showBookingModal && lawyer.calendlyLink && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-60 flex items-center justify-center p-4"
+              onClick={() => setShowBookingModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              >
+                <div className="p-6 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      Book Consultation with {lawyer.name}
+                    </h2>
+                    <button
+                      onClick={() => setShowBookingModal(false)}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      <X className="w-6 h-6 text-gray-600" />
+                    </button>
+                  </div>
+                  <p className="text-gray-600 mt-2">
+                    {lawyer.title} at {lawyer.firm}
+                  </p>
+                </div>
+
+                <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                  <BookAppointment
+                    name={lawyer.name}
+                    calendlyLink={lawyer.calendlyLink}
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// Lawyer Card Component (simplified)
+function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
+  const handleViewProfile = () => {
+    setShowProfileModal(true);
   };
 
   const handleBookAppointment = () => {
@@ -204,208 +518,186 @@ function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -5 }}
-        className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all duration-300 ${inter.className}`}
+        className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all duration-300 h-[400px] flex flex-col cursor-pointer ${inter.className}`}
+        onClick={handleViewProfile}
       >
-      {/* Header */}
-      <div className="flex items-start gap-3 mb-3">
-        <div className="relative">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#d4a017] to-[#b8941f] rounded-full flex items-center justify-center text-white font-bold text-sm">
-            {lawyer.name.split(' ').map(n => n[0]).join('')}
-          </div>
-          {isConnected && (
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-              <Check className="w-2 h-2 text-white" />
+        {/* Header - Fixed Height */}
+        <div className="flex items-start gap-3 mb-3 h-[60px]">
+          <div className="relative flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#d4a017] to-[#b8941f] rounded-full flex items-center justify-center text-white font-bold text-sm">
+              {lawyer.name.split(' ').map(n => n[0]).join('')}
             </div>
-          )}
-        </div>
-        
-        <div className="flex-1">
-          <h3 className="font-bold text-sm text-gray-900">{lawyer.name}</h3>
-          <p className="text-[#d4a017] font-medium text-xs">{lawyer.title}</p>
-          <p className="text-gray-600 text-xs">{lawyer.firm}</p>
+          </div>
           
-          <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              <span>{lawyer.location}</span>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-sm text-gray-900 truncate">{lawyer.name}</h3>
+            <p className="text-[#d4a017] font-medium text-xs truncate">{lawyer.title}</p>
+            <p className="text-gray-600 text-xs truncate">{lawyer.firm}</p>
+            
+            <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <MapPin className="w-3 h-3" />
+                <span className="truncate">{lawyer.location.split(',')[0]}</span>
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <Award className="w-3 h-3 text-[#d4a017]" />
+                <span>{lawyer.barAdmissionYear}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Award className="w-3 h-3 text-[#d4a017]" />
-              <span>Bar: {lawyer.barAdmissionYear}</span>
-            </div>
           </div>
         </div>
-      </div>
 
-      {/* Professional Summary */}
-      <p className="text-gray-600 text-xs mb-3 line-clamp-2">{lawyer.professionalSummary}</p>
-
-      {/* Practice Areas */}
-      <div className="mb-3">
-        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Practice Areas</h4>
-        <div className="flex flex-wrap gap-1">
-          {lawyer.practiceAreas.slice(0, 3).map((area, idx) => (
-            <span
-              key={idx}
-              className="px-2 py-1 bg-[#d4a017]/10 text-[#d4a017] text-xs rounded-full font-medium"
-            >
-              {area}
-            </span>
-          ))}
-          {lawyer.practiceAreas.length > 3 && (
-            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-              +{lawyer.practiceAreas.length - 3}
-            </span>
-          )}
+        {/* Professional Summary - Fixed Height */}
+        <div className="h-[32px] mb-3">
+          <p className="text-gray-600 text-xs line-clamp-2">{lawyer.professionalSummary}</p>
         </div>
-      </div>
 
-      {/* Professional Information */}
-      <div className="grid grid-cols-2 gap-3 mb-3 py-2 border-t border-gray-100">
-        <div>
-          <div className="flex items-center gap-1 mb-1">
-            <GraduationCap className="w-3 h-3 text-gray-400" />
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Education</span>
-          </div>
-          <p className="text-xs text-gray-600 line-clamp-2">{lawyer.education}</p>
-        </div>
-        <div>
-          <div className="flex items-center gap-1 mb-1">
-            <Building className="w-3 h-3 text-gray-400" />
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Experience</span>
-          </div>
-          <p className="text-xs font-medium text-gray-900">{lawyer.experience} years</p>
-        </div>
-      </div>
-
-      {/* Educational Publications (if any) */}
-      {lawyer.publications && lawyer.publications.length > 0 && (
-        <div className="mb-3">
-          <div className="flex items-center gap-1 mb-1">
-            <BookOpen className="w-3 h-3 text-gray-400" />
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Educational Content</span>
-          </div>
-          <div className="space-y-1">
-            {lawyer.publications.slice(0, 2).map((pub, idx) => (
-              <p key={idx} className="text-xs text-gray-600 line-clamp-1">• {pub}</p>
-            ))}
-            {lawyer.publications.length > 2 && (
-              <p className="text-xs text-gray-500">+{lawyer.publications.length - 2} more</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Professional Contact Options */}
-      <div className="space-y-2">
-        {isConnected ? (
-          <div className="flex gap-2">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex-1 bg-[#d4a017] text-white py-2 px-3 rounded-xl text-xs font-medium hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-1"
-              onClick={handleMessage}
-            >
-              <MessageCircle className="w-3 h-3" />
-              Consult
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-gray-100 text-gray-700 py-2 px-3 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors flex items-center justify-center"
-              onClick={handleCall}
-            >
-              <Phone className="w-3 h-3" />
-            </motion.button>
-          </div>
-        ) : (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`w-full py-2 px-3 rounded-xl text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
-              isPending
-                ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                : "bg-[#d4a017] text-white hover:bg-[#b8941f]"
-            }`}
-            onClick={handleConnect}
-            disabled={isPending}
-          >
-            {isPending ? (
-              <>
-                <Calendar className="w-3 h-3" />
-                Request Sent
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-3 h-3" />
-                Connect
-              </>
-            )}
-          </motion.button>
-        )}
-        
-        {/* Book Appointment Button - Always visible if calendlyLink exists */}
-        {lawyer.calendlyLink && (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-green-600 text-white py-2 px-3 rounded-xl text-xs font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-1"
-            onClick={handleBookAppointment}
-          >
-            <Calendar className="w-3 h-3" />
-            Book Appointment
-          </motion.button>
-        )}
-      </div>
-    </motion.div>
-
-    {/* Booking Modal for this specific lawyer */}
-    {showBookingModal && lawyer.calendlyLink && (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-        onClick={() => setShowBookingModal(false)}
-      >
-        <motion.div
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.95 }}
-          onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
-        >
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-800">
-                Book Appointment with {lawyer.name}
-              </h2>
-              <button
-                onClick={() => setShowBookingModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        {/* Practice Areas - Fixed Height */}
+        <div className="mb-3 h-[60px]">
+          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Practice Areas</h4>
+          <div className="flex flex-wrap gap-1">
+            {lawyer.practiceAreas.slice(0, 2).map((area, idx) => (
+              <span
+                key={idx}
+                className="px-2 py-1 bg-[#d4a017]/10 text-[#d4a017] text-xs rounded-full font-medium truncate max-w-[120px]"
+                title={area}
               >
-                <X className="w-6 h-6 text-gray-600" />
-              </button>
+                {area}
+              </span>
+            ))}
+            {lawyer.practiceAreas.length > 2 && (
+              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                +{lawyer.practiceAreas.length - 2}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Professional Information - Fixed Height */}
+        <div className="grid grid-cols-2 gap-2 mb-3 py-2 border-t border-gray-100 h-[50px]">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1 mb-1">
+              <GraduationCap className="w-3 h-3 text-gray-400 flex-shrink-0" />
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Education</span>
             </div>
-            <p className="text-gray-600 mt-2">
-              {lawyer.title} at {lawyer.firm}
+            <p className="text-xs text-gray-600 line-clamp-1" title={lawyer.education}>
+              {lawyer.education.split(',')[0]}...
             </p>
           </div>
-
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-            <BookAppointment
-              name={lawyer.name}
-              calendlyLink={lawyer.calendlyLink}
-            />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1 mb-1">
+              <Building className="w-3 h-3 text-gray-400 flex-shrink-0" />
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Experience</span>
+            </div>
+            <p className="text-xs font-medium text-gray-900">{lawyer.experience} years</p>
           </div>
-        </motion.div>
+        </div>
+
+        {/* Educational Publications - Fixed Height (Optional) */}
+        {lawyer.publications && lawyer.publications.length > 0 && (
+          <div className="mb-3 h-[45px]">
+            <div className="flex items-center gap-1 mb-1">
+              <BookOpen className="w-3 h-3 text-gray-400" />
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Publications</span>
+            </div>
+            <div>
+              <p className="text-xs text-gray-600 line-clamp-1" title={lawyer.publications[0]}>
+                • {lawyer.publications[0]}
+              </p>
+              {lawyer.publications.length > 1 && (
+                <p className="text-xs text-gray-500">+{lawyer.publications.length - 1} more</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons - Fixed at Bottom */}
+        <div className="mt-auto space-y-2">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full bg-gray-100 text-gray-700 py-2 px-3 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleViewProfile();
+            }}
+          >
+            <Eye className="w-3 h-3" />
+            <span className="truncate">View Profile</span>
+          </motion.button>
+          
+          {/* Book Appointment Button */}
+          {lawyer.calendlyLink && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-[#d4a017] text-white py-2 px-3 rounded-xl text-xs font-medium hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBookAppointment();
+              }}
+            >
+              <Calendar className="w-3 h-3" />
+              <span className="truncate">Book Appointment</span>
+            </motion.button>
+          )}
+        </div>
       </motion.div>
-    )}
-  </>
+
+      {/* Profile Modal */}
+      <LawyerProfileModal
+        lawyer={lawyer}
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
+
+      {/* Booking Modal */}
+      {showBookingModal && lawyer.calendlyLink && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowBookingModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+          >
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Book Appointment with {lawyer.name}
+                </h2>
+                <button
+                  onClick={() => setShowBookingModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-6 h-6 text-gray-600" />
+                </button>
+              </div>
+              <p className="text-gray-600 mt-2">
+                {lawyer.title} at {lawyer.firm}
+              </p>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              <BookAppointment
+                name={lawyer.name}
+                calendlyLink={lawyer.calendlyLink}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </>
   );
 }
 
-// Mobile Sidebar Component
+// Mobile Sidebar Component (unchanged)
 function MobileSidebar({
   isOpen,
   onClose,
