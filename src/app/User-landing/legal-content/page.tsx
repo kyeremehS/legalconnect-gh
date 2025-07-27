@@ -37,7 +37,14 @@ import {
   Star,
   Bookmark,
   Share2,
+  Check, ChevronRight
 } from "lucide-react";
+
+
+import InteractiveQuiz from "../../components/InteractiveQuiz"
+import UserProgressModal from "../../components/UserProgressModal";
+import TemplateDownloader from "../../components/TemplateDownloader"
+import ArticleCard from "../../components/ArticleCard";
 
 // Configure Inter font
 const inter = Inter({
@@ -145,19 +152,42 @@ const legalArticles = [
     author: "Kojo Asante, Esq.",
     publishDate: "2024-01-15",
     featured: true,
-    content: `When you're arrested in Ghana, you have specific rights protected by the 1992 Constitution. Here's what you need to know:
+    content: `
+      <p>When you're arrested in Ghana, you have specific rights protected by the 1992 Constitution. Here's what you need to know to protect yourself during this critical time.</p>
 
-**Your Right to Remain Silent**
-You have the right to remain silent and not answer questions until you have a lawyer present. Anything you say can be used against you in court.
+      <h2>Your Right to Remain Silent</h2>
+      <p>You have the <strong>constitutional right to remain silent</strong> and not answer questions until you have a lawyer present. This is one of your most important protections. Anything you say can and will be used against you in court, so it's often best to exercise this right.</p>
 
-**Right to Legal Representation**
-You have the right to a lawyer. If you cannot afford one, the state should provide legal aid.
+      <h2>Right to Legal Representation</h2>
+      <p>You have the right to a lawyer from the moment of arrest. If you cannot afford one, the state should provide legal aid through the Legal Aid Commission. <strong>Always ask for a lawyer immediately</strong> - this is not a sign of guilt, but a smart legal protection.</p>
 
-**Right to Know the Charges**
-The police must tell you why you're being arrested and what charges you're facing.
+      <h2>Right to Know the Charges</h2>
+      <p>The police must clearly tell you:</p>
+      <ul>
+        <li>Why you're being arrested</li>
+        <li>What specific charges you're facing</li>
+        <li>The reason for your detention</li>
+      </ul>
 
-**Time Limits**
-You must be brought before a court within 48 hours of arrest (excluding weekends and public holidays).`,
+      <h2>Time Limits for Detention</h2>
+      <p>This is crucial: <strong>You must be brought before a court within 48 hours of arrest</strong> (excluding weekends and public holidays). If this doesn't happen, your detention becomes unlawful.</p>
+
+      <h2>Right to Contact Family</h2>
+      <p>You have the right to inform someone about your arrest - usually a family member or close friend. The police should allow you to make this contact.</p>
+
+      <h2>Protection from Torture and Abuse</h2>
+      <p>You have the absolute right to be treated humanely. Any form of torture, assault, or inhumane treatment is strictly prohibited and can lead to serious consequences for the officers involved.</p>
+
+      <h2>What to Do if Your Rights Are Violated</h2>
+      <p>If any of these rights are violated, you can:</p>
+      <ul>
+        <li>File a complaint with the Police Professional Standards Bureau</li>
+        <li>Report to the Commission on Human Rights and Administrative Justice (CHRAJ)</li>
+        <li>Seek legal remedy through the courts</li>
+      </ul>
+
+      <p><strong>Remember:</strong> Knowing your rights is the first step to protecting yourself. Stay calm, be respectful, but firmly assert your rights.</p>
+    `,
     relatedLawyers: ["kojo-asante", "ama-kwarteng"],
   },
   {
@@ -169,22 +199,95 @@ You must be brought before a court within 48 hours of arrest (excluding weekends
     author: "Kwame Mensah, Esq.",
     publishDate: "2024-01-10",
     featured: true,
-    content: `Land registration in Ghana is crucial for securing your property rights. Here's the process:
+    content: `
+      <p>Land registration in Ghana is crucial for securing your property rights and avoiding future disputes. This comprehensive guide will walk you through the entire process.</p>
 
-**Step 1: Verify the Land**
-- Conduct a search at the Lands Commission
-- Check for any existing claims or disputes
-- Verify the seller's ownership
+      <h2>Why Register Your Land?</h2>
+      <p>Land registration provides:</p>
+      <ul>
+        <li><strong>Legal security</strong> - Official government recognition of your ownership</li>
+        <li><strong>Protection against fraud</strong> - Prevents illegal sales by others</li>
+        <li><strong>Access to credit</strong> - Banks accept registered land as collateral</li>
+        <li><strong>Easier inheritance</strong> - Clear ownership transfer to family</li>
+      </ul>
 
-**Step 2: Prepare Documents**
-- Indenture or Deed of Conveyance
-- Site plan prepared by a licensed surveyor
-- Building permit (if applicable)
+      <h2>Step 1: Verify the Land</h2>
+      <p>Before purchasing or registering land, always:</p>
+      <ul>
+        <li><strong>Conduct a search</strong> at the Lands Commission to check ownership history</li>
+        <li><strong>Verify boundaries</strong> with a licensed surveyor</li>
+        <li><strong>Check for disputes</strong> - Ask neighbors and local authorities</li>
+        <li><strong>Confirm the seller's authority</strong> - Ensure they have the right to sell</li>
+      </ul>
 
-**Step 3: Registration Process**
-- Submit application to the Lands Commission
-- Pay the required fees
-- Await processing and approval`,
+      <h2>Step 2: Prepare Required Documents</h2>
+      <p>You'll need the following documents:</p>
+
+      <h3>Primary Documents:</h3>
+      <ul>
+        <li><strong>Indenture or Deed of Conveyance</strong> - The sale agreement</li>
+        <li><strong>Site plan</strong> - Prepared by a licensed surveyor</li>
+        <li><strong>Search report</strong> - From the Lands Commission</li>
+        <li><strong>Statutory declaration</strong> - Sworn statement about the land</li>
+      </ul>
+
+      <h3>Supporting Documents:</h3>
+      <ul>
+        <li>Building permit (if applicable)</li>
+        <li>Tax clearance certificate</li>
+        <li>Identity documents of buyer and seller</li>
+        <li>Witness statements</li>
+      </ul>
+
+      <h2>Step 3: The Registration Process</h2>
+
+      <h3>Application Submission</h3>
+      <p>Submit your application to the appropriate Lands Commission office with:</p>
+      <ul>
+        <li>Completed application forms</li>
+        <li>All required documents</li>
+        <li>Payment of prescribed fees</li>
+      </ul>
+
+      <h3>Processing Timeline</h3>
+      <p>The typical timeline is:</p>
+      <ul>
+        <li><strong>Acknowledgment</strong> - Within 7 days</li>
+        <li><strong>Initial review</strong> - 14-21 days</li>
+        <li><strong>Field verification</strong> - 30-45 days</li>
+        <li><strong>Final processing</strong> - 60-90 days</li>
+      </ul>
+
+      <h2>Costs Involved</h2>
+      <p>Registration fees vary by location and land value, but typically include:</p>
+      <ul>
+        <li>Search fees: GHS 20-50</li>
+        <li>Registration fees: 0.5% of property value</li>
+        <li>Survey fees: GHS 1,000-5,000</li>
+        <li>Legal fees: GHS 500-2,000</li>
+      </ul>
+
+      <h2>Common Challenges and Solutions</h2>
+
+      <h3>Multiple Claims</h3>
+      <p>If multiple people claim the same land, the Commission will investigate and may require additional evidence or mediation.</p>
+
+      <h3>Boundary Disputes</h3>
+      <p>Accurate surveying and neighbor consultation before registration can prevent these issues.</p>
+
+      <h3>Document Issues</h3>
+      <p>Ensure all documents are properly prepared, signed, and witnessed to avoid delays.</p>
+
+      <h2>After Registration</h2>
+      <p>Once registered, you'll receive:</p>
+      <ul>
+        <li><strong>Land Certificate</strong> - Official proof of ownership</li>
+        <li><strong>Registration number</strong> - For future reference</li>
+        <li><strong>Updated site plan</strong> - With official markings</li>
+      </ul>
+
+      <p><strong>Important:</strong> Keep your land certificate safe and make certified copies for transactions. Registration protects your investment and provides peace of mind.</p>
+    `,
     relatedLawyers: ["kwame-mensah", "ama-kwarteng"],
   },
   {
@@ -372,7 +475,7 @@ function ActionButton({
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      className="flex flex-col items-center p-3 bg-white/10 backdrop-blur-sm rounded-xl text-white hover:bg-[#d4a017]/20 transition-all border border-white/20"
+      className="flex flex-col items-center p-3 bg-white/10 backdrop-blur-sm rounded-xl text-white hover:bg-[#d4a017]/20 transition-all"
       onClick={onClick}
     >
       {icon}
@@ -413,156 +516,68 @@ function VideoControls({
       </motion.button>
     </div>
   );
-}
-
-// Article Card Component
-function ArticleCard({ article }: { article: typeof legalArticles[0] }) {
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300"
-    >
-      <div className="flex items-start justify-between mb-4">
-        <span className="px-3 py-1 bg-[#d4a017]/10 text-[#d4a017] text-xs rounded-full font-medium">
-          {article.category}
-        </span>
-        {article.featured && (
-          <Star className="w-5 h-5 text-yellow-500 fill-current" />
-        )}
-      </div>
-
-      <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-        {article.title}
-      </h3>
-
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-        {article.excerpt}
-      </p>
-
-      <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-        <div className="flex items-center gap-4">
-          <span>By {article.author}</span>
-          <span>{article.readTime}</span>
-        </div>
-        <span>{new Date(article.publishDate).toLocaleDateString()}</span>
-      </div>
-
-      <div className="flex gap-2">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 bg-[#d4a017] text-white py-2 px-4 rounded-xl text-sm font-medium hover:bg-[#b8941f] transition-colors"
-        >
-          Read Article
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="p-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors"
-        >
-          <Bookmark className="w-4 h-4" />
-        </motion.button>
-      </div>
-    </motion.div>
-  );
-}
+} 
 
 // Quiz Card Component
 function QuizCard({ quiz }: { quiz: typeof legalQuizzes[0] }) {
+  const [showQuiz, setShowQuiz] = useState(false);
+
   return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300"
-    >
-      <div className="flex items-center gap-4 mb-4">
-        <div className="w-12 h-12 bg-gradient-to-r from-[#d4a017] to-[#b8941f] rounded-xl flex items-center justify-center text-white">
-          {quiz.icon}
-        </div>
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900">{quiz.title}</h3>
-          <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-            {quiz.category}
-          </span>
-        </div>
-      </div>
-
-      <p className="text-gray-600 text-sm mb-4">{quiz.description}</p>
-
-      <div className="grid grid-cols-3 gap-4 mb-4 text-xs text-gray-500">
-        <div className="text-center">
-          <div className="font-semibold text-gray-900">{quiz.questions}</div>
-          <div>Questions</div>
-        </div>
-        <div className="text-center">
-          <div className="font-semibold text-gray-900">{quiz.duration}</div>
-          <div>Duration</div>
-        </div>
-        <div className="text-center">
-          <div className="font-semibold text-gray-900">{quiz.difficulty}</div>
-          <div>Level</div>
-        </div>
-      </div>
-
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="w-full bg-[#d4a017] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
+    <>
+      <motion.div
+        whileHover={{ y: -5 }}
+        className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300"
       >
-        <Play className="w-4 h-4" />
-        Start Quiz
-      </motion.button>
-    </motion.div>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-r from-[#d4a017] to-[#b8941f] rounded-xl flex items-center justify-center text-white">
+            {quiz.icon}
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-gray-900">{quiz.title}</h3>
+            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+              {quiz.category}
+            </span>
+          </div>
+        </div>
+
+        <p className="text-gray-600 text-sm mb-4">{quiz.description}</p>
+
+        <div className="grid grid-cols-3 gap-4 mb-4 text-xs text-gray-500">
+          <div className="text-center">
+            <div className="font-semibold text-gray-900">{quiz.questions}</div>
+            <div>Questions</div>
+          </div>
+          <div className="text-center">
+            <div className="font-semibold text-gray-900">{quiz.duration}</div>
+            <div>Duration</div>
+          </div>
+          <div className="text-center">
+            <div className="font-semibold text-gray-900">{quiz.difficulty}</div>
+            <div>Level</div>
+          </div>
+        </div>
+
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setShowQuiz(true)}
+          className="w-full bg-[#d4a017] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
+        >
+          <Play className="w-4 h-4" />
+          Start Quiz
+        </motion.button>
+      </motion.div>
+
+      {showQuiz && (
+        <InteractiveQuiz quiz={quiz} onClose={() => setShowQuiz(false)} />
+      )}
+    </>
   );
 }
 
 // Template Card Component
 function TemplateCard({ template }: { template: typeof legalTemplates[0] }) {
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300"
-    >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-            <FileText className="w-5 h-5 text-blue-600" />
-          </div>
-          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-            {template.format}
-          </span>
-        </div>
-        {template.featured && (
-          <Star className="w-5 h-5 text-yellow-500 fill-current" />
-        )}
-      </div>
-
-      <h3 className="text-lg font-bold text-gray-900 mb-2">{template.title}</h3>
-      <p className="text-gray-600 text-sm mb-4">{template.description}</p>
-
-      <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-        <span>{template.downloads} downloads</span>
-        <span>{template.fileSize}</span>
-      </div>
-
-      <div className="flex gap-2">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 bg-[#d4a017] text-white py-2 px-4 rounded-xl text-sm font-medium hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
-        >
-          <Download className="w-4 h-4" />
-          Download
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="p-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors"
-        >
-          <Eye className="w-4 h-4" />
-        </motion.button>
-      </div>
-    </motion.div>
-  );
+  return <TemplateDownloader template={template} />;
 }
 
 // AI Chatbot Component
@@ -807,6 +822,7 @@ export default function LegalContentHub() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeContent, setActiveContent] = useState<ContentType>("videos");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showProgress, setShowProgress] = useState(false);
 
   // Handlers for actions
   const handleLike = (idx: number) => {
@@ -1047,7 +1063,7 @@ export default function LegalContentHub() {
               <div>
                 <h2 className="text-xl font-bold text-gray-900 mb-4">All Articles</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {legalArticles.map((article) => (
+                  {legalArticles.map((article, idx) => (
                     <ArticleCard key={article.id} article={article} />
                   ))}
                 </div>
