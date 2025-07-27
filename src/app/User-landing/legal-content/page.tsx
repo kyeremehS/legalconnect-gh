@@ -1264,13 +1264,13 @@ export default function LegalContentHub() {
                   </div>
         
                   {/* Footer */}
-                  <div className="border-t border-gray-200 pt-4">
+                  {/* <div className="border-t border-gray-200 pt-4">
                     <div className="text-xs text-gray-400 space-y-1">
                       <div>© 2025 LegalConnect</div>
                       <div>Educational Content</div>
                       <div>Made in Ghana 🇬🇭</div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </aside>
         
