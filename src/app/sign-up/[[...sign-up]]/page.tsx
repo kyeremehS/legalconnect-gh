@@ -12,8 +12,8 @@ export default function Page() {
       <div className="md:gap-10 flex flex-col bg-gradient-to-br from-[#e7daa5] via-[#ebeacf] to-[#eeeef2] md:flex-row py-36 bg-gray-200 justify-center items-center h-auto">
         <div className="relative">
           <SignUp 
-            afterSignUpUrl="/user-page"
-            redirectUrl="/user-page"
+            afterSignUpUrl="/User-landing"
+            redirectUrl="/User-landing"
             appearance={{
               elements: {
                 formButtonPrimary: 'bg-[#d4a017] hover:bg-[#b38a15] text-sm normal-case',
