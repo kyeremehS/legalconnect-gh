@@ -2,7 +2,16 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { X, Clock, User, Calendar, Bookmark, Share2, MessageCircle, ThumbsUp } from "lucide-react";
+import {
+  X,
+  Clock,
+  User,
+  Calendar,
+  Bookmark,
+  Share2,
+  MessageCircle,
+  ThumbsUp,
+} from "lucide-react";
 
 interface Article {
   id: string;
@@ -23,16 +32,20 @@ interface ArticleReaderProps {
   onBookLawyer: () => void;
 }
 
-export default function ArticleReader({ article, onClose, onBookLawyer }: ArticleReaderProps) {
+export default function ArticleReader({
+  article,
+  onClose,
+  onBookLawyer,
+}: ArticleReaderProps) {
   const [isBookmarked, setIsBookmarked] = React.useState(false);
   const [likes, setLikes] = React.useState(245);
   const [hasLiked, setHasLiked] = React.useState(false);
 
   const handleLike = () => {
     if (hasLiked) {
-      setLikes(prev => prev - 1);
+      setLikes((prev) => prev - 1);
     } else {
-      setLikes(prev => prev + 1);
+      setLikes((prev) => prev + 1);
     }
     setHasLiked(!hasLiked);
   };
@@ -47,7 +60,7 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
     } else {
       // Fallback for browsers without Web Share API
       navigator.clipboard.writeText(window.location.href);
-      alert('Article link copied to clipboard!');
+      alert("Article link copied to clipboard!");
     }
   };
 
@@ -57,12 +70,19 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      onClick={(e) => {
+        // Only close if clicking the backdrop, not the modal content
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()} // ✅ Prevent backdrop clicks
       >
         {/* Article Header */}
         <div className="relative bg-gradient-to-r from-[#d4a017] to-[#b8941f] p-6 text-white">
@@ -80,7 +100,7 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
             <h1 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
               {article.title}
             </h1>
-            
+
             <div className="flex flex-wrap items-center gap-4 text-sm text-white/90">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -88,7 +108,9 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>{new Date(article.publishDate).toLocaleDateString()}</span>
+                <span>
+                  {new Date(article.publishDate).toLocaleDateString()}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
@@ -98,8 +120,11 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
           </div>
         </div>
 
-        {/* Article Content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Article Content - Enhanced scrollable area */}
+        <div
+          className="overflow-y-auto"
+          style={{ maxHeight: "calc(90vh - 180px)" }} // More specific height
+        >
           <div className="p-6 md:p-8">
             {/* Article Actions Bar */}
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
@@ -109,8 +134,8 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLike}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                    hasLiked 
-                      ? "bg-red-100 text-red-600" 
+                    hasLiked
+                      ? "bg-red-100 text-red-600"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -134,8 +159,8 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setIsBookmarked(!isBookmarked)}
                   className={`p-2 rounded-lg transition-colors ${
-                    isBookmarked 
-                      ? "bg-[#d4a017] text-white" 
+                    isBookmarked
+                      ? "bg-[#d4a017] text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -162,10 +187,13 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
 
             {/* Article Content */}
             <div className="prose prose-lg max-w-none">
-              <div 
+              <div
                 className="text-gray-800 leading-relaxed space-y-4"
-                dangerouslySetInnerHTML={{ 
-                  __html: article.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+                dangerouslySetInnerHTML={{
+                  __html: article.content.replace(
+                    /\*\*(.*?)\*\*/g,
+                    "<strong>$1</strong>"
+                  ),
                 }}
               />
             </div>
@@ -176,7 +204,8 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
                 Need Legal Help?
               </h3>
               <p className="text-gray-600 mb-4">
-                Get personalized legal advice from qualified lawyers who specialize in {article.category.toLowerCase()}.
+                Get personalized legal advice from qualified lawyers who
+                specialize in {article.category.toLowerCase()}.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <motion.button
@@ -199,15 +228,31 @@ export default function ArticleReader({ article, onClose, onBookLawyer }: Articl
 
             {/* Related Articles */}
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Related Articles</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">
+                Related Articles
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { title: "Understanding your rights during police questioning", category: "Criminal Law" },
-                  { title: "How to file a complaint against police misconduct", category: "Criminal Law" },
+                  {
+                    title:
+                      "Understanding your rights during police questioning",
+                    category: "Criminal Law",
+                  },
+                  {
+                    title: "How to file a complaint against police misconduct",
+                    category: "Criminal Law",
+                  },
                 ].map((related, idx) => (
-                  <div key={idx} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-                    <span className="text-xs text-[#d4a017] font-medium">{related.category}</span>
-                    <h4 className="font-semibold text-gray-900 mt-1">{related.title}</h4>
+                  <div
+                    key={idx}
+                    className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+                  >
+                    <span className="text-xs text-[#d4a017] font-medium">
+                      {related.category}
+                    </span>
+                    <h4 className="font-semibold text-gray-900 mt-1">
+                      {related.title}
+                    </h4>
                   </div>
                 ))}
               </div>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Bookmark } from "lucide-react";
+import { FileText } from "lucide-react";
 import ArticleReader from "./ArticleReader";
 
 // Define the Article interface
@@ -39,51 +40,34 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <>
       <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -5 }}
-        className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300"
+        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+        onClick={() => setShowReader(true)}
       >
-        <div className="flex items-start justify-between mb-4">
-          <span className="px-3 py-1 bg-[#d4a017]/10 text-[#d4a017] text-xs rounded-full font-medium">
-            {article.category}
-          </span>
-          {article.featured && (
-            <Star className="w-5 h-5 text-yellow-500 fill-current" />
-          )}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-[#d4a017]/20 rounded-lg flex items-center justify-center">
+            <FileText className="w-5 h-5 text-[#d4a017]" />
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900">{article.title}</h3>
+            <p className="text-sm text-gray-500">By {article.author}</p>
+          </div>
         </div>
 
-        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-          {article.title}
-        </h3>
-
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
           {article.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-          <div className="flex items-center gap-4">
-            <span>By {article.author}</span>
-            <span>{article.readTime}</span>
-          </div>
-          <span>{new Date(article.publishDate).toLocaleDateString()}</span>
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <span>{article.date}</span>
+          <span>{article.readTime}</span>
         </div>
 
-        <div className="flex gap-2">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleReadArticle}
-            className="flex-1 bg-[#d4a017] text-white py-2 px-4 rounded-xl text-sm font-medium hover:bg-[#b8941f] transition-colors"
-          >
-            Read Article
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="p-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors"
-          >
-            <Bookmark className="w-4 h-4" />
-          </motion.button>
-        </div>
+        <button className="mt-4 text-[#d4a017] font-medium text-sm hover:text-[#b8941f] transition-colors">
+          Read Full Article &rarr;
+        </button>
       </motion.div>
 
       {/* Article Reader Modal */}
