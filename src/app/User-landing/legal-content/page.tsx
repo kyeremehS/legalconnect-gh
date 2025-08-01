@@ -139,17 +139,20 @@ export default function LegalContentHub() {
     });
   };
 
+  // Update your handlePlayPause function to be consistent
   const handlePlayPause = () => {
-    const video = document.querySelector(
+    const currentVideo = document.querySelector(
       `#video-${activeIdx} video`
     ) as HTMLVideoElement;
-    if (video) {
+
+    if (currentVideo) {
       if (isPlaying) {
-        video.pause();
+        currentVideo.pause();
+        setIsPlaying(false);
       } else {
-        video.play();
+        currentVideo.play();
+        setIsPlaying(true);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -184,17 +187,14 @@ export default function LegalContentHub() {
 
   // Navigation functions
   const navigateVideo = (direction: "up" | "down") => {
-    // Pause current video before switching
-    const currentVideo = document.querySelector(
-      `#video-${activeIdx} video`
-    ) as HTMLVideoElement;
+    // Pause ALL video elements, not just the current one
+    const allVideos = document.querySelectorAll("video");
+    allVideos.forEach((video) => {
+      video.pause();
+      video.currentTime = 0;
+    });
 
-    if (currentVideo) {
-      currentVideo.pause();
-      currentVideo.currentTime = 0; // Reset to beginning
-    }
-
-    setIsPlaying(false); // Update playing state
+    setIsPlaying(false);
 
     if (direction === "up" && activeIdx > 0) {
       setActiveIdx(activeIdx - 1);
@@ -209,15 +209,17 @@ export default function LegalContentHub() {
     // Auto-play the new video after a short delay
     setTimeout(() => {
       const newIndex = direction === "up" ? activeIdx - 1 : activeIdx + 1;
-      const newVideo = document.querySelector(
-        `#video-${newIndex} video`
-      ) as HTMLVideoElement;
+      if (newIndex >= 0 && newIndex < videos.length) {
+        const newVideo = document.querySelector(
+          `#video-${newIndex} video`
+        ) as HTMLVideoElement;
 
-      if (newVideo && newIndex >= 0 && newIndex < videos.length) {
-        newVideo.play();
-        setIsPlaying(true);
+        if (newVideo) {
+          newVideo.play();
+          setIsPlaying(true);
+        }
       }
-    }, 100);
+    }, 200); // Increased delay
   };
 
   // Reset progress when changing content type
@@ -235,26 +237,53 @@ export default function LegalContentHub() {
     setCurrentTime(0);
   }, [activeIdx]);
 
-  // Add this AFTER your existing useEffect hooks
+  // Update your existing keyboard event handler (around lines 212-240)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Only handle arrow keys when viewing videos
       if (activeContent !== "videos") return;
 
-      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-        event.preventDefault(); // Prevent default scrolling behavior
+      if (
+        event.key === "ArrowUp" ||
+        event.key === "ArrowDown" ||
+        event.code === "Space"
+      ) {
+        event.preventDefault();
+      }
 
-        // Get current video and pause it
+      // Spacebar for play/pause
+      if (event.code === "Space") {
         const currentVideo = document.querySelector(
           `#video-${activeIdx} video`
         ) as HTMLVideoElement;
 
         if (currentVideo) {
-          currentVideo.pause();
-          setIsPlaying(false);
-        }
+          if (isPlaying) {
+            currentVideo.pause();
+            setIsPlaying(false);
 
-        // Navigate to next/previous video
+            // Optional: Show pause icon briefly
+            console.log("Video paused with spacebar");
+          } else {
+            currentVideo.play();
+            setIsPlaying(true);
+
+            // Optional: Show play icon briefly
+            console.log("Video playing with spacebar");
+          }
+        }
+        return;
+      }
+
+      // Arrow key navigation (existing code)
+      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        const allVideos = document.querySelectorAll("video");
+        allVideos.forEach((video) => {
+          video.pause();
+          video.currentTime = 0;
+        });
+
+        setIsPlaying(false);
+
         if (event.key === "ArrowUp" && activeIdx > 0) {
           navigateVideo("up");
         } else if (event.key === "ArrowDown" && activeIdx < videos.length - 1) {
@@ -263,14 +292,33 @@ export default function LegalContentHub() {
       }
     };
 
-    // Add event listener
     window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeContent, activeIdx, videos.length, isPlaying]); // Added isPlaying to dependencies
 
-    // Cleanup event listener
+  // Add this useEffect to cleanup videos when switching content
+  useEffect(() => {
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      // Cleanup function - pause all videos when component unmounts
+      const allVideos = document.querySelectorAll("video");
+      allVideos.forEach((video) => {
+        video.pause();
+        video.currentTime = 0;
+      });
     };
-  }, [activeContent, activeIdx, videos.length]); // Dependencies
+  }, []);
+
+  // Also cleanup when switching away from videos
+  useEffect(() => {
+    if (activeContent !== "videos") {
+      const allVideos = document.querySelectorAll("video");
+      allVideos.forEach((video) => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      setIsPlaying(false);
+    }
+  }, [activeContent]);
 
   // Render content based on active section
   const renderContent = () => {
@@ -278,7 +326,16 @@ export default function LegalContentHub() {
       case "videos":
         return (
           <main className="flex-1 bg-black p-6 relative overflow-hidden lg:m-5 lg:rounded-xl">
-            <AnimatePresence mode="wait">
+            <AnimatePresence
+              mode="wait"
+              onExitComplete={() => {
+                // Ensure all videos are paused when animation completes
+                const allVideos = document.querySelectorAll("video");
+                allVideos.forEach((video) => {
+                  video.pause();
+                });
+              }}
+            >
               <motion.div
                 key={activeIdx} // ✅ Use activeIdx as key for proper updates
                 id={`video-${activeIdx}`}
