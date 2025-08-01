@@ -64,6 +64,12 @@ const inter = Inter({
   display: "swap",
 });
 
+declare global {
+  interface Window {
+    scrollTimeout: NodeJS.Timeout;
+  }
+}
+
 type VideoItem = {
   id: string;
   title: string;
@@ -75,6 +81,7 @@ type VideoItem = {
   language: string;
   thumbnail: string;
   description: string;
+  tags?: string[];
 };
 
 // Content Types
@@ -139,10 +146,10 @@ export default function LegalContentHub() {
     });
   };
 
-  // Update your handlePlayPause function to be consistent
+  // Update your handlePlayPause function (around line 130)
   const handlePlayPause = () => {
     const currentVideo = document.querySelector(
-      `#video-${activeIdx} video`
+      `#video-${activeIdx}`
     ) as HTMLVideoElement;
 
     if (currentVideo) {
@@ -150,18 +157,21 @@ export default function LegalContentHub() {
         currentVideo.pause();
         setIsPlaying(false);
       } else {
-        currentVideo.play();
+        currentVideo.play().catch((error) => {
+          console.log("Play failed:", error);
+        });
         setIsPlaying(true);
       }
     }
   };
 
   const handleMuteToggle = () => {
-    const video = document.querySelector(
-      `#video-${activeIdx} video`
+    const currentVideo = document.querySelector(
+      `#video-${activeIdx}`
     ) as HTMLVideoElement;
-    if (video) {
-      video.muted = !isMuted;
+    
+    if (currentVideo) {
+      currentVideo.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
@@ -187,12 +197,15 @@ export default function LegalContentHub() {
 
   // Navigation functions
   const navigateVideo = (direction: "up" | "down") => {
-    // Pause ALL video elements, not just the current one
-    const allVideos = document.querySelectorAll("video");
-    allVideos.forEach((video) => {
-      video.pause();
-      video.currentTime = 0;
-    });
+    // Pause current video
+    const currentVideo = document.querySelector(
+      `#video-${activeIdx}`
+    ) as HTMLVideoElement;
+
+    if (currentVideo) {
+      currentVideo.pause();
+      currentVideo.currentTime = 0;
+    }
 
     setIsPlaying(false);
 
@@ -200,20 +213,26 @@ export default function LegalContentHub() {
 
     if (direction === "up" && activeIdx > 0) {
       newIndex = activeIdx - 1;
-      setActiveIdx(newIndex);
-      setVideoProgress(0);
-      setCurrentTime(0);
     } else if (direction === "down" && activeIdx < videos.length - 1) {
       newIndex = activeIdx + 1;
+    }
+
+    if (newIndex !== activeIdx) {
       setActiveIdx(newIndex);
       setVideoProgress(0);
       setCurrentTime(0);
-    }
 
-    // Only proceed if index actually changed
-    if (newIndex !== activeIdx) {
-      // Set playing state immediately
-      setIsPlaying(true);
+      // Auto-play new video after transition
+      setTimeout(() => {
+        setIsPlaying(true);
+        const newVideo = document.querySelector(
+          `#video-${newIndex}`
+        ) as HTMLVideoElement;
+
+        if (newVideo) {
+          newVideo.play().catch(console.log);
+        }
+      }, 300); // Match transition duration
     }
   };
 
@@ -232,7 +251,7 @@ export default function LegalContentHub() {
     setCurrentTime(0);
   }, [activeIdx]);
 
-  // Update your existing keyboard event handler (around lines 212-240)
+  // Update the useEffect for keyboard handling:
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (activeContent !== "videos") return;
@@ -248,48 +267,63 @@ export default function LegalContentHub() {
       // Spacebar for play/pause
       if (event.code === "Space") {
         const currentVideo = document.querySelector(
-          `#video-${activeIdx} video`
+          `#video-${activeIdx}`
         ) as HTMLVideoElement;
 
         if (currentVideo) {
           if (isPlaying) {
             currentVideo.pause();
             setIsPlaying(false);
-
-            // Optional: Show pause icon briefly
-            console.log("Video paused with spacebar");
           } else {
-            currentVideo.play();
+            currentVideo.play().catch((error) => {
+              console.log("Play failed:", error);
+            });
             setIsPlaying(true);
-
-            // Optional: Show play icon briefly
-            console.log("Video playing with spacebar");
           }
         }
         return;
       }
 
-      // Arrow key navigation (existing code)
-      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-        const allVideos = document.querySelectorAll("video");
-        allVideos.forEach((video) => {
-          video.pause();
-          video.currentTime = 0;
-        });
-
-        setIsPlaying(false);
-
-        if (event.key === "ArrowUp" && activeIdx > 0) {
-          navigateVideo("up");
-        } else if (event.key === "ArrowDown" && activeIdx < videos.length - 1) {
-          navigateVideo("down");
-        }
+      // Arrow key navigation
+      if (event.key === "ArrowUp") {
+        navigateVideo("up");
+      } else if (event.key === "ArrowDown") {
+        navigateVideo("down");
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeContent, activeIdx, videos.length, isPlaying]); // Added isPlaying to dependencies
+  }, [activeContent, activeIdx, videos.length, isPlaying]);
+
+  // Add mouse wheel handler after the keyboard handler useEffect:
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (activeContent !== "videos") return;
+      
+      event.preventDefault();
+      
+      // Debounce wheel events
+      clearTimeout(window.scrollTimeout);
+      window.scrollTimeout = setTimeout(() => {
+        if (event.deltaY > 0) {
+          // Scroll down
+          navigateVideo("down");
+        } else {
+          // Scroll up
+          navigateVideo("up");
+        }
+      }, 50);
+    };
+
+    if (activeContent === "videos") {
+      window.addEventListener("wheel", handleWheel, { passive: false });
+      return () => {
+        window.removeEventListener("wheel", handleWheel);
+        clearTimeout(window.scrollTimeout);
+      };
+    }
+  }, [activeContent, activeIdx, videos.length]);
 
   // Add this useEffect to cleanup videos when switching content
   useEffect(() => {
@@ -342,232 +376,209 @@ export default function LegalContentHub() {
     switch (activeContent) {
       case "videos":
         return (
-          <main className="flex-1 bg-black p-6 relative overflow-hidden lg:m-5 lg:rounded-xl">
-            <AnimatePresence
-              mode="wait"
-              onExitComplete={() => {
-                // Ensure all videos are paused when animation completes
-                const allVideos = document.querySelectorAll("video");
-                allVideos.forEach((video) => {
-                  video.pause();
-                });
+          <main className="flex-1 bg-black relative overflow-hidden lg:m-5 lg:rounded-xl">
+            {/* Video Container with smooth vertical transitions */}
+            <div
+              className="relative h-full transition-transform duration-500 ease-out"
+              style={{
+                transform: `translateY(-${activeIdx * 100}vh)`,
               }}
             >
-              <motion.div
-                key={activeIdx} // ✅ Use activeIdx as key for proper updates
-                id={`video-${activeIdx}`}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center z-10"
-              >
-                <div className="relative w-full h-full flex justify-center items-center">
-                  <video
-                    src={videos[activeIdx].url}
-                    autoPlay={isPlaying} // This ensures video plays based on state
-                    loop
-                    muted={isMuted}
-                    playsInline
-                    className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl"
-                    style={{
-                      maxHeight: "90vh",
-                      maxWidth: "420px",
-                    }}
-                    onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget)}
-                    onLoadedMetadata={(e) =>
-                      handleLoadedMetadata(e.currentTarget)
-                    }
-                    onCanPlay={(e) => {
-                      // Auto-play when video is ready and isPlaying is true
-                      if (isPlaying) {
-                        e.currentTarget.play().catch(console.log);
-                      }
-                    }}
-                    onEnded={() => {
-                      if (activeIdx < videos.length - 1) {
-                        setActiveIdx(activeIdx + 1);
-                        setVideoProgress(0);
-                      }
-                    }}
-                  />
+              {videos.map((video, idx) => (
+                <motion.div
+                  key={video.id}
+                  className="absolute inset-0 w-full h-screen flex items-center justify-center"
+                  style={{
+                    top: `${idx * 100}vh`,
+                    zIndex: idx === activeIdx ? 10 : 1,
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: Math.abs(idx - activeIdx) <= 1 ? 1 : 0,
+                    scale: idx === activeIdx ? 1 : 0.95,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="relative w-full h-full flex justify-center items-center">
+                    <video
+                      id={`video-${idx}`}
+                      src={video.url}
+                      autoPlay={idx === activeIdx && isPlaying}
+                      loop
+                      muted={isMuted}
+                      playsInline
+                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer"
+                      style={{
+                        maxHeight: "90vh",
+                        maxWidth: "420px",
+                      }}
+                      onClick={handlePlayPause} // Add click handler for play/pause
+                      onTimeUpdate={(e) => {
+                        if (idx === activeIdx) {
+                          handleTimeUpdate(e.currentTarget);
+                        }
+                      }}
+                      onLoadedMetadata={(e) => {
+                        if (idx === activeIdx) {
+                          handleLoadedMetadata(e.currentTarget);
+                        }
+                      }}
+                      onCanPlay={(e) => {
+                        if (idx === activeIdx && isPlaying) {
+                          e.currentTarget.play().catch(console.log);
+                        }
+                      }}
+                      onEnded={() => {
+                        if (idx === activeIdx && activeIdx < videos.length - 1) {
+                          setActiveIdx(activeIdx + 1);
+                          setVideoProgress(0);
+                        }
+                      }}
+                    />
 
-                  {/* Video Info Overlay - NOW SHOWS CORRECT INFO */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
-                  >
-                    <div className="mb-4">
-                      <h2 className="text-xl font-bold text-white mb-2">
-                        {videos[activeIdx].title} {/* ✅ Correct title */}
-                      </h2>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-[#d4a017] font-medium">
-                          {videos[activeIdx].lawyer} {/* ✅ Correct lawyer */}
-                        </span>
-                        <span className="text-white/60">
-                          {videos[activeIdx].views} views{" "}
-                          {/* ✅ Correct views */}
-                        </span>
-                        <span className="text-white/60">
-                          {videos[activeIdx].duration}{" "}
-                          {/* ✅ Correct duration */}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-2">
-                        <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
-                          #{videos[activeIdx].category}{" "}
-                          {/* ✅ Correct category */}
-                        </div>
-                        <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
-                          <Languages className="w-3 h-3" />
-                          {videos[activeIdx].language}{" "}
-                          {/* ✅ Correct language */}
-                        </div>
-                      </div>
-                      <p className="text-white/80 text-sm mt-2 line-clamp-2">
-                        {videos[activeIdx].description}{" "}
-                        {/* ✅ Correct description */}
-                      </p>
-                    </div>
-
-                    {/* Enhanced Progress bar with real-time updates */}
-                    <div className="space-y-2 mb-8">
-                      <div className="flex justify-between text-xs text-white/70">
-                        <span>{formatTime(currentTime)}</span>
-                        <span>{formatTime(videoDuration)}</span>
-                      </div>
-
-                      <div
-                        className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
-                        onClick={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          const clickX = e.clientX - rect.left;
-                          const width = rect.width;
-                          const percentage = (clickX / width) * 100;
-                          const video = document.querySelector(
-                            `#video-${activeIdx} video`
-                          ) as HTMLVideoElement;
-                          if (video && videoDuration) {
-                            const newTime = (percentage / 100) * videoDuration;
-                            video.currentTime = newTime;
-                            setVideoProgress(percentage);
-                          }
-                        }}
+                    {/* Video Info Overlay - Only show for active video */}
+                    {idx === activeIdx && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
                       >
-                        <motion.div
-                          animate={{ width: `${videoProgress}%` }}
-                          className="h-full bg-[#d4a017] rounded-full relative"
-                          transition={{ duration: 0.1 }}
-                        >
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
-                        </motion.div>
+                        <div className="mb-4">
+                          <h2 className="text-xl font-bold text-white mb-2">
+                            {video.title}
+                          </h2>
+                          <div className="flex items-center gap-4 text-sm">
+                            <span className="text-[#d4a017] font-medium">
+                              {video.lawyer}
+                            </span>
+                            <span className="text-white/60">
+                              {video.views} views
+                            </span>
+                            <span className="text-white/60">
+                              {video.duration}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
+                              #{video.category}
+                            </div>
+                            <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
+                              <Languages className="w-3 h-3" />
+                              {video.language}
+                            </div>
+                          </div>
+                          <p className="text-white/80 text-sm mt-2 line-clamp-2">
+                            {video.description}
+                          </p>
+                        </div>
+
+                        {/* Progress bar - Update margin to avoid overlap with controls */}
+                        <div className="space-y-2 mb-8">
+                          <div className="flex justify-between text-xs text-white/70">
+                            <span>{formatTime(currentTime)}</span>
+                            <span>{formatTime(videoDuration)}</span>
+                          </div>
+
+                          <div
+                            className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
+                            onClick={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const clickX = e.clientX - rect.left;
+                              const width = rect.width;
+                              const percentage = (clickX / width) * 100;
+                              const videoElement = document.querySelector(
+                                `#video-${activeIdx}`
+                              ) as HTMLVideoElement;
+                              if (videoElement && videoDuration) {
+                                const newTime = (percentage / 100) * videoDuration;
+                                videoElement.currentTime = newTime;
+                                setVideoProgress(percentage);
+                              }
+                            }}
+                          >
+                            <motion.div
+                              animate={{ width: `${videoProgress}%` }}
+                              className="h-full bg-[#d4a017] rounded-full relative"
+                              transition={{ duration: 0.1 }}
+                            >
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
+                            </motion.div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Optional: Play/Pause indicator overlay */}
+                    {idx === activeIdx && !isPlaying && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+                      >
+                        <div className="p-6 bg-black/40 backdrop-blur-sm rounded-full">
+                          <Play className="w-12 h-12 text-white" />
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Video Controls - Only volume control */}
+                    {idx === activeIdx && (
+                      <VideoControls
+                        isMuted={isMuted}
+                        onMuteToggle={handleMuteToggle}
+                      />
+                    )}
+
+                    {/* Navigation Controls - Moved to top of right side */}
+                    {idx === activeIdx && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-50">
+                        {/* Up/Down Navigation at the top */}
+                        <div className="flex flex-col gap-2 -mb-1">
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
+                            onClick={() => navigateVideo("up")}
+                            disabled={activeIdx === 0}
+                          >
+                            <ChevronUp className="w-4 h-4" />
+                          </motion.button>
+
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
+                            onClick={() => navigateVideo("down")}
+                            disabled={activeIdx === videos.length - 1}
+                          >
+                            <ChevronDown className="w-4 h-4" />
+                          </motion.button>
+                        </div>
+
+                        {/* Action Buttons - Made smaller */}
+                        <ActionButton
+                          icon={<Heart className="w-5 h-5" />}
+                          count={likes[activeIdx]}
+                          onClick={() => handleLike(activeIdx)}
+                        />
+                        <ActionButton
+                          icon={<MessageCircle className="w-5 h-5" />}
+                          count={comments[activeIdx]}
+                          onClick={() => handleComment(activeIdx)}
+                        />
+                        <ActionButton
+                          icon={<Share className="w-5 h-5" />}
+                          count={shares[activeIdx]}
+                          onClick={() => handleShare(activeIdx)}
+                        />
                       </div>
-
-                      {/* <div className="flex justify-between text-xs text-white/50">
-                          <span>Video {activeIdx + 1} of {videos.length}</span>
-                          <span>{Math.round(videoProgress)}% complete</span>
-                        </div> */}
-                    </div>
-
-                    {/* Call to Action */}
-                    {/* <div className="flex gap-2 mt-4">
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="flex-1 bg-[#d4a017] text-white py-2 px-4 rounded-xl text-sm font-medium hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
-                        >
-                          <Calendar className="w-4 h-4" />
-                          Book Lawyer
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="bg-white/20 text-white py-2 px-4 rounded-xl text-sm font-medium hover:bg-white/30 transition-colors flex items-center justify-center gap-2"
-                        >
-                          <MessageSquare className="w-4 h-4" />
-                          Ask AI
-                        </motion.button>
-                      </div> */}
-                  </motion.div>
-
-                  {/* Video Controls */}
-                  <VideoControls
-                    isPlaying={isPlaying}
-                    isMuted={isMuted}
-                    onPlayPause={handlePlayPause}
-                    onMuteToggle={handleMuteToggle}
-                  />
-
-                  {/* Action Buttons */}
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
-                    <ActionButton
-                      icon={<Heart className="w-6 h-6" />}
-                      count={likes[activeIdx]}
-                      onClick={() => handleLike(activeIdx)}
-                    />
-                    <ActionButton
-                      icon={<MessageCircle className="w-6 h-6" />}
-                      count={comments[activeIdx]}
-                      onClick={() => handleComment(activeIdx)}
-                    />
-                    <ActionButton
-                      icon={<Share className="w-6 h-6" />}
-                      count={shares[activeIdx]}
-                      onClick={() => handleShare(activeIdx)}
-                    />
+                    )}
                   </div>
-
-                  {/* Navigation Controls - UPDATE THESE BUTTONS */}
-                  <div className="absolute right-5 mt-10 bottom-18 flex flex-col gap-2">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-3 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-all disabled:opacity-50"
-                      onClick={() => {
-                        // Pause current video before navigating
-                        const currentVideo = document.querySelector(
-                          `#video-${activeIdx} video`
-                        ) as HTMLVideoElement;
-
-                        if (currentVideo) {
-                          currentVideo.pause();
-                          setIsPlaying(false);
-                        }
-
-                        navigateVideo("up");
-                      }}
-                      disabled={activeIdx === 0}
-                    >
-                      <ChevronUp className="w-5 h-5" />
-                    </motion.button>
-
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-3 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-all disabled:opacity-50"
-                      onClick={() => {
-                        // Pause current video before navigating
-                        const currentVideo = document.querySelector(
-                          `#video-${activeIdx} video`
-                        ) as HTMLVideoElement;
-
-                        if (currentVideo) {
-                          currentVideo.pause();
-                          setIsPlaying(false);
-                        }
-
-                        navigateVideo("down");
-                      }}
-                      disabled={activeIdx === videos.length - 1}
-                    >
-                      <ChevronDown className="w-5 h-5" />
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                </motion.div>
+              ))}
+            </div>
           </main>
         );
 
@@ -635,187 +646,7 @@ export default function LegalContentHub() {
     }
   };
 
-  // Add this ArticleModal component to your Legal Content page
-  function ArticleModal({
-    article,
-    isOpen,
-    onClose,
-  }: {
-    article: any;
-    isOpen: boolean;
-    onClose: () => void;
-  }) {
-    if (!isOpen) return null;
-
-    return (
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={onClose}
-        >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
-          >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-[#d4a017] to-[#b8941f] p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">
-                    {videos[activeIdx].title}
-                  </h2>
-                  <div className="flex items-center gap-4 text-sm opacity-90">
-                    <span>By {videos[activeIdx].lawyer}</span>
-                    <span>{videos[activeIdx].views} views</span>
-                    <span>{videos[activeIdx].duration}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
-            {/* Scrollable Content */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)] prose prose-gray max-w-none">
-              {/* Article Image */}
-              {videos[activeIdx].thumbnail && (
-                <img
-                  src={videos[activeIdx].thumbnail}
-                  alt={videos[activeIdx].title}
-                  className="w-full h-48 object-cover rounded-lg mb-6"
-                />
-              )}
-
-              {/* Article Content - Full scrollable text */}
-              <div className="space-y-4 text-gray-700 leading-relaxed">
-                <p className="text-lg font-medium text-gray-900 mb-4">
-                  {videos[activeIdx].description}
-                </p>
-
-                {/* Full article content - you can replace this with actual content */}
-                <div className="space-y-4">
-                  <p>
-                    Understanding your legal rights is fundamental to navigating
-                    the complex world of law in Ghana. This comprehensive guide
-                    will walk you through the essential aspects of Ghanaian law
-                    that every citizen should be aware of.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Constitutional Rights
-                  </h3>
-                  <p>
-                    The 1992 Constitution of Ghana guarantees fundamental human
-                    rights and freedoms to all citizens. These include the right
-                    to life, liberty, dignity, equality before the law, and
-                    freedom of speech, expression, and association.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Legal Procedures
-                  </h3>
-                  <p>
-                    When dealing with legal matters, it's important to
-                    understand the proper procedures. This includes knowing when
-                    to seek legal counsel, how to file complaints, and
-                    understanding court processes.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Property Rights
-                  </h3>
-                  <p>
-                    Property law in Ghana covers both land and personal
-                    property. Understanding these rights helps protect your
-                    investments and ensures you can make informed decisions
-                    about property transactions.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Employment Law
-                  </h3>
-                  <p>
-                    Workers in Ghana are protected by various labor laws. These
-                    cover minimum wage requirements, working conditions,
-                    termination procedures, and workplace safety standards.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Family Law
-                  </h3>
-                  <p>
-                    Family law encompasses marriage, divorce, child custody, and
-                    inheritance matters. Understanding these laws helps families
-                    navigate personal legal issues with confidence.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Criminal Law Basics
-                  </h3>
-                  <p>
-                    Every citizen should understand basic criminal law
-                    principles, including their rights when arrested, the bail
-                    process, and how the criminal justice system works in Ghana.
-                  </p>
-
-                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                    Seeking Legal Help
-                  </h3>
-                  <p>
-                    When you need legal assistance, it's important to choose
-                    qualified legal practitioners who are members of the Ghana
-                    Bar Association. This ensures you receive professional and
-                    ethical legal services.
-                  </p>
-
-                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-6">
-                    <h4 className="font-bold text-yellow-800 mb-2">
-                      Important Note
-                    </h4>
-                    <p className="text-yellow-700">
-                      This article provides general information and should not
-                      be considered as legal advice. For specific legal matters,
-                      always consult with a qualified legal practitioner.
-                    </p>
-                  </div>
-
-                  <p>
-                    Legal education empowers citizens to make informed decisions
-                    and protect their rights. By understanding these fundamental
-                    concepts, you can better navigate Ghana's legal system and
-                    seek appropriate help when needed.
-                  </p>
-                </div>
-              </div>
-
-              {/* Article Tags */}
-              <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-200">
-                {videos[activeIdx].tags &&
-                  videos[activeIdx].tags.map((tag: string, idx: number) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 bg-[#d4a017]/10 text-[#d4a017] rounded-full text-sm font-medium"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    );
-  }
+  
 
   return (
     <div className={`min-h-screen bg-gray-50 flex ${inter.className}`}>
