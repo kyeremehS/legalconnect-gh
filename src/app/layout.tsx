@@ -27,10 +27,10 @@ export default function RootLayout({
       </head>
       <body className={outfit.variable} suppressHydrationWarning>
         {/* <ThemeProvider */}
-          attribute="class"
+          {/* attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange */}
         {/* > */}
           <TooltipProvider>{children}</TooltipProvider>
         {/* </ThemeProvider> */}

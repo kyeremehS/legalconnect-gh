@@ -17,6 +17,7 @@ import {
   BookOpen,
   Bot,
   BarChart2,
+  BookOpenText
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -37,14 +38,15 @@ const lawyerNavItems = [
 
 const userNavItems = [
   { name: "Dashboard", href: "/User-landing", icon: Activity },
-  { name: "Legal Videos", href: "User-landing/legal-content", icon: Video },
+  { name: "Legal Directory", href: "/User-landing/network", icon: BookOpenText },
+  { name: "Legal Resources", href: "User-landing/legal-content", icon: BookOpen },
+  // {
+  //   name: "Book Appointment",
+  //   href: "/User-landing/appointments",
+  //   icon: Calendar,
+  // },
   {
-    name: "Book Appointment",
-    href: "/User-landing/appointments",
-    icon: Calendar,
-  },
-  {
-    name: "Message & Call Lawyer",
+    name: "Message & Call",
     href: "/User-landing/user-message-call",
     icon: Phone,
   },
@@ -54,12 +56,13 @@ const userNavItems = [
     icon: User,
   },
   { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
-  {
-    name: "Legal Education",
-    href: "/User-landing/user-education",
-    icon: BookOpen,
-  },
+  // {
+  //   name: "Legal Education",
+  //   href: "/User-landing/user-education",
+  //   icon: BookOpen,
+  // },
   { name: "Settings", href: "/User-landing/settings", icon: Settings },
+   
 ];
 
 const adminNavItems = [
