@@ -196,8 +196,8 @@ export const legalTemplates = [
       "Legally compliant",
       "Customizable fields",
       "Landlord & tenant rights",
-      "Payment terms"
-    ]
+      "Payment terms",
+    ],
   },
   {
     id: "2",
@@ -214,8 +214,8 @@ export const legalTemplates = [
       "Job description section",
       "Salary & benefits",
       "Termination clauses",
-      "Confidentiality agreement"
-    ]
+      "Confidentiality agreement",
+    ],
   },
   {
     id: "3",
@@ -232,9 +232,9 @@ export const legalTemplates = [
       "Multiple authority types",
       "Witness requirements",
       "Revocation clause",
-      "Notarization guide"
-    ]
-  }
+      "Notarization guide",
+    ],
+  },
 ];
 
 // Quiz Data
@@ -271,36 +271,35 @@ export const legalQuizzes = [
   },
 ];
 
-
 // Video categories and data
 export const videoCategories = [
   {
     label: "Land Law",
-    description: "Videos about land rights, disputes, and property law.",
+    description: "Videos about Landlord and tenants rights.",
     videos: [
       {
         id: "1",
-        title: "Understanding Land Ownership in Ghana",
-        url: "/legal-videos/GFA and footballer.mp4",
-        lawyer: "Ama Kwarteng, Esq.",
+        title: "Understanding Landlord and Tenant Rights",
+        url: "/legal-videos/tenant-and-landlord.mp4",
+        lawyer: "Yudah Brown, Esq.",
         views: "12.5K",
         duration: "5:32",
         language: "English",
         thumbnail: "/thumbnails/land1.jpg",
         description:
-          "Learn about the different types of land ownership in Ghana and your rights as a landowner.",
+          "Education on getting a rent card from the landlord and understanding your rights as a tenant.",
       },
       {
         id: "2",
-        title: "Resolving Land Disputes",
-        url: "/legal-videos/Child-labour.mp4",
-        lawyer: "Kwame Mensah, Esq.",
+        title: "Building without permits",
+        url: "/legal-videos/building-without-permit.mp4",
+        lawyer: "Yudah Brown, Esq.",
         views: "8.2K",
         duration: "7:15",
-        language: "Twi",
+        language: "English",
         thumbnail: "/thumbnails/land2.jpg",
         description:
-          "Step-by-step guide on how to resolve land disputes through legal channels.",
+          "Education on being served with a notice to stop building without a permit and the legal implications.",
       },
     ],
   },
@@ -312,57 +311,61 @@ export const videoCategories = [
       {
         id: "3",
         title: "Marriage and Divorce Laws",
-        url: "/legal-videos/GFA and footballer.mp4",
-        lawyer: "Abena Owusu, Esq.",
+        url: "/legal-videos/getting-divorce-in-ghana.mp4",
+        lawyer: "Tina, Esq.",
         views: "15.1K",
-        duration: "6:45",
-        language: "English",
+        duration: "3:09",
+        language: "Twi",
         thumbnail: "/thumbnails/family1.jpg",
-        description:
-          "Understanding marriage laws and divorce procedures in Ghana.",
+        description: "Understanding how to get a divorce in a Ghanaian court.",
       },
       {
         id: "4",
-        title: "Child Custody Explained",
-        url: "/legal-videos/GFA and footballer.mp4",
-        lawyer: "Kojo Asante, Esq.",
+        title: "Child Custody and Labour Explained",
+        url: "/legal-videos/Child-labour.mp4",
+        lawyer: "Yudah Brown, Esq.",
         views: "9.8K",
-        duration: "4:20",
+        duration: "1:36",
         language: "English",
         thumbnail: "/thumbnails/family2.jpg",
-        description:
-          "Learn about child custody rights and how courts make decisions.",
+        description: "Learn about what qualifies to be child labour.",
       },
     ],
   },
   {
-    label: "Employment Law",
+    label: "Criminal Law",
     description:
-      "Videos about employee rights, contracts, and workplace issues.",
+      "Video about explaining what it means to plead guilty or not guilty in court.",
     videos: [
       {
         id: "5",
-        title: "Your Rights as an Employee",
-        url: "/legal-videos/GFA and footballer.mp4",
-        lawyer: "Efua Boateng, Esq.",
+        title: "Pleading guilty or not guilty in court",
+        url: "/legal-videos/Pleading-guilty-in-court.mp4",
+        lawyer: "Tina, Esq.",
         views: "11.3K",
-        duration: "8:12",
-        language: "English",
+        duration: "2:58",
+        language: "Twi",
         thumbnail: "/thumbnails/employment1.jpg",
         description:
-          "Know your workplace rights and how to protect yourself from exploitation.",
+          "Understanding the meaning of pleading guilty or not guilty in court and its implications.",
       },
+    ],
+  },
+  {
+    label: "Association Law",
+    description: "Videos about the rules and regulations of associations.",
+    videos: [
       {
         id: "6",
-        title: "Understanding Employment Contracts",
-        url: "/legal-videos/GFA and footballer.mp4", 
-        lawyer: "Yaw Adu, Esq.",
+        title: "Understanding the Law of Association",
+        url: "/legal-videos/GFA and footballer.mp4",
+        lawyer: "Yudah Brown, Esq.",
         views: "6.7K",
         duration: "5:58",
-        language: "Ewe",
-        thumbnail: "/thumbnails/employment2.jpg",
+        language: "English",
+        thumbnail: "/thumbnails/Association-rules.jpg",
         description:
-          "What to look for in employment contracts and red flags to avoid.",
+          "Know the rules and regulations of the association you are affiliated to.",
       },
     ],
   },

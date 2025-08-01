@@ -47,10 +47,15 @@ import TemplateDownloader from "../../components/TemplateDownloader";
 import ArticleCard from "../../components/ArticleCard";
 import VideoControls from "../../components/videocontrol";
 import SidebarItem from "../../components/content-sidebar";
-import QuizCard from "../../components/QuizCard"
+import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import ActionButton from "../../components/videoaction";
-import { legalArticles, legalQuizzes, legalTemplates, videoCategories } from "../../components/mockdata"
+import {
+  legalArticles,
+  legalQuizzes,
+  legalTemplates,
+  videoCategories,
+} from "../../components/mockdata";
 
 // Configure Inter font
 const inter = Inter({
@@ -58,9 +63,6 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
-
-
-
 
 type VideoItem = {
   id: string;
@@ -93,7 +95,6 @@ function flattenVideos() {
 function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {
   return <TemplateDownloader template={template} />;
 }
-
 
 export default function LegalContentHub() {
   const videos = flattenVideos();
@@ -183,15 +184,40 @@ export default function LegalContentHub() {
 
   // Navigation functions
   const navigateVideo = (direction: "up" | "down") => {
+    // Pause current video before switching
+    const currentVideo = document.querySelector(
+      `#video-${activeIdx} video`
+    ) as HTMLVideoElement;
+
+    if (currentVideo) {
+      currentVideo.pause();
+      currentVideo.currentTime = 0; // Reset to beginning
+    }
+
+    setIsPlaying(false); // Update playing state
+
     if (direction === "up" && activeIdx > 0) {
       setActiveIdx(activeIdx - 1);
-      setVideoProgress(0); // Reset progress
+      setVideoProgress(0);
       setCurrentTime(0);
     } else if (direction === "down" && activeIdx < videos.length - 1) {
       setActiveIdx(activeIdx + 1);
-      setVideoProgress(0); // Reset progress
+      setVideoProgress(0);
       setCurrentTime(0);
     }
+
+    // Auto-play the new video after a short delay
+    setTimeout(() => {
+      const newIndex = direction === "up" ? activeIdx - 1 : activeIdx + 1;
+      const newVideo = document.querySelector(
+        `#video-${newIndex} video`
+      ) as HTMLVideoElement;
+
+      if (newVideo && newIndex >= 0 && newIndex < videos.length) {
+        newVideo.play();
+        setIsPlaying(true);
+      }
+    }, 100);
   };
 
   // Reset progress when changing content type
@@ -209,6 +235,43 @@ export default function LegalContentHub() {
     setCurrentTime(0);
   }, [activeIdx]);
 
+  // Add this AFTER your existing useEffect hooks
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only handle arrow keys when viewing videos
+      if (activeContent !== "videos") return;
+
+      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        event.preventDefault(); // Prevent default scrolling behavior
+
+        // Get current video and pause it
+        const currentVideo = document.querySelector(
+          `#video-${activeIdx} video`
+        ) as HTMLVideoElement;
+
+        if (currentVideo) {
+          currentVideo.pause();
+          setIsPlaying(false);
+        }
+
+        // Navigate to next/previous video
+        if (event.key === "ArrowUp" && activeIdx > 0) {
+          navigateVideo("up");
+        } else if (event.key === "ArrowDown" && activeIdx < videos.length - 1) {
+          navigateVideo("down");
+        }
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeContent, activeIdx, videos.length]); // Dependencies
+
   // Render content based on active section
   const renderContent = () => {
     switch (activeContent) {
@@ -216,129 +279,120 @@ export default function LegalContentHub() {
         return (
           <main className="flex-1 bg-black p-6 relative overflow-hidden lg:m-5 lg:rounded-xl">
             <AnimatePresence mode="wait">
-              {videos.map((video, idx) => (
-                <motion.div
-                  key={idx}
-                  id={`video-${idx}`}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{
-                    opacity: idx === activeIdx ? 1 : 0,
-                    scale: idx === activeIdx ? 1 : 0.9,
-                  }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className={`absolute inset-0 flex items-center justify-center ${
-                    idx === activeIdx ? "z-10" : "z-0 pointer-events-none"
-                  }`}
-                >
-                  <div className="relative w-full h-full flex justify-center items-center">
-                    <video
-                      src={video.url}
-                      autoPlay={idx === activeIdx && isPlaying}
-                      loop
-                      muted={isMuted}
-                      playsInline
-                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl"
-                      style={{
-                        maxHeight: "90vh",
-                        maxWidth: "420px",
-                      }}
-                      onTimeUpdate={(e) => {
-                        if (idx === activeIdx) {
-                          handleTimeUpdate(e.currentTarget);
-                        }
-                      }}
-                      onLoadedMetadata={(e) => {
-                        if (idx === activeIdx) {
-                          handleLoadedMetadata(e.currentTarget);
-                        }
-                      }}
-                      onEnded={() => {
-                        if (activeIdx < videos.length - 1) {
-                          setActiveIdx(activeIdx + 1);
-                          setVideoProgress(0);
-                        }
-                      }}
-                    />
+              <motion.div
+                key={activeIdx} // ✅ Use activeIdx as key for proper updates
+                id={`video-${activeIdx}`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 flex items-center justify-center z-10"
+              >
+                <div className="relative w-full h-full flex justify-center items-center">
+                  <video
+                    src={videos[activeIdx].url} // ✅ Correct video URL
+                    autoPlay={isPlaying}
+                    loop
+                    muted={isMuted}
+                    playsInline
+                    className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl"
+                    style={{
+                      maxHeight: "90vh",
+                      maxWidth: "420px",
+                    }}
+                    onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget)}
+                    onLoadedMetadata={(e) =>
+                      handleLoadedMetadata(e.currentTarget)
+                    }
+                    onEnded={() => {
+                      if (activeIdx < videos.length - 1) {
+                        setActiveIdx(activeIdx + 1);
+                        setVideoProgress(0);
+                      }
+                    }}
+                  />
 
-                    {/* Video Info Overlay with Enhanced Progress */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
-                    >
-                      <div className="mb-4">
-                        <h2 className="text-xl font-bold text-white mb-2">
-                          {video.title}
-                        </h2>
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="text-[#d4a017] font-medium">
-                            {video.lawyer}
-                          </span>
-                          <span className="text-white/60">
-                            {video.views} views
-                          </span>
-                          <span className="text-white/60">
-                            {video.duration}
-                          </span>
+                  {/* Video Info Overlay - NOW SHOWS CORRECT INFO */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
+                  >
+                    <div className="mb-4">
+                      <h2 className="text-xl font-bold text-white mb-2">
+                        {videos[activeIdx].title} {/* ✅ Correct title */}
+                      </h2>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="text-[#d4a017] font-medium">
+                          {videos[activeIdx].lawyer} {/* ✅ Correct lawyer */}
+                        </span>
+                        <span className="text-white/60">
+                          {videos[activeIdx].views} views{" "}
+                          {/* ✅ Correct views */}
+                        </span>
+                        <span className="text-white/60">
+                          {videos[activeIdx].duration}{" "}
+                          {/* ✅ Correct duration */}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
+                          #{videos[activeIdx].category}{" "}
+                          {/* ✅ Correct category */}
                         </div>
-                        <div className="flex items-center gap-2 mt-2">
-                          <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
-                            #{video.category}
-                          </div>
-                          <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
-                            <Languages className="w-3 h-3" />
-                            {video.language}
-                          </div>
+                        <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
+                          <Languages className="w-3 h-3" />
+                          {videos[activeIdx].language}{" "}
+                          {/* ✅ Correct language */}
                         </div>
-                        <p className="text-white/80 text-sm mt-2 line-clamp-2">
-                          {video.description}
-                        </p>
+                      </div>
+                      <p className="text-white/80 text-sm mt-2 line-clamp-2">
+                        {videos[activeIdx].description}{" "}
+                        {/* ✅ Correct description */}
+                      </p>
+                    </div>
+
+                    {/* Enhanced Progress bar with real-time updates */}
+                    <div className="space-y-2 mb-8">
+                      <div className="flex justify-between text-xs text-white/70">
+                        <span>{formatTime(currentTime)}</span>
+                        <span>{formatTime(videoDuration)}</span>
                       </div>
 
-                      {/* Enhanced Progress bar with real-time updates */}
-                      <div className="space-y-2 mb-8">
-                        <div className="flex justify-between text-xs text-white/70">
-                          <span>{formatTime(currentTime)}</span>
-                          <span>{formatTime(videoDuration)}</span>
-                        </div>
-
-                        <div
-                          className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
-                          onClick={(e) => {
-                            const rect =
-                              e.currentTarget.getBoundingClientRect();
-                            const clickX = e.clientX - rect.left;
-                            const width = rect.width;
-                            const percentage = (clickX / width) * 100;
-                            const video = document.querySelector(
-                              `#video-${activeIdx} video`
-                            ) as HTMLVideoElement;
-                            if (video && videoDuration) {
-                              const newTime =
-                                (percentage / 100) * videoDuration;
-                              video.currentTime = newTime;
-                              setVideoProgress(percentage);
-                            }
-                          }}
+                      <div
+                        className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
+                        onClick={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const clickX = e.clientX - rect.left;
+                          const width = rect.width;
+                          const percentage = (clickX / width) * 100;
+                          const video = document.querySelector(
+                            `#video-${activeIdx} video`
+                          ) as HTMLVideoElement;
+                          if (video && videoDuration) {
+                            const newTime = (percentage / 100) * videoDuration;
+                            video.currentTime = newTime;
+                            setVideoProgress(percentage);
+                          }
+                        }}
+                      >
+                        <motion.div
+                          animate={{ width: `${videoProgress}%` }}
+                          className="h-full bg-[#d4a017] rounded-full relative"
+                          transition={{ duration: 0.1 }}
                         >
-                          <motion.div
-                            animate={{ width: `${videoProgress}%` }}
-                            className="h-full bg-[#d4a017] rounded-full relative"
-                            transition={{ duration: 0.1 }}
-                          >
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
-                          </motion.div>
-                        </div>
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
+                        </motion.div>
+                      </div>
 
-                        {/* <div className="flex justify-between text-xs text-white/50">
+                      {/* <div className="flex justify-between text-xs text-white/50">
                           <span>Video {activeIdx + 1} of {videos.length}</span>
                           <span>{Math.round(videoProgress)}% complete</span>
                         </div> */}
-                      </div>
+                    </div>
 
-                      {/* Call to Action */}
-                      {/* <div className="flex gap-2 mt-4">
+                    {/* Call to Action */}
+                    {/* <div className="flex gap-2 mt-4">
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
@@ -356,59 +410,83 @@ export default function LegalContentHub() {
                           Ask AI
                         </motion.button>
                       </div> */}
-                    </motion.div>
+                  </motion.div>
 
-                    {/* Video Controls */}
-                    <VideoControls
-                      isPlaying={isPlaying}
-                      isMuted={isMuted}
-                      onPlayPause={handlePlayPause}
-                      onMuteToggle={handleMuteToggle}
+                  {/* Video Controls */}
+                  <VideoControls
+                    isPlaying={isPlaying}
+                    isMuted={isMuted}
+                    onPlayPause={handlePlayPause}
+                    onMuteToggle={handleMuteToggle}
+                  />
+
+                  {/* Action Buttons */}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
+                    <ActionButton
+                      icon={<Heart className="w-6 h-6" />}
+                      count={likes[activeIdx]}
+                      onClick={() => handleLike(activeIdx)}
                     />
-
-                    {/* Action Buttons */}
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
-                      <ActionButton
-                        icon={<Heart className="w-6 h-6" />}
-                        count={likes[idx]}
-                        onClick={() => handleLike(idx)}
-                      />
-                      <ActionButton
-                        icon={<MessageCircle className="w-6 h-6" />}
-                        count={comments[idx]}
-                        onClick={() => handleComment(idx)}
-                      />
-                      <ActionButton
-                        icon={<Share className="w-6 h-6" />}
-                        count={shares[idx]}
-                        onClick={() => handleShare(idx)}
-                      />
-                    </div>
-
-                    {/* Navigation Controls */}
-                    <div className="absolute right-5 mt-10 bottom-18 flex flex-col gap-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-3 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-all disabled:opacity-50"
-                        onClick={() => navigateVideo("up")}
-                        disabled={activeIdx === 0}
-                      >
-                        <ChevronUp className="w-5 h-5" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-3 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-all disabled:opacity-50"
-                        onClick={() => navigateVideo("down")}
-                        disabled={activeIdx === videos.length - 1}
-                      >
-                        <ChevronDown className="w-5 h-5" />
-                      </motion.button>
-                    </div>
+                    <ActionButton
+                      icon={<MessageCircle className="w-6 h-6" />}
+                      count={comments[activeIdx]}
+                      onClick={() => handleComment(activeIdx)}
+                    />
+                    <ActionButton
+                      icon={<Share className="w-6 h-6" />}
+                      count={shares[activeIdx]}
+                      onClick={() => handleShare(activeIdx)}
+                    />
                   </div>
-                </motion.div>
-              ))}
+
+                  {/* Navigation Controls - UPDATE THESE BUTTONS */}
+                  <div className="absolute right-5 mt-10 bottom-18 flex flex-col gap-2">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="p-3 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-all disabled:opacity-50"
+                      onClick={() => {
+                        // Pause current video before navigating
+                        const currentVideo = document.querySelector(
+                          `#video-${activeIdx} video`
+                        ) as HTMLVideoElement;
+
+                        if (currentVideo) {
+                          currentVideo.pause();
+                          setIsPlaying(false);
+                        }
+
+                        navigateVideo("up");
+                      }}
+                      disabled={activeIdx === 0}
+                    >
+                      <ChevronUp className="w-5 h-5" />
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="p-3 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-all disabled:opacity-50"
+                      onClick={() => {
+                        // Pause current video before navigating
+                        const currentVideo = document.querySelector(
+                          `#video-${activeIdx} video`
+                        ) as HTMLVideoElement;
+
+                        if (currentVideo) {
+                          currentVideo.pause();
+                          setIsPlaying(false);
+                        }
+
+                        navigateVideo("down");
+                      }}
+                      disabled={activeIdx === videos.length - 1}
+                    >
+                      <ChevronDown className="w-5 h-5" />
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
             </AnimatePresence>
           </main>
         );
