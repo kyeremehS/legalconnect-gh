@@ -1,71 +1,96 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { Heart, MessageCircle, Share } from "lucide-react";
-import { METHODS } from "node:http";
 
-const categories = [
-  {
-    label: "Land Law",
-    description: "Videos about land rights, disputes, and property law.",
-    videos: [
-      {
-        title: "Understanding Land Ownership in Ghana",
-        url: "https://www.youtube.com/embed/your_land_video_id",
-        lawyer: "Ama Kwarteng, Esq.",
-      },
-      {
-        title: "Resolving Land Disputes",
-        url: "https://www.youtube.com/embed/your_land_dispute_video_id",
-        lawyer: "Kwame Mensah, Esq.",
-      },
-    ],
-  },
-  {
-    label: "Family Law",
-    description:
-      "Videos about marriage, divorce, child custody, and related issues.",
-    videos: [
-      {
-        title: "Marriage and Divorce Laws",
-        url: "https://www.youtube.com/embed/your_family_video_id",
-        lawyer: "Abena Owusu, Esq.",
-      },
-      {
-        title: "Child Custody Explained",
-        url: "https://www.youtube.com/embed/your_custody_video_id",
-        lawyer: "Kojo Asante, Esq.",
-      },
-    ],
-  },
-  {
-    label: "Employment Law",
-    description:
-      "Videos about employee rights, contracts, and workplace issues.",
-    videos: [
-      {
-        title: "Your Rights as an Employee",
-        url: "https://www.youtube.com/embed/your_employment_video_id",
-        lawyer: "Efua Boateng, Esq.",
-      },
-      {
-        title: "Understanding Employment Contracts",
-        url: "https://www.youtube.com/embed/your_contract_video_id",
-        lawyer: "Yaw Adu, Esq.",
-      },
-    ],
-  },
-];
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Inter } from "next/font/google";
+import {
+  Heart,
+  MessageCircle,
+  Share,
+  Home,
+  Compass,
+  User,
+  PlusSquare,
+  Tv,
+  MoreHorizontal,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  ChevronUp,
+  ChevronDown,
+  Menu,
+  X,
+  Search,
+  Filter,
+  BookOpen,
+  Download,
+  MessageSquare,
+  Award,
+  Calendar,
+  FileText,
+  Brain,
+  HelpCircle,
+  Languages,
+  Clock,
+  Eye,
+  Star,
+  Bookmark,
+  Share2,
+  Check,
+  ChevronRight,
+} from "lucide-react";
+
+import InteractiveQuiz from "../../components/InteractiveQuiz";
+import UserProgressModal from "../../components/UserProgressModal";
+import TemplateDownloader from "../../components/TemplateDownloader";
+import ArticleCard from "../../components/ArticleCard";
+import VideoControls from "../../components/videocontrol";
+import SidebarItem from "../../components/content-sidebar";
+import QuizCard from "../../components/QuizCard";
+import MobileSidebar from "../../components/mobilesidebar";
+import ActionButton from "../../components/videoaction";
+import {
+  legalArticles,
+  legalQuizzes,
+  legalTemplates,
+  videoCategories,
+} from "../../components/mockdata";
+
+// Configure Inter font
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+declare global {
+  interface Window {
+    scrollTimeout: NodeJS.Timeout;
+  }
+}
 
 type VideoItem = {
+  id: string;
   title: string;
   url: string;
   lawyer: string;
   category: string;
+  views: string;
+  duration: string;
+  language: string;
+  thumbnail: string;
+  description: string;
+  tags?: string[];
 };
 
+// Content Types
+type ContentType = "videos" | "articles" | "quizzes" | "templates" | "chatbot";
+
+// Flatten all videos into a single array for feed
 function flattenVideos() {
   const videos: VideoItem[] = [];
-  for (const cat of categories) {
+  for (const cat of videoCategories) {
     for (const vid of cat.videos) {
       videos.push({ ...vid, category: cat.label });
     }
@@ -73,164 +98,678 @@ function flattenVideos() {
   return videos;
 }
 
-export default function LegalContentPage() {
+// Template Card Component
+function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {
+  return <TemplateDownloader template={template} />;
+}
+
+export default function LegalContentHub() {
   const videos = flattenVideos();
-  const [current, setCurrent] = useState(0);
-  const [likes, setLikes] = useState(Array(videos.length).fill(0));
-  const [comments, setComments] = useState(Array(videos.length).fill(0));
-  const [shares, setShares] = useState(Array(videos.length).fill(0));
-  const touchStartY = useRef<number | null>(null);
+  const [likes, setLikes] = useState(Array(videos.length).fill(3292));
+  const [comments, setComments] = useState(Array(videos.length).fill(84));
+  const [shares, setShares] = useState(Array(videos.length).fill(68));
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeContent, setActiveContent] = useState<ContentType>("videos");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showProgress, setShowProgress] = useState(false);
 
-  // Handle scroll/swipe (for desktop and mobile)
-  const handleWheel = (e: React.WheelEvent) => {
-    if (e.deltaY > 0 && current < videos.length - 1) {
-      setCurrent((c) => c + 1);
-    } else if (e.deltaY < 0 && current > 0) {
-      setCurrent((c) => c - 1);
-    }
-  };
+  // New state variables
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
 
-  // Touch swipe for mobile
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartY.current === null) return;
-    const touchEndY = e.changedTouches[0].clientY;
-    if (touchStartY.current - touchEndY > 50 && current < videos.length - 1) {
-      setCurrent((c) => c + 1);
-    } else if (touchEndY - touchStartY.current > 50 && current > 0) {
-      setCurrent((c) => c - 1);
-    }
-    touchStartY.current = null;
-  };
-
-  // Optional: Keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown" && current < videos.length - 1) {
-      setCurrent((c) => c + 1);
-    } else if (e.key === "ArrowUp" && current > 0) {
-      setCurrent((c) => c - 1);
-    }
-  };
-
-  // Action handlers
-  const handleLike = () => {
+  // Handlers for actions
+  const handleLike = (idx: number) => {
     setLikes((prev) => {
       const arr = [...prev];
-      arr[current]++;
+      arr[idx]++;
       return arr;
     });
-  };
-  const handleComment = () => {
-    setComments((prev) => {
-      const arr = [...prev];
-      arr[current]++;
-      return arr;
-    });
-  };
-  const handleShare = () => {
-    setShares((prev) => {
-      const arr = [...prev];
-      arr[current]++;
-      return arr;
-    });
-    alert("Link copied to clipboard!");
   };
 
-  return (
-    <main
-      className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-    >
-      <div
-        className="relative w-full h-[80vh] max-w-md mx-auto overflow-hidden rounded-2xl shadow-lg bg-black"
-        onWheel={handleWheel}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        style={{ scrollSnapType: "y mandatory" }}
-      >
-        {videos.map((video, idx) => (
-          <div
-            key={idx}
-            className={`absolute inset-0 transition-all duration-500 ${
-              idx === current
-                ? "opacity-100 z-10"
-                : "opacity-0 z-0 pointer-events-none"
-            }`}
-            style={{
-              scrollSnapAlign: "start",
-              background: "#000",
-              display: idx === current ? "block" : "none",
-            }}
-          >
-            <div className="flex flex-col h-full">
-              <div className="flex-1 flex items-center justify-center">
-                <iframe
-                  src={video.url}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-[50vh] md:h-[60vh] rounded-xl bg-black"
-                />
+  const handleComment = (idx: number) => {
+    setComments((prev) => {
+      const arr = [...prev];
+      arr[idx]++;
+      return arr;
+    });
+  };
+
+  const handleShare = (idx: number) => {
+    setShares((prev) => {
+      const arr = [...prev];
+      arr[idx]++;
+      return arr;
+    });
+  };
+
+  // Update your handlePlayPause function (around line 130)
+  const handlePlayPause = () => {
+    const currentVideo = document.querySelector(
+      `#video-${activeIdx}`
+    ) as HTMLVideoElement;
+
+    if (currentVideo) {
+      if (isPlaying) {
+        currentVideo.pause();
+        setIsPlaying(false);
+      } else {
+        currentVideo.play().catch((error) => {
+          console.log("Play failed:", error);
+        });
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  const handleMuteToggle = () => {
+    const currentVideo = document.querySelector(
+      `#video-${activeIdx}`
+    ) as HTMLVideoElement;
+    
+    if (currentVideo) {
+      currentVideo.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  // New handler functions
+  const handleTimeUpdate = (video: HTMLVideoElement) => {
+    if (video.duration) {
+      const progress = (video.currentTime / video.duration) * 100;
+      setVideoProgress(progress);
+      setCurrentTime(video.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = (video: HTMLVideoElement) => {
+    setVideoDuration(video.duration);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Navigation functions
+  const navigateVideo = (direction: "up" | "down") => {
+    // Pause current video
+    const currentVideo = document.querySelector(
+      `#video-${activeIdx}`
+    ) as HTMLVideoElement;
+
+    if (currentVideo) {
+      currentVideo.pause();
+      currentVideo.currentTime = 0;
+    }
+
+    setIsPlaying(false);
+
+    let newIndex = activeIdx;
+
+    if (direction === "up" && activeIdx > 0) {
+      newIndex = activeIdx - 1;
+    } else if (direction === "down" && activeIdx < videos.length - 1) {
+      newIndex = activeIdx + 1;
+    }
+
+    if (newIndex !== activeIdx) {
+      setActiveIdx(newIndex);
+      setVideoProgress(0);
+      setCurrentTime(0);
+
+      // Auto-play new video after transition
+      setTimeout(() => {
+        setIsPlaying(true);
+        const newVideo = document.querySelector(
+          `#video-${newIndex}`
+        ) as HTMLVideoElement;
+
+        if (newVideo) {
+          newVideo.play().catch(console.log);
+        }
+      }, 300); // Match transition duration
+    }
+  };
+
+  // Reset progress when changing content type
+  useEffect(() => {
+    if (activeContent !== "videos") {
+      setVideoProgress(0);
+      setCurrentTime(0);
+      setVideoDuration(0);
+    }
+  }, [activeContent]);
+
+  // Reset progress when changing videos
+  useEffect(() => {
+    setVideoProgress(0);
+    setCurrentTime(0);
+  }, [activeIdx]);
+
+  // Update the useEffect for keyboard handling:
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (activeContent !== "videos") return;
+
+      if (
+        event.key === "ArrowUp" ||
+        event.key === "ArrowDown" ||
+        event.code === "Space"
+      ) {
+        event.preventDefault();
+      }
+
+      // Spacebar for play/pause
+      if (event.code === "Space") {
+        const currentVideo = document.querySelector(
+          `#video-${activeIdx}`
+        ) as HTMLVideoElement;
+
+        if (currentVideo) {
+          if (isPlaying) {
+            currentVideo.pause();
+            setIsPlaying(false);
+          } else {
+            currentVideo.play().catch((error) => {
+              console.log("Play failed:", error);
+            });
+            setIsPlaying(true);
+          }
+        }
+        return;
+      }
+
+      // Arrow key navigation
+      if (event.key === "ArrowUp") {
+        navigateVideo("up");
+      } else if (event.key === "ArrowDown") {
+        navigateVideo("down");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeContent, activeIdx, videos.length, isPlaying]);
+
+  // Add mouse wheel handler after the keyboard handler useEffect:
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (activeContent !== "videos") return;
+      
+      event.preventDefault();
+      
+      // Debounce wheel events
+      clearTimeout(window.scrollTimeout);
+      window.scrollTimeout = setTimeout(() => {
+        if (event.deltaY > 0) {
+          // Scroll down
+          navigateVideo("down");
+        } else {
+          // Scroll up
+          navigateVideo("up");
+        }
+      }, 50);
+    };
+
+    if (activeContent === "videos") {
+      window.addEventListener("wheel", handleWheel, { passive: false });
+      return () => {
+        window.removeEventListener("wheel", handleWheel);
+        clearTimeout(window.scrollTimeout);
+      };
+    }
+  }, [activeContent, activeIdx, videos.length]);
+
+  // Add this useEffect to cleanup videos when switching content
+  useEffect(() => {
+    return () => {
+      // Cleanup function - pause all videos when component unmounts
+      const allVideos = document.querySelectorAll("video");
+      allVideos.forEach((video) => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    };
+  }, []);
+
+  // Also cleanup when switching away from videos
+  useEffect(() => {
+    if (activeContent !== "videos") {
+      const allVideos = document.querySelectorAll("video");
+      allVideos.forEach((video) => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      setIsPlaying(false);
+    }
+  }, [activeContent]);
+
+  // Add this NEW useEffect for auto-playing videos after navigation
+  useEffect(() => {
+    // Only auto-play when viewing videos and playing state is true
+    if (activeContent === "videos" && isPlaying) {
+      const timer = setTimeout(() => {
+        const currentVideo = document.querySelector(
+          `#video-${activeIdx} video`
+        ) as HTMLVideoElement;
+
+        if (currentVideo) {
+          currentVideo.play().catch((error) => {
+            console.log("Auto-play failed:", error);
+            // If auto-play fails, update the state to reflect reality
+            setIsPlaying(false);
+          });
+        }
+      }, 100); // Small delay to ensure DOM is updated
+
+      return () => clearTimeout(timer);
+    }
+  }, [activeIdx, activeContent, isPlaying]); // Triggers when video index changes
+
+  // Render content based on active section
+  const renderContent = () => {
+    switch (activeContent) {
+      case "videos":
+        return (
+          <main className="flex-1 bg-black relative overflow-hidden lg:m-5 lg:rounded-xl">
+            {/* Video Container with smooth vertical transitions */}
+            <div
+              className="relative h-full transition-transform duration-500 ease-out"
+              style={{
+                transform: `translateY(-${activeIdx * 100}vh)`,
+              }}
+            >
+              {videos.map((video, idx) => (
+                <motion.div
+                  key={video.id}
+                  className="absolute inset-0 w-full h-screen flex items-center justify-center"
+                  style={{
+                    top: `${idx * 100}vh`,
+                    zIndex: idx === activeIdx ? 10 : 1,
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: Math.abs(idx - activeIdx) <= 1 ? 1 : 0,
+                    scale: idx === activeIdx ? 1 : 0.95,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="relative w-full h-full flex justify-center items-center">
+                    <video
+                      id={`video-${idx}`}
+                      src={video.url}
+                      autoPlay={idx === activeIdx && isPlaying}
+                      loop
+                      muted={isMuted}
+                      playsInline
+                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer"
+                      style={{
+                        maxHeight: "90vh",
+                        maxWidth: "420px",
+                      }}
+                      onClick={handlePlayPause} // Add click handler for play/pause
+                      onTimeUpdate={(e) => {
+                        if (idx === activeIdx) {
+                          handleTimeUpdate(e.currentTarget);
+                        }
+                      }}
+                      onLoadedMetadata={(e) => {
+                        if (idx === activeIdx) {
+                          handleLoadedMetadata(e.currentTarget);
+                        }
+                      }}
+                      onCanPlay={(e) => {
+                        if (idx === activeIdx && isPlaying) {
+                          e.currentTarget.play().catch(console.log);
+                        }
+                      }}
+                      onEnded={() => {
+                        if (idx === activeIdx && activeIdx < videos.length - 1) {
+                          setActiveIdx(activeIdx + 1);
+                          setVideoProgress(0);
+                        }
+                      }}
+                    />
+
+                    {/* Video Info Overlay - Only show for active video */}
+                    {idx === activeIdx && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
+                      >
+                        <div className="mb-4">
+                          <h2 className="text-xl font-bold text-white mb-2">
+                            {video.title}
+                          </h2>
+                          <div className="flex items-center gap-4 text-sm">
+                            <span className="text-[#d4a017] font-medium">
+                              {video.lawyer}
+                            </span>
+                            <span className="text-white/60">
+                              {video.views} views
+                            </span>
+                            <span className="text-white/60">
+                              {video.duration}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
+                              #{video.category}
+                            </div>
+                            <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
+                              <Languages className="w-3 h-3" />
+                              {video.language}
+                            </div>
+                          </div>
+                          <p className="text-white/80 text-sm mt-2 line-clamp-2">
+                            {video.description}
+                          </p>
+                        </div>
+
+                        {/* Progress bar - Update margin to avoid overlap with controls */}
+                        <div className="space-y-2 mb-8">
+                          <div className="flex justify-between text-xs text-white/70">
+                            <span>{formatTime(currentTime)}</span>
+                            <span>{formatTime(videoDuration)}</span>
+                          </div>
+
+                          <div
+                            className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
+                            onClick={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const clickX = e.clientX - rect.left;
+                              const width = rect.width;
+                              const percentage = (clickX / width) * 100;
+                              const videoElement = document.querySelector(
+                                `#video-${activeIdx}`
+                              ) as HTMLVideoElement;
+                              if (videoElement && videoDuration) {
+                                const newTime = (percentage / 100) * videoDuration;
+                                videoElement.currentTime = newTime;
+                                setVideoProgress(percentage);
+                              }
+                            }}
+                          >
+                            <motion.div
+                              animate={{ width: `${videoProgress}%` }}
+                              className="h-full bg-[#d4a017] rounded-full relative"
+                              transition={{ duration: 0.1 }}
+                            >
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
+                            </motion.div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Optional: Play/Pause indicator overlay */}
+                    {idx === activeIdx && !isPlaying && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+                      >
+                        <div className="p-6 bg-black/40 backdrop-blur-sm rounded-full">
+                          <Play className="w-12 h-12 text-white" />
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Video Controls - Only volume control */}
+                    {idx === activeIdx && (
+                      <VideoControls
+                        isMuted={isMuted}
+                        onMuteToggle={handleMuteToggle}
+                      />
+                    )}
+
+                    {/* Navigation Controls - Moved to top of right side */}
+                    {idx === activeIdx && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-50">
+                        {/* Up/Down Navigation at the top */}
+                        <div className="flex flex-col gap-2 -mb-1">
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
+                            onClick={() => navigateVideo("up")}
+                            disabled={activeIdx === 0}
+                          >
+                            <ChevronUp className="w-4 h-4" />
+                          </motion.button>
+
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
+                            onClick={() => navigateVideo("down")}
+                            disabled={activeIdx === videos.length - 1}
+                          >
+                            <ChevronDown className="w-4 h-4" />
+                          </motion.button>
+                        </div>
+
+                        {/* Action Buttons - Made smaller */}
+                        <ActionButton
+                          icon={<Heart className="w-5 h-5" />}
+                          count={likes[activeIdx]}
+                          onClick={() => handleLike(activeIdx)}
+                        />
+                        <ActionButton
+                          icon={<MessageCircle className="w-5 h-5" />}
+                          count={comments[activeIdx]}
+                          onClick={() => handleComment(activeIdx)}
+                        />
+                        <ActionButton
+                          icon={<Share className="w-5 h-5" />}
+                          count={shares[activeIdx]}
+                          onClick={() => handleShare(activeIdx)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </main>
+        );
+
+      case "articles":
+        return (
+          <main className="flex-1 p-6 overflow-auto">
+            <div className="max-w-6xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
+              >
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Legal Articles
+                </h1>
+                <p className="text-gray-600">
+                  Educational articles to help you understand Ghanaian law
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {legalArticles.map((article, idx) => (
+                  <motion.div
+                    key={article.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <ArticleCard article={article} />{" "}
+                    {/* ← Your component is used here */}
+                  </motion.div>
+                ))}
               </div>
-              <div className="flex justify-between items-end px-4 pb-6 pt-2">
-                {/* Video Info */}
-                <div>
-                  <div className="text-white font-bold text-lg mb-1">
-                    {video.title}
-                  </div>
-                  <div className="text-[#d4a017] font-semibold text-sm mb-1">
-                    {video.lawyer}
-                  </div>
-                  <div className="text-xs text-white/80 mb-2">
-                    #{video.category}
-                  </div>
+            </div>
+          </main>
+        );
+
+      case "quizzes":
+        return (
+          <main className="flex-1 p-6 overflow-auto">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {legalQuizzes.map((quiz) => (
+                  <QuizCard key={quiz.id} quiz={quiz} />
+                ))}
+              </div>
+            </div>
+          </main>
+        );
+
+      case "templates":
+        return (
+          <main className="flex-1 p-6 overflow-auto">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {legalTemplates.map((template) => (
+                  <TemplateCard key={template.id} template={template} />
+                ))}
+              </div>
+            </div>
+          </main>
+        );
+      default:
+        return null;
+    }
+  };
+
+  
+
+  return (
+    <div className={`min-h-screen bg-gray-50 flex ${inter.className}`}>
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu className="w-6 h-6 text-gray-600" />
+          </motion.button>
+          <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            onClick={() => setShowProgress(true)}
+          >
+            <User className="w-6 h-6 text-gray-600" />
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Mobile Sidebar */}
+      <MobileSidebar
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        activeContent={activeContent}
+        setActiveContent={(content) => setActiveContent(content)}
+      />
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block w-72 bg-white border-r border-gray-200 overflow-y-auto">
+        <div className="flex flex-col justify-between h-full py-6 px-4">
+          <div>
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-8 px-2">
+              <div className="w-10 h-10 bg-[#d4a017] rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="font-bold text-xl text-gray-800">Legal Hub</h1>
+                <p className="text-sm text-gray-500">Learn & Explore</p>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <nav className="space-y-2">
+              <SidebarItem
+                icon={<Tv className="w-5 h-5" />}
+                label="LawTok Videos"
+                active={activeContent === "videos"}
+                onClick={() => setActiveContent("videos")}
+                badge="New"
+              />
+              <SidebarItem
+                icon={<BookOpen className="w-5 h-5" />}
+                label="Legal Articles"
+                active={activeContent === "articles"}
+                onClick={() => setActiveContent("articles")}
+              />
+              <SidebarItem
+                icon={<Brain className="w-5 h-5" />}
+                label="Legal Quizzes"
+                active={activeContent === "quizzes"}
+                onClick={() => setActiveContent("quizzes")}
+              />
+              <SidebarItem
+                icon={<FileText className="w-5 h-5" />}
+                label="Templates"
+                active={activeContent === "templates"}
+                onClick={() => setActiveContent("templates")}
+              />
+            </nav>
+
+            {/* Quick Stats */}
+            <div className="mt-8 bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl p-4">
+              <h3 className="font-semibold text-gray-800 mb-3 text-sm">
+                Learning Stats
+              </h3>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Videos Watched</span>
+                  <span className="font-medium">23</span>
                 </div>
-                {/* Actions */}
-                <div className="flex flex-col items-center gap-4">
-                  <button
-                    className="flex flex-col items-center text-white hover:text-[#d4a017] transition"
-                    onClick={handleLike}
-                  >
-                    <Heart className="w-7 h-7 mb-1" />
-                    <span className="text-xs">{likes[idx]}</span>
-                  </button>
-                  <button
-                    className="flex flex-col items-center text-white hover:text-[#d4a017] transition"
-                    onClick={handleComment}
-                  >
-                    <MessageCircle className="w-7 h-7 mb-1" />
-                    <span className="text-xs">{comments[idx]}</span>
-                  </button>
-                  <button
-                    className="flex flex-col items-center text-white hover:text-[#d4a017] transition"
-                    onClick={handleShare}
-                  >
-                    <Share className="w-7 h-7 mb-1" />
-                    <span className="text-xs">{shares[idx]}</span>
-                  </button>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Articles Read</span>
+                  <span className="font-medium">12</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Quizzes Completed</span>
+                  <span className="font-medium">5</span>
                 </div>
               </div>
             </div>
           </div>
-        ))}
-        {/* Progress Indicator */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-1 z-20">
-          {videos.map((_, idx) => (
-            <span
-              key={idx}
-              className={`w-2 h-2 rounded-full ${
-                idx === current ? "bg-[#d4a017]" : "bg-white/40"
-              }`}
-            />
-          ))}
+
+          {/* Footer */}
+          {/* <div className="border-t border-gray-200 pt-4">
+                    <div className="text-xs text-gray-400 space-y-1">
+                      <div>© 2025 LegalConnect</div>
+                      <div>Educational Content</div>
+                      <div>Made in Ghana 🇬🇭</div>
+                    </div>
+                  </div> */}
         </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col pt-16 lg:pt-0">
+        {renderContent()}
       </div>
-      <div className="mt-4 text-gray-600 text-sm">
-        Scroll, swipe, or use ↑/↓ keys for more videos
-      </div>
-    </main>
+
+      {/* User Progress Modal */}
+      {showProgress && (
+        <UserProgressModal
+          isOpen={showProgress}
+          onClose={() => setShowProgress(false)}
+        />
+      )}
+    </div>
   );
 }

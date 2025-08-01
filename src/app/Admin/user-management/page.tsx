@@ -1,7 +1,15 @@
 "use client";
 import React from "react";
 import Sidebar from "../../components/lawyer/Sidebar";
-import { Users, UserCheck, Search, Eye, Edit, Ban, CheckCircle2 } from "lucide-react";
+import {
+  Users,
+  UserCheck,
+  Search,
+  Eye,
+  Edit,
+  Ban,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function AdminUsers() {
   return (
@@ -24,9 +32,12 @@ export default function AdminUsers() {
                     <input
                       type="text"
                       placeholder="Search lawyers..."
-                      className="border border-gray-200 rounded px-2 py-1 text-sm"
+                      className="border border-gray-200 rounded px-2 py-1 text-sm text-gray-500"
                     />
-                    <button className="p-1 rounded hover:bg-gray-100">
+                    <button
+                      className="p-1 rounded hover:bg-gray-100"
+                      title="Search"
+                    >
                       <Search className="w-4 h-4 text-gray-500" />
                     </button>
                   </div>
@@ -44,22 +55,38 @@ export default function AdminUsers() {
                     </thead>
                     <tbody>
                       <tr className="border-b hover:bg-[#fff8eb]">
-                        <td className="py-2 pr-4 font-medium">John Doe</td>
-                        <td className="py-2 pr-4">john@law.com</td>
-                        <td className="py-2 pr-4">
-                          <span className="text-green-600 font-semibold">Active</span>
+                        <td className="py-2 pr-4 font-medium text-gray-700">
+                          John Doe
                         </td>
-                        <td className="py-2 pr-4 flex items-center gap-1">
-                          <CheckCircle2 className="w-4 h-4 text-green-500" /> Verified
+                        <td className="py-2 pr-4 text-gray-700">
+                          john@law.com
+                        </td>
+                        <td className="py-2 pr-4">
+                          <span className="text-green-600 font-semibold">
+                            Active
+                          </span>
+                        </td>
+                        <td className="py-2 pr-4 flex items-center gap-1 text-gray-700">
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />{" "}
+                          Verified
                         </td>
                         <td className="py-2 flex gap-2">
-                          <button className="p-1 rounded hover:bg-gray-100" title="View">
+                          <button
+                            className="p-1 rounded hover:bg-gray-100"
+                            title="View"
+                          >
                             <Eye className="w-4 h-4 text-blue-600" />
                           </button>
-                          <button className="p-1 rounded hover:bg-gray-100" title="Suspend">
+                          <button
+                            className="p-1 rounded hover:bg-gray-100"
+                            title="Suspend"
+                          >
                             <Ban className="w-4 h-4 text-red-500" />
                           </button>
-                          <button className="p-1 rounded hover:bg-gray-100" title="Edit">
+                          <button
+                            className="p-1 rounded hover:bg-gray-100"
+                            title="Edit"
+                          >
                             <Edit className="w-4 h-4 text-[#d4a017]" />
                           </button>
                         </td>
@@ -79,9 +106,12 @@ export default function AdminUsers() {
                     <input
                       type="text"
                       placeholder="Search clients..."
-                      className="border border-gray-200 rounded px-2 py-1 text-sm"
+                      className="border border-gray-200 rounded px-2 py-1 text-sm text-gray-500"
                     />
-                    <button className="p-1 rounded hover:bg-gray-100">
+                    <button
+                      title="search"
+                      className="p-1 rounded hover:bg-gray-100"
+                    >
                       <Search className="w-4 h-4 text-gray-500" />
                     </button>
                   </div>
@@ -99,17 +129,31 @@ export default function AdminUsers() {
                     </thead>
                     <tbody>
                       <tr className="border-b hover:bg-[#fff8eb]">
-                        <td className="py-2 pr-4 font-medium">Jane Smith</td>
-                        <td className="py-2 pr-4">jane@gmail.com</td>
-                        <td className="py-2 pr-4">+233 123 456 789</td>
-                        <td className="py-2 pr-4">
-                          <span className="text-green-600 font-semibold">Active</span>
+                        <td className="py-2 pr-4 font-medium text-gray-700">
+                          Jane Smith
+                        </td>
+                        <td className="py-2 pr-4 text-gray-700">
+                          jane@gmail.com
+                        </td>
+                        <td className="py-2 pr-4 text-gray-700">
+                          +233 123 456 789
+                        </td>
+                        <td className="py-2 pr-4 text-gray-700">
+                          <span className="text-green-600 font-semibold">
+                            Active
+                          </span>
                         </td>
                         <td className="py-2 flex gap-2">
-                          <button className="p-1 rounded hover:bg-gray-100" title="View">
+                          <button
+                            className="p-1 rounded hover:bg-gray-100"
+                            title="View"
+                          >
                             <Eye className="w-4 h-4 text-blue-600" />
                           </button>
-                          <button className="p-1 rounded hover:bg-gray-100" title="Suspend">
+                          <button
+                            className="p-1 rounded hover:bg-gray-100"
+                            title="Suspend"
+                          >
                             <Ban className="w-4 h-4 text-red-500" />
                           </button>
                         </td>

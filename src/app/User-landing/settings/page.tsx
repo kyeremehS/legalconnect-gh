@@ -65,7 +65,7 @@ export default function UserSettings() {
                 value={account.email}
                 onChange={handleAccountChange}
                 placeholder="Enter your email"
-                className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] bg-[#F7F9FC] placeholder-gray-600"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] bg-[#F7F9FC] placeholder-gray-600 text-gray-700"
               />
             </div>
             <div className="mb-4">
@@ -82,14 +82,11 @@ export default function UserSettings() {
                 value={account.phone}
                 onChange={handleAccountChange}
                 placeholder="Enter your phone number"
-                className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] bg-[#F7F9FC] placeholder-gray-600"
+                className="w-full p-3 border border-[#d4a017]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] text-gray-800 placeholder-gray-700"
               />
             </div>
             <div className="mb-4">
-              <label
-                className="block mb-1 font-medium text-[#d4a017]"
-                htmlFor="password"
-              >
+              <label className="block mb-1 font-medium " htmlFor="password">
                 Change Password
               </label>
               <input

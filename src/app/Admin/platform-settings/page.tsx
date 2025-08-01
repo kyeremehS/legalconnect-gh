@@ -22,19 +22,33 @@ export default function AdminSettings() {
                 <table className="min-w-full text-sm">
                   <tbody>
                     <tr>
-                      <td className="py-2 pr-4 font-medium">Platform Name</td>
-                      <td className="py-2 pr-4">LegalConnect</td>
+                      <td className="py-2 pr-4 font-medium text-gray-600">
+                        Platform Name
+                      </td>
+                      <td className="py-2 pr-4 text-sm text-gray-700 ">
+                        LegalConnect
+                      </td>
                       <td className="py-2">
-                        <button className="p-1 rounded hover:bg-gray-100" title="Edit">
+                        <button
+                          className="p-1 rounded hover:bg-gray-100"
+                          title="Edit"
+                        >
                           <Edit className="w-4 h-4 text-[#d4a017]" />
                         </button>
                       </td>
                     </tr>
                     <tr>
-                      <td className="py-2 pr-4 font-medium">Support Email</td>
-                      <td className="py-2 pr-4">support@legalconnect.com</td>
+                      <td className="py-2 pr-4 font-medium text-gray-700 text-sm">
+                        Support Email
+                      </td>
+                      <td className="py-2 pr-4 text-sm text-gray-700">
+                        support@legalconnect.com
+                      </td>
                       <td className="py-2">
-                        <button className="p-1 rounded hover:bg-gray-100" title="Edit">
+                        <button
+                          className="p-1 rounded hover:bg-gray-100"
+                          title="Edit"
+                        >
                           <Edit className="w-4 h-4 text-[#d4a017]" />
                         </button>
                       </td>
