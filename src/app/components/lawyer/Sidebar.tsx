@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { UserButton } from "@clerk/nextjs";
 
 const lawyerNavItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
@@ -96,16 +97,21 @@ export default function Sidebar({ role } : SidebarProps) {
       {/* Mobile Header */}
       <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-50">
         <h1 className="text-xl font-bold text-[#d4a017]">LegalConnect</h1>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-        >
-          {isOpen ? (
-            <X className="w-6 h-6 text-gray-600" />
-          ) : (
-            <Menu className="w-6 h-6 text-gray-600" />
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            {isOpen ? (
+              <X className="w-6 h-6 text-gray-600" />
+            ) : (
+              <Menu className="w-6 h-6 text-gray-600" />
+            )}
+          </button>
+          <div className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
+            <UserButton />
+          </div>
+        </div>
       </div>
 
       {/* Sidebar */}
