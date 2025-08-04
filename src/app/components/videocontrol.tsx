@@ -10,7 +10,7 @@ export default function VideoControls({
   onMuteToggle: () => void;
 }) {
   return (
-    <div className="absolute top-4 left-4 flex gap-3 z-50">
+    <div className="absolute top-4 right-4 flex gap-3 z-50">
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
