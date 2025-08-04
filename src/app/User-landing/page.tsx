@@ -114,9 +114,6 @@ export default function UserDashboard() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="mb-6 sm:mb-8 lg:hidden"
         >
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
-            Quick Actions
-          </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {features.map((feature, index) => (
               <motion.div
