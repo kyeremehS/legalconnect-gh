@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import ChatModal from "../components/ChatModal";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
+
+
 import { Bot, Calendar, MessageCircle, Video, User, Bell, BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 

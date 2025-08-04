@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Inter } from "next/font/google";
+import { useRouter } from "next/navigation";
 import {
   Heart,
   MessageCircle,
@@ -39,6 +40,7 @@ import {
   Share2,
   Check,
   ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 
 import InteractiveQuiz from "../../components/InteractiveQuiz";
@@ -104,6 +106,7 @@ function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {
 }
 
 export default function LegalContentHub() {
+  const router = useRouter();
   const videos = flattenVideos();
   const [likes, setLikes] = useState(Array(videos.length).fill(3292));
   const [comments, setComments] = useState(Array(videos.length).fill(84));
@@ -234,6 +237,11 @@ export default function LegalContentHub() {
         }
       }, 300); // Match transition duration
     }
+  };
+
+  // Back to dashboard function
+  const handleBackToDashboard = () => {
+    router.push("/User-landing");
   };
 
   // Reset progress when changing content type
@@ -377,6 +385,16 @@ export default function LegalContentHub() {
       case "videos":
         return (
           <main className="flex-1 bg-black relative overflow-hidden lg:m-5 lg:rounded-xl">
+            {/* Back Button for Videos - Mobile */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleBackToDashboard}
+              className="lg:hidden absolute top-4 left-4 z-50 p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all border border-white/20 shadow-lg"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </motion.button>
+
             {/* Video Container with smooth vertical transitions */}
             <div
               className="relative h-full transition-transform duration-500 ease-out"
@@ -586,6 +604,19 @@ export default function LegalContentHub() {
         return (
           <main className="flex-1 p-6 overflow-auto">
             <div className="max-w-6xl mx-auto">
+              {/* Back Button for Articles - Mobile */}
+              <div className="lg:hidden mb-4">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleBackToDashboard}
+                  className="flex items-center gap-2 text-[#d4a017] hover:text-[#b8941f] transition-colors font-medium"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="text-sm">Back to Dashboard</span>
+                </motion.button>
+              </div>
+
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -607,8 +638,7 @@ export default function LegalContentHub() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
                   >
-                    <ArticleCard article={article} />{" "}
-                    {/* ← Your component is used here */}
+                    <ArticleCard article={article} />
                   </motion.div>
                 ))}
               </div>
@@ -620,6 +650,32 @@ export default function LegalContentHub() {
         return (
           <main className="flex-1 p-6 overflow-auto">
             <div className="max-w-6xl mx-auto">
+              {/* Back Button for Quizzes - Mobile */}
+              <div className="lg:hidden mb-4">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleBackToDashboard}
+                  className="flex items-center gap-2 text-[#d4a017] hover:text-[#b8941f] transition-colors font-medium"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="text-sm">Back to Dashboard</span>
+                </motion.button>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
+              >
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Legal Quizzes
+                </h1>
+                <p className="text-gray-600">
+                  Test your legal knowledge with interactive quizzes
+                </p>
+              </motion.div>
+
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {legalQuizzes.map((quiz) => (
                   <QuizCard key={quiz.id} quiz={quiz} />
@@ -633,6 +689,32 @@ export default function LegalContentHub() {
         return (
           <main className="flex-1 p-6 overflow-auto">
             <div className="max-w-6xl mx-auto">
+              {/* Back Button for Templates - Mobile */}
+              <div className="lg:hidden mb-4">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleBackToDashboard}
+                  className="flex items-center gap-2 text-[#d4a017] hover:text-[#b8941f] transition-colors font-medium"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="text-sm">Back to Dashboard</span>
+                </motion.button>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
+              >
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Legal Templates
+                </h1>
+                <p className="text-gray-600">
+                  Download professional legal document templates
+                </p>
+              </motion.div>
+
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {legalTemplates.map((template) => (
                   <TemplateCard key={template.id} template={template} />
@@ -645,8 +727,6 @@ export default function LegalContentHub() {
         return null;
     }
   };
-
-  
 
   return (
     <div className={`min-h-screen bg-gray-50 flex ${inter.className}`}>
@@ -685,15 +765,28 @@ export default function LegalContentHub() {
       <aside className="hidden lg:block w-72 bg-white border-r border-gray-200 overflow-y-auto">
         <div className="flex flex-col justify-between h-full py-6 px-4">
           <div>
-            {/* Header */}
-            <div className="flex items-center gap-3 mb-8 px-2">
-              <div className="w-10 h-10 bg-[#d4a017] rounded-xl flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-white" />
+            {/* Header with Back Button */}
+            <div className="flex items-center justify-between mb-8 px-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#d4a017] rounded-xl flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="font-bold text-xl text-gray-800">Legal Hub</h1>
+                  <p className="text-sm text-gray-500">Learn & Explore</p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-bold text-xl text-gray-800">Legal Hub</h1>
-                <p className="text-sm text-gray-500">Learn & Explore</p>
-              </div>
+              
+              {/* Back to Dashboard Button - Desktop */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleBackToDashboard}
+                className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                title="Back to Dashboard"
+              >
+                <Home className="w-4 h-4" />
+              </motion.button>
             </div>
 
             {/* Navigation */}
@@ -746,15 +839,6 @@ export default function LegalContentHub() {
               </div>
             </div>
           </div>
-
-          {/* Footer */}
-          {/* <div className="border-t border-gray-200 pt-4">
-                    <div className="text-xs text-gray-400 space-y-1">
-                      <div>© 2025 LegalConnect</div>
-                      <div>Educational Content</div>
-                      <div>Made in Ghana 🇬🇭</div>
-                    </div>
-                  </div> */}
         </div>
       </aside>
 
