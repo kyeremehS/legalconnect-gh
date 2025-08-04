@@ -741,7 +741,7 @@ export default function LegalContentHub() {
           >
             <Menu className="w-6 h-6 text-gray-600" />
           </motion.button>
-          <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1>
+          {/* <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1> */}
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
