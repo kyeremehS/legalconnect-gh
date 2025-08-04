@@ -11,13 +11,7 @@ import { Bot, Calendar, MessageCircle, Video, User, Bell, BookOpen } from "lucid
 import { useRouter } from "next/navigation";
 
 const features = [
-  {
-    name: "Watch Legal Videos",
-    description: "Browse and watch legal education videos.",
-    href: "User-landing/legal-content",
-    icon: "/video.png",
-    mobileIcon: Video,
-  },
+
   {
     name: "Book Appointment",
     description: "Schedule a meeting with a lawyer.",
@@ -36,20 +30,13 @@ const features = [
     name: "Profile Settings",
     description: "Update your personal information.",
     href: "/User-landing/profile-settings",
-    icon: "/user-setting.png",
+    icon: "/setting.png",
     mobileIcon: User,
-  },
-  {
-    name: "Notifications",
-    description: "View your latest notifications.",
-    href: "/User-landing/notifications",
-    icon: "/bell.png",
-    mobileIcon: Bell,
   },
   {
     name: "Legal Education",
     description: "Access articles and resources.",
-    href: "/User-landing/user-education",
+    href: "/User-landing/legal-content",
     icon: "/law.png",
     mobileIcon: BookOpen,
   }

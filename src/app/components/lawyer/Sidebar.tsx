@@ -34,18 +34,13 @@ const lawyerNavItems = [
   { name: "Videos", href: "/Lawyer/create-content", icon: FileText },
   { name: "Clients", href: "#", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
-  { name: "Settings", href: "/Lawyer/settings", icon: Settings },
+  { name: "Settings", href: "/Lawyer/profile-settings", icon: Settings },
 ];
 
 const userNavItems = [
   { name: "Dashboard", href: "/User-landing", icon: Activity },
   { name: "Legal Directory", href: "/User-landing/network", icon: BookOpenText },
   { name: "Legal Resources", href: "User-landing/legal-content", icon: BookOpen },
-  // {
-  //   name: "Book Appointment",
-  //   href: "/User-landing/appointments",
-  //   icon: Calendar,
-  // },
   {
     name: "Message & Call",
     href: "/User-landing/user-message-call",
@@ -57,12 +52,7 @@ const userNavItems = [
     icon: User,
   },
   { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
-  // {
-  //   name: "Legal Education",
-  //   href: "/User-landing/user-education",
-  //   icon: BookOpen,
-  // },
-  { name: "Settings", href: "/User-landing/settings", icon: Settings },
+  { name: "Settings", href: "/User-landing/profile-settings", icon: Settings },
    
 ];
 
