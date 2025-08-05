@@ -19,9 +19,9 @@ export default function VideoControls({
         onClick={onMuteToggle}
       >
         {isMuted ? (
-          <VolumeX className="w-6 h-6" />
+          <VolumeX className="w-4 h-4" />
         ) : (
-          <Volume2 className="w-6 h-6" />
+          <Volume2 className="w-4 h-4" />
         )}
       </motion.button>
     </div>

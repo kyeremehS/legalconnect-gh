@@ -1,4 +1,33 @@
 import { Award, HelpCircle, Brain } from "lucide-react";
+
+// Lawyer interface definition
+export interface Lawyer {
+  id: string;
+  name: string;
+  title: string;
+  firm: string;
+  location: string;
+  barAdmissionYear: number;
+  experience: number;
+  practiceAreas: string[];
+  education: string;
+  barAssociation: string;
+  profileImage: string;
+  isConnected: boolean;
+  isPending: boolean;
+  connectionCount: number;
+  professionalSummary: string;
+  publications: string[];
+  calendlyLink: string;
+  email: string;
+  phone: string;
+  website?: string;
+  detailedBio: string;
+  specializations: string[];
+  awards: string[];
+  languages: string[];
+}
+
 // Legal Articles Data
 export const legalArticles = [
   {
@@ -368,5 +397,135 @@ export const videoCategories = [
           "Know the rules and regulations of the association you are affiliated to.",
       },
     ],
+  },
+];
+
+export const lawyers: Lawyer[] = [
+  {
+    id: "1",
+    name: "Ama Kwarteng",
+    title: "Senior Partner",
+    firm: "Kwarteng & Associates",
+    location: "Accra, Ghana",
+    barAdmissionYear: 2008,
+    experience: 15,
+    practiceAreas: ["Corporate Law", "Commercial Litigation", "Contract Law"],
+    education: "University of Ghana School of Law, LLB (2007)",
+    barAssociation: "Ghana Bar Association",
+    profileImage: "/lawyers/ama-kwarteng.jpg",
+    isConnected: false,
+    isPending: false,
+    connectionCount: 500,
+    professionalSummary: "Legal practitioner specializing in corporate and commercial matters.",
+    publications: ["Understanding Corporate Governance in Ghana", "Contract Law Basics"],
+    calendlyLink: "https://calendly.com/affum3331/30min",
+    email: "ama@kwartenglaw.com",
+    phone: "+233 24 123 4567",
+    website: "www.kwartenglaw.com",
+    detailedBio: "Ama Kwarteng is a highly experienced corporate lawyer with over 15 years of practice in Ghana. She specializes in corporate governance, mergers and acquisitions, and commercial litigation. She has advised numerous multinational corporations and local businesses on complex legal matters.",
+    specializations: ["Mergers & Acquisitions", "Securities Law", "International Trade"],
+    awards: ["Ghana Law Awards - Corporate Lawyer of the Year 2022", "Outstanding Legal Practitioner 2021"],
+    languages: ["English", "Twi", "French"]
+  },
+  {
+    id: "2",
+    name: "Kwame Mensah",
+    title: "Legal Practitioner",
+    firm: "Mensah Legal Consultancy",
+    location: "Kumasi, Ghana",
+    barAdmissionYear: 2011,
+    experience: 12,
+    practiceAreas: ["Land Law", "Property Law", "Real Estate"],
+    education: "KNUST Faculty of Law, LLB (2010)",
+    barAssociation: "Ghana Bar Association",
+    profileImage: "/lawyers/kwame-mensah.jpg",
+    isConnected: true,
+    isPending: false,
+    connectionCount: 342,
+    professionalSummary: "Legal practitioner with focus on land and property law matters.",
+    publications: ["Land Rights in Ghana: A Guide"],
+    calendlyLink: "https://calendly.com/kwame-mensah/consultation",
+    email: "kwame@mensahlegal.com",
+    phone: "+233 20 987 6543",
+    detailedBio: "Kwame Mensah has dedicated his career to property and land law in Ghana. He has successfully handled over 200 land disputes and property transactions, making him one of the most sought-after property lawyers in the Ashanti region.",
+    specializations: ["Land Disputes", "Property Transactions", "Real Estate Development"],
+    awards: ["Best Property Lawyer - Ashanti Region 2020"],
+    languages: ["English", "Twi", "Asante Twi"]
+  },
+  {
+    id: "3",
+    name: "Abena Owusu",
+    title: "Family Law Practitioner",
+    firm: "Owusu Family Law Chambers",
+    location: "Takoradi, Ghana",
+    barAdmissionYear: 2013,
+    experience: 10,
+    practiceAreas: ["Family Law", "Matrimonial Law", "Child Welfare"],
+    education: "University of Cape Coast Faculty of Law, LLB (2012)",
+    barAssociation: "Ghana Bar Association",
+    profileImage: "/lawyers/abena-owusu.jpg",
+    isConnected: false,
+    isPending: true,
+    connectionCount: 278,
+    professionalSummary: "Legal practitioner focusing on family and matrimonial law.",
+    publications: ["Family Law in Ghana: Know Your Rights"],
+    calendlyLink: "https://calendly.com/abena-owusu/family-law-session",
+    email: "abena@owusufamilylaw.com",
+    phone: "+233 31 456 7890",
+    detailedBio: "Abena Owusu is a compassionate family law practitioner who has helped hundreds of families navigate complex legal situations. She specializes in divorce proceedings, child custody, and domestic violence cases.",
+    specializations: ["Divorce & Separation", "Child Custody", "Domestic Violence"],
+    awards: ["Family Law Excellence Award 2021"],
+    languages: ["English", "Fante", "Twi"]
+  },
+  {
+    id: "4",
+    name: "Kojo Asante",
+    title: "Criminal Law Practitioner",
+    firm: "Asante Defense Chambers",
+    location: "Accra, Ghana",
+    barAdmissionYear: 2005,
+    experience: 18,
+    practiceAreas: ["Criminal Law", "Constitutional Law", "Human Rights"],
+    education: "Ghana School of Law, BL (2005)",
+    barAssociation: "Ghana Bar Association",
+    profileImage: "/lawyers/kojo-asante.jpg",
+    isConnected: false,
+    isPending: false,
+    connectionCount: 612,
+    professionalSummary: "Legal practitioner with experience in criminal and constitutional matters.",
+    publications: ["Understanding Your Rights Under Ghana's Constitution", "Criminal Procedure Guide"],
+    calendlyLink: "https://calendly.com/kojo-asante/criminal-defense",
+    email: "kojo@asantedefense.com",
+    phone: "+233 26 789 0123",
+    website: "www.asantedefense.com",
+    detailedBio: "Kojo Asante is a renowned criminal defense lawyer with an impressive track record in high-profile criminal and constitutional cases. He has successfully defended clients in the Supreme Court and is known for his expertise in human rights law.",
+    specializations: ["Criminal Defense", "Constitutional Law", "Human Rights Advocacy"],
+    awards: ["Criminal Defense Lawyer of the Year 2019", "Human Rights Advocate 2020"],
+    languages: ["English", "Twi", "Ga"]
+  },
+  {
+    id: "5",
+    name: "Efua Boateng",
+    title: "Employment Law Practitioner",
+    firm: "Boateng Legal Services",
+    location: "Tema, Ghana",
+    barAdmissionYear: 2015,
+    experience: 8,
+    practiceAreas: ["Employment Law", "Labour Law", "Industrial Relations"],
+    education: "University of Professional Studies Law School, LLB (2014)",
+    barAssociation: "Ghana Bar Association",
+    profileImage: "/lawyers/efua-boateng.jpg",
+    isConnected: false,
+    isPending: false,
+    connectionCount: 289,
+    professionalSummary: "Legal practitioner specializing in employment and labour law.",
+    publications: ["Workers' Rights in Ghana: An Overview"],
+    calendlyLink: "https://calendly.com/efua-boateng/employment-consultation",
+    email: "efua@boatenglegal.com",
+    phone: "+233 30 234 5678",
+    detailedBio: "Efua Boateng is a dedicated employment lawyer who advocates for workers' rights and helps businesses navigate complex employment regulations. She has extensive experience in labor disputes and employment contract negotiations.",
+    specializations: ["Employment Contracts", "Labor Disputes", "Workplace Rights"],
+    awards: ["Rising Star in Employment Law 2022"],
+    languages: ["English", "Twi", "Ewe"]
   },
 ];

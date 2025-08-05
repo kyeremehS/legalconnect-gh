@@ -52,6 +52,8 @@ import SidebarItem from "../../components/content-sidebar";
 import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import ActionButton from "../../components/videoaction";
+
+
 import {
   legalArticles,
   legalQuizzes,
@@ -425,12 +427,11 @@ export default function LegalContentHub() {
                       loop
                       muted={isMuted}
                       playsInline
-                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer"
+                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer max-h-screen lg:max-h-[97vh]"
                       style={{
-                        maxHeight: "90vh",
                         maxWidth: "420px",
                       }}
-                      onClick={handlePlayPause} // Add click handler for play/pause
+                      onClick={handlePlayPause}
                       onTimeUpdate={(e) => {
                         if (idx === activeIdx) {
                           handleTimeUpdate(e.currentTarget);
@@ -741,7 +742,7 @@ export default function LegalContentHub() {
           >
             <Menu className="w-6 h-6 text-gray-600" />
           </motion.button>
-          <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1>
+          {/* <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1> */}
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
