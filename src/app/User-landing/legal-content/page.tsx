@@ -52,6 +52,8 @@ import SidebarItem from "../../components/content-sidebar";
 import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import ActionButton from "../../components/videoaction";
+
+
 import {
   legalArticles,
   legalQuizzes,
@@ -427,7 +429,7 @@ export default function LegalContentHub() {
                       playsInline
                       className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer"
                       style={{
-                        maxHeight: "90vh",
+                        maxHeight: "100vh",
                         maxWidth: "420px",
                       }}
                       onClick={handlePlayPause} // Add click handler for play/pause
