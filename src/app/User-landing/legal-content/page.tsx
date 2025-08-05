@@ -427,12 +427,11 @@ export default function LegalContentHub() {
                       loop
                       muted={isMuted}
                       playsInline
-                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer"
+                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer max-h-screen lg:max-h-[97vh]"
                       style={{
-                        maxHeight: "100vh",
                         maxWidth: "420px",
                       }}
-                      onClick={handlePlayPause} // Add click handler for play/pause
+                      onClick={handlePlayPause}
                       onTimeUpdate={(e) => {
                         if (idx === activeIdx) {
                           handleTimeUpdate(e.currentTarget);
