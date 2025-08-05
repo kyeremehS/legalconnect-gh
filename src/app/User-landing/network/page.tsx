@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Inter } from 'next/font/google';
+import { useRouter } from "next/navigation";
 import BookAppointment from "../../components/BookAppointment";
 import LawyerCard from "@/app/components/lawyer/LawyerCard";
 
@@ -31,6 +32,8 @@ import {
   Star,
   Mail,
   Globe,
+  ArrowLeft,
+  Home,
 } from "lucide-react";
 
 // Configure Inter font
@@ -61,13 +64,15 @@ const locationFilters = [
   "Cape Coast",
 ];
 
-// Mobile Sidebar Component (unchanged)
+// Mobile Sidebar Component
 function MobileSidebar({
   isOpen,
   onClose,
+  onBackToDashboard,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onBackToDashboard: () => void;
 }) {
   return (
     <AnimatePresence>
@@ -112,6 +117,17 @@ function MobileSidebar({
                 </motion.button>
               </div>
 
+              {/* Back to Dashboard Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onBackToDashboard}
+                className="w-full flex items-center gap-3 p-3 mb-4 bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl hover:from-[#d4a017]/20 hover:to-[#b8941f]/20 transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 text-[#d4a017]" />
+                <span className="text-sm font-medium text-gray-800">Back to Dashboard</span>
+              </motion.button>
+
               {/* Professional Directory Info */}
               <div className="bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl p-3 mb-4">
                 <h3 className="font-semibold text-gray-800 mb-2 text-sm">Directory Information</h3>
@@ -152,11 +168,17 @@ function MobileSidebar({
 }
 
 export default function LegalDirectoryPage() {
+  const router = useRouter();
   const [filteredLawyers, setFilteredLawyers] = useState(lawyers);
   const [selectedPracticeArea, setSelectedPracticeArea] = useState("All Areas");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Navigation function
+  const handleBackToDashboard = () => {
+    router.push("/User-landing");
+  };
 
   // Filter lawyers based on selected filters
   React.useEffect(() => {
@@ -208,7 +230,16 @@ export default function LegalDirectoryPage() {
             <h1 className="font-bold text-base text-gray-800">Legal Directory</h1>
           </div>
 
-          <div className="w-9" />
+          {/* Mobile Back Button */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleBackToDashboard}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            title="Back to Dashboard"
+          >
+            <Home className="w-5 h-5 text-[#d4a017]" />
+          </motion.button>
         </div>
       </div>
 
@@ -216,25 +247,39 @@ export default function LegalDirectoryPage() {
       <MobileSidebar
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        onBackToDashboard={handleBackToDashboard}
       />
 
       <div className="flex h-screen pt-16 lg:pt-0">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex w-72 bg-white border-r border-gray-200 flex-col py-4 px-3 shadow-sm m-4 rounded-xl">
           <div>
-            {/* Header */}
+            {/* Header with Back Button */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 mb-6 px-2"
+              className="flex items-center justify-between mb-6 px-2"
             >
-              <div className="w-10 h-10 bg-[#d4a017] rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-[#d4a017] rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="font-bold text-lg text-gray-800">Legal Directory</h1>
+                  <p className="text-xs text-gray-500">Find Legal Practitioners</p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-800">Legal Directory</h1>
-                <p className="text-xs text-gray-500">Find Legal Practitioners</p>
-              </div>
+              
+              {/* Desktop Back Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleBackToDashboard}
+                className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                title="Back to Dashboard"
+              >
+                <Home className="w-4 h-4" />
+              </motion.button>
             </motion.div>
 
             {/* Search */}
