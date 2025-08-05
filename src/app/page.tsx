@@ -146,6 +146,7 @@ export default function Home() {
       </motion.section>
       {/* Features Grid */}
       <motion.section
+        id="features"
         className="py-20 bg-white"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -230,7 +231,7 @@ export default function Home() {
       {/* CTA Section */}
       <motion.section
         // className="py-20 bg-[#d4a017] text-white relative overflow-hidden"
-        className="py-20 bg-[#090501] text-white relative overflow-hidden"
+        className="py-20 bg-gray-700 text-white relative overflow-hidden"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6 }}

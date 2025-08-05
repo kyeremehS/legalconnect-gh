@@ -91,9 +91,6 @@ export default function UserDashboard() {
               Your legal dashboard overview
             </p>
           </div>
-          <div className="flex items-center justify-end sm:justify-start">
-            <UserButton afterSignOutUrl="/" />
-          </div>
         </motion.header>
 
         {/* Quick Actions Grid - Hidden on desktop (lg and above) */}

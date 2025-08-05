@@ -97,87 +97,115 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-50">
-      <div className="w-[400px] h-[450px] bg-white rounded-lg shadow-xl flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl text-gray-700  font-semibold">
-            Chat with Legal Assistant
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Close chat"
-          >
-            <X className="w-5 h-5 text-gray-700" />
-          </button>
-        </div>
+    <>
+      {/* Mobile backdrop */}
+      <div
+        className="md:hidden fixed inset-0 bg-black/50 z-40"
+        onClick={onClose}
+      />
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${
-                message.sender === "user" ? "justify-end" : "justify-start"
-              }`}
+      {/* Chat Modal */}
+      <div className="fixed bottom-0 right-0 z-50 md:bottom-24 md:right-6">
+        <div className="w-screen h-screen bg-white flex flex-col md:w-[400px] md:h-[450px] md:rounded-lg md:shadow-xl">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b bg-white md:rounded-t-lg">
+            <h2 className="text-lg md:text-xl text-gray-700 font-semibold">
+              Chat with Legal Assistant
+            </h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close chat"
             >
-              <div
-                className={`max-w-[85%] rounded-lg p-3 ${
-                  message.sender === "user"
-                    ? "bg-amber-600 text-white"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                <p className="whitespace-pre-wrap text-sm">{message.content}</p>
-                <span className="text-xs opacity-70 mt-1 block">
-                  {message.timestamp.toLocaleTimeString()}
-                </span>
-              </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 text-gray-800 rounded-lg p-3">
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
+              <X className="w-5 h-5 text-gray-700" />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50 md:bg-white">
+            {messages.length === 0 && (
+              <div className="flex justify-center items-center h-32">
+                <div className="text-center">
+                  <p className="text-gray-500 text-sm mb-2">
+                    👋 Hello! I'm your legal assistant.
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    Ask me any legal questions to get started.
+                  </p>
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            )}
 
-        {/* Input */}
-        <div className="p-4 border-t">
-          <div className="flex space-x-2">
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className=" text-gray-700 flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b98a11] text-sm"
-              disabled={isLoading}
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={isLoading}
-              className={`p-2 bg-[#b98a11] text-white rounded-lg transition-colors ${
-                isLoading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-amber-600/90"
-              }`}
-              aria-label="Send message"
-            >
-              <Send className="w-5 h-5" />
-            </button>
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${
+                  message.sender === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-[85%] md:max-w-[85%] rounded-lg p-3 ${
+                    message.sender === "user"
+                      ? "bg-[#d4a017] text-white rounded-br-sm"
+                      : "bg-white text-gray-800 border border-gray-200 rounded-bl-sm shadow-sm"
+                  }`}
+                >
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {message.content}
+                  </p>
+                  <span className="text-xs opacity-70 mt-1 block">
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white text-gray-800 rounded-lg rounded-bl-sm p-3 border border-gray-200 shadow-sm">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="p-3 md:p-4 border-t bg-white md:rounded-b-lg">
+            <div className="flex space-x-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type your message..."
+                className="text-gray-700 flex-1 p-3 md:p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] text-sm md:text-sm"
+                disabled={isLoading}
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={isLoading}
+                className={`p-3 md:p-2 bg-[#d4a017] text-white rounded-lg transition-colors min-w-[48px] md:min-w-auto ${
+                  isLoading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-[#b8941f] active:bg-[#a67c14]"
+                }`}
+                aria-label="Send message"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
