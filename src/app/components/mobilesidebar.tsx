@@ -76,6 +76,12 @@ export default function MobileSidebar({
                 {/* Navigation */}
                 <nav className="space-y-2">
                   <SidebarItem
+                    icon={<House className="w-5 h-5" />}
+                    label="Dashboard"
+                    onClick={handleBackToDashboard}
+                  />
+
+                  <SidebarItem
                     icon={<Tv className="w-5 h-5" />}
                     label="LawTok Videos"
                     active={activeContent === "videos"}
@@ -83,7 +89,7 @@ export default function MobileSidebar({
                       setActiveContent("videos");
                       onClose();
                     }}
-                    badge="New"
+                    // badge="New"
                   />
                   <SidebarItem
                     icon={<BookOpen className="w-5 h-5" />}
@@ -113,11 +119,7 @@ export default function MobileSidebar({
                     }}
                   />
                 
-                  <SidebarItem
-                    icon={<House className="w-5 h-5" />}
-                    label="Dashboard"
-                    onClick={handleBackToDashboard}
-                  />
+                  
                 </nav>
 
                 {/* Quick Stats */}
@@ -143,13 +145,13 @@ export default function MobileSidebar({
               </div>
 
               {/* Footer */}
-              <div className="border-t border-gray-200 pt-4">
+              {/* <div className="border-t border-gray-200 pt-4">
                 <div className="text-xs text-gray-400 space-y-1">
                   <div>© 2025 LegalConnect</div>
                   <div>Educational Content</div>
                   <div>Made in Ghana 🇬🇭</div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </motion.aside>
         </>
