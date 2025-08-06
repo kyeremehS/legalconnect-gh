@@ -27,10 +27,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
 import NavBar from "./components/NavBar";
 
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+
 
   // Handle scroll effects
   useEffect(() => {

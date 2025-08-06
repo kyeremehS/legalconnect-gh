@@ -5,6 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { Menu, ChevronRight, Scale } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +13,7 @@ const NavBar = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
   const { isSignedIn } = useAuth();
+  const { user } = useUser();
 
   useEffect(() => {
     setMounted(true);
@@ -98,12 +100,14 @@ const NavBar = () => {
               >
                 Features
               </Link>
-              {/* <Link
-                href="#solutions"
-                className="text-gray-600 hover:text-amber-600 transition-colors"
-              >
-                Solutions
-              </Link> */}
+              {user && (
+                <Link
+                  href="/User-landing"
+                  className="text-gray-600 hover:text-amber-600 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )}
               {isSignedIn ? (
                 <UserButton afterSignOutUrl="/" />
               ) : (
