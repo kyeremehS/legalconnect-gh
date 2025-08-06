@@ -25,5 +25,7 @@ export default function VideoControls({
         )}
       </motion.button>
     </div>
+    
+    
   );
 }

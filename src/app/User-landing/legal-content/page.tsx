@@ -613,7 +613,7 @@ export default function LegalContentHub() {
                   onClick={handleBackToDashboard}
                   className="flex items-center gap-2 text-[#d4a017] hover:text-[#b8941f] transition-colors font-medium"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-5 h-5" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
               </div>
