@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { BookOpen, Tv, FileText, MessageSquare, X, Brain } from "lucide-react";
+import { BookOpen, Tv, FileText, MessageSquare, X, Brain, House } from "lucide-react";
 import { Inter } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
-type ContentType = "videos" | "articles" | "quizzes" | "templates" | "chatbot";
+type ContentType = "videos" | "articles" | "quizzes" | "templates" 
 
 import SidebarItem from "../components/content-sidebar";
 
@@ -19,6 +20,13 @@ export default function MobileSidebar({
   activeContent: ContentType;
   setActiveContent: (content: ContentType) => void;
 }) {
+  const router = useRouter();
+
+  const handleBackToDashboard = () => {
+    router.push("/User-landing");
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -104,14 +112,11 @@ export default function MobileSidebar({
                       onClose();
                     }}
                   />
+                
                   <SidebarItem
-                    icon={<MessageSquare className="w-5 h-5" />}
-                    label="AI Assistant"
-                    active={activeContent === "chatbot"}
-                    onClick={() => {
-                      setActiveContent("chatbot");
-                      onClose();
-                    }}
+                    icon={<House className="w-5 h-5" />}
+                    label="Dashboard"
+                    onClick={handleBackToDashboard}
                   />
                 </nav>
 

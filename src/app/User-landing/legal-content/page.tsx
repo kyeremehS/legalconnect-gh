@@ -41,6 +41,7 @@ import {
   Check,
   ChevronRight,
   ArrowLeft,
+  House,
 } from "lucide-react";
 
 import InteractiveQuiz from "../../components/InteractiveQuiz";
@@ -89,7 +90,7 @@ type VideoItem = {
 };
 
 // Content Types
-type ContentType = "videos" | "articles" | "quizzes" | "templates" | "chatbot";
+type ContentType = "videos" | "articles" | "quizzes" | "templates";
 
 // Flatten all videos into a single array for feed
 function flattenVideos() {
@@ -387,7 +388,7 @@ export default function LegalContentHub() {
       case "videos":
         return (
           <main className="flex-1 bg-black relative overflow-hidden lg:m-5 lg:rounded-xl">
-            {/* Back Button for Videos - Mobile */}
+            {/* Back Button for Videos - Mobile
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -395,7 +396,7 @@ export default function LegalContentHub() {
               className="lg:hidden absolute top-4 left-4 z-50 p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all border border-white/20 shadow-lg"
             >
               <ArrowLeft className="w-5 h-5" />
-            </motion.button>
+            </motion.button> */}
 
             {/* Video Container with smooth vertical transitions */}
             <div
@@ -816,6 +817,11 @@ export default function LegalContentHub() {
                 label="Templates"
                 active={activeContent === "templates"}
                 onClick={() => setActiveContent("templates")}
+              />
+              <SidebarItem
+                icon={<House className="w-5 h-5" />}
+                label="Dashboard"
+                onClick={handleBackToDashboard}
               />
             </nav>
 
