@@ -98,12 +98,12 @@ const NavBar = () => {
               >
                 Features
               </Link>
-              <Link
+              {/* <Link
                 href="#solutions"
                 className="text-gray-600 hover:text-amber-600 transition-colors"
               >
                 Solutions
-              </Link>
+              </Link> */}
               {isSignedIn ? (
                 <UserButton afterSignOutUrl="/" />
               ) : (
