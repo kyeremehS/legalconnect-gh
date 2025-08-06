@@ -6,7 +6,7 @@ import Sidebar from "../components/lawyer/Sidebar";
 import { motion } from "framer-motion";
 import ChatModal from "../components/ChatModal";
 import { useState } from "react";
-import { UserButton } from "@clerk/nextjs";
+import {useUser} from "@clerk/nextjs";
 
 
 import { Bot, Calendar, MessageCircle, Video, User, Bell, BookOpen } from "lucide-react";
@@ -69,13 +69,14 @@ const userRecentActivities = [
 export default function UserDashboard() {
   const [showChatModal, setShowChatModal] = useState(false);
   const router = useRouter();
+  const { user } = useUser();
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
       <Sidebar role="user" />
       
       {/* Main Content */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 lg:ml-64">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 lg:ml-64 mt-20 md:mt-0">
         {/* Header - Enhanced for mobile visibility */}
         <motion.header
           initial={{ opacity: 0, y: 20 }}
@@ -85,7 +86,7 @@ export default function UserDashboard() {
         >
           <div className="flex-1">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1a1a1a] leading-tight">
-              Welcome, User! 👋
+              Welcome, {user?.firstName} 👋
             </h1>
             <p className="text-gray-600 text-sm sm:text-base mt-1 sm:mt-2">
               Your legal dashboard overview

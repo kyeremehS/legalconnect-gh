@@ -5,6 +5,8 @@ import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { Menu, ChevronRight, Scale } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { User } from "@clerk/nextjs/server";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +14,7 @@ const NavBar = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
   const { isSignedIn } = useAuth();
+  const { user } = useUser();
 
   useEffect(() => {
     setMounted(true);
@@ -98,14 +101,22 @@ const NavBar = () => {
               >
                 Features
               </Link>
-              {/* <Link
-                href="#solutions"
-                className="text-gray-600 hover:text-amber-600 transition-colors"
+              {user && (
+                <Link
+                  href="/User-landing"
+                  className="text-gray-600 hover:text-amber-600 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )}
+              <Link
+                href="/Lawyer"
+                className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
               >
-                Solutions
-              </Link> */}
+                For Lawyers
+              </Link>
               {isSignedIn ? (
-                <UserButton afterSignOutUrl="/" />
+                <UserButton />
               ) : (
                 <>
                   <Link
@@ -114,12 +125,7 @@ const NavBar = () => {
                   >
                     Sign in
                   </Link>
-                  <Link
-                    href="/Lawyer"
-                    className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
-                  >
-                    For Lawyers
-                  </Link>
+
                   <Link
                     href="/sign-up"
                     className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
@@ -131,13 +137,16 @@ const NavBar = () => {
             </div>
 
             {/* Hamburger for mobile */}
-            <button
-              className="md:hidden flex items-center justify-center p-2 rounded-full hover:bg-amber-50 transition"
-              onClick={() => setIsMenuOpen((open) => !open)}
-              aria-label="Open menu"
-            >
-              <Menu className="w-7 h-7 text-[#b98a11]" />
-            </button>
+            <div className="md:hidden flex items-center justify-center gap-2">
+              <button
+                className="p-2 rounded-full hover:bg-amber-50 transition"
+                onClick={() => setIsMenuOpen((open) => !open)}
+                aria-label="Open menu"
+              >
+                <Menu className="w-7 h-7 text-[#b98a11]" />
+              </button>
+              <UserButton />
+            </div>
           </div>
         </nav>
 
@@ -164,43 +173,43 @@ const NavBar = () => {
                 transition={{ duration: 0.2 }}
                 className="absolute top-24 left-4 right-4 z-50 bg-white rounded-xl shadow-xl border border-[#f5c05a]/20 p-6 md:hidden"
               >
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 items-start w-full">
+                  {user && (
+                    <Link
+                      href="/User-landing"
+                      className="text-gray-600 px-2 hover:text-amber-600 transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <Link
                     href="#features"
-                    className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
+                    className="text-gray-600 px-2 hover:text-amber-600 transition-colors hover:bg-amber-50 rounded-lg"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Features
                   </Link>
+
                   <Link
-                    href="#solutions"
-                    className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                    onClick={() => setIsMenuOpen(false)}
+                    href="/Lawyer"
+                    className="bg-[#b98a11] text-white p-2 rounded-lg hover:bg-amber-700 transition-colors w-full"
                   >
-                    Solutions
+                    For Lawyers
                   </Link>
                   {!isSignedIn && (
                     <>
                       <Link
                         href="/sign-in"
-                        className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
+                        className="text-gray-600 hover:text-amber-600 transition-colors"
                       >
                         Sign in
                       </Link>
+
                       <Link
                         href="/sign-up"
-                        className="text-gray-600 hover:text-amber-600 transition-colors p-2 hover:bg-amber-50 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
+                        className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
                       >
                         Sign up
-                      </Link>
-                      <Link
-                        href="/Lawyer"
-                        className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors text-center"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        For Lawyers
                       </Link>
                     </>
                   )}
