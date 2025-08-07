@@ -127,7 +127,7 @@ const NavBar = () => {
                   </Link>
 
                   <Link
-                    href="/sign-up"
+                    href="/register"
                     className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
                   >
                     Sign up
@@ -206,7 +206,7 @@ const NavBar = () => {
                       </Link>
 
                       <Link
-                        href="/sign-up"
+                        href="/register"
                         className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
                       >
                         Sign up
