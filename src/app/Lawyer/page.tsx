@@ -10,11 +10,16 @@ import {
   FileText,
   MessageSquare,
   Settings,
-  FileBadge2Icon
+  FileBadge2Icon,
+  Shield,
+  AlertCircle
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "../components/lawyer/Sidebar";
+import { useAuth } from "../../contexts/AuthContext";
+import LawyerAuthWrapper from "../components/auth/LawyerAuthWrapper";
 
 const navItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
@@ -54,25 +59,23 @@ const recentActivities = [
 ];
 
 const LawyerDashboard = () => {
-  const [user] = useState({
-    displayName: "Ama Kwarteng",
-    role: "Senior Legal Counsel",
-  });
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-white lg:ml-64">
-      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">
-              Welcome back, {user.displayName}
-            </h1>
-            <p className="text-gray-600">
-              Here's what's happening with your practice today.
-            </p>
-          </div>
-          <Sidebar role="lawyer" />
+    <LawyerAuthWrapper>
+      <div className="min-h-screen bg-white lg:ml-64">
+        <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-800">
+                Welcome back, {user?.firstName} {user?.lastName}
+              </h1>
+              <p className="text-gray-600">
+                Here's what's happening with your practice today.
+              </p>
+            </div>
+            <Sidebar role="lawyer" />
           {/* Statistics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {statistics.map((stat) => (
@@ -178,6 +181,7 @@ const LawyerDashboard = () => {
         </div>
       </main>
     </div>
+    </LawyerAuthWrapper>
   );
 };
 

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import React, { useState } from "react";
+import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 
 // Example data types
 type Appointment = {
@@ -54,9 +55,10 @@ export default function LawyerAppointments() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
-        <motion.div
+    <LawyerAuthWrapper>
+      <div className="min-h-screen bg-white">
+        <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+          <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -286,6 +288,7 @@ export default function LawyerAppointments() {
           </motion.div>
         </motion.div>
       )}
-    </div>
+      </div>
+    </LawyerAuthWrapper>
   );
 }

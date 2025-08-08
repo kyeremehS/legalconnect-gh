@@ -6,6 +6,7 @@ import { Video, Upload, ArrowLeft, Plus, PlayCircle } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
+import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 
 type VideoContent = {
   id: string;
@@ -62,11 +63,12 @@ export default function CreateContent() {
   };
 
   return (
-    <React.Fragment>
-      <div className="min-h-screen bg-white">
-        <main className="p-4 lg:p-8 pt-20 lg:pt-8">
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
+    <LawyerAuthWrapper>
+      <React.Fragment>
+        <div className="min-h-screen bg-white">
+          <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
@@ -242,6 +244,7 @@ export default function CreateContent() {
           </motion.div>
         </main>
       </div>
-    </React.Fragment>
+      </React.Fragment>
+    </LawyerAuthWrapper>
   );
 }

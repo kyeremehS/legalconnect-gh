@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   GET_USER_BY_ID: (id: string) => `/api/users/${id}`,
   UPDATE_USER: (id: string) => `/api/users/${id}`,
   DELETE_USER: (id: string) => `/api/users/${id}`,
+  GET_CURRENT_USER: '/api/users/profile/me',
   // Lawyer endpoints
   GET_LAWYERS: '/api/lawyers',
   GET_LAWYER_BY_ID: (id: string) => `/api/lawyers/${id}`,
@@ -16,6 +17,10 @@ export const API_ENDPOINTS = {
   UPDATE_LAWYER: (id: string) => `/api/lawyers/${id}`,
   DELETE_LAWYER: (id: string) => `/api/lawyers/${id}`,
   SEARCH_LAWYERS: '/api/lawyers/search',
+  SEARCH_LAWYERS_BY_PRACTICE_AREA: '/api/lawyers/search/practice-areas',
+  SEARCH_LAWYERS_BY_LOCATION: '/api/lawyers/search/location',
+  GET_LAWYER_BY_USER_ID: (userId: string) => `/api/lawyers/user/${userId}`,
+  GET_CURRENT_LAWYER_PROFILE: '/api/lawyers/profile/me',
 };
 
 // Types for API requests/responses
@@ -96,6 +101,11 @@ export class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private getAuthHeaders(): Record<string, string> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  }
+
   private async request<T = any>(
     endpoint: string,
     options: RequestInit = {}
@@ -105,6 +115,7 @@ export class ApiClient {
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
         ...options.headers,
       },
       ...options,
@@ -218,6 +229,39 @@ export class ApiClient {
     return this.request(API_ENDPOINTS.DELETE_LAWYER(id), {
       method: 'DELETE',
     });
+  }
+
+  // ========================
+  // PROTECTED LAWYER ROUTES
+  // ========================
+
+  // Get lawyer by user ID (protected)
+  async getLawyerByUserId(userId: string): Promise<ApiResponse<LawyerData>> {
+    return this.request(API_ENDPOINTS.GET_LAWYER_BY_USER_ID(userId));
+  }
+
+  // Get current user's lawyer profile (protected)
+  async getCurrentLawyerProfile(): Promise<ApiResponse<LawyerData>> {
+    return this.request(API_ENDPOINTS.GET_CURRENT_LAWYER_PROFILE);
+  }
+
+  // Search lawyers by practice area
+  async searchLawyersByPracticeArea(practiceArea: string): Promise<ApiResponse<LawyerData[]>> {
+    return this.request(`${API_ENDPOINTS.SEARCH_LAWYERS_BY_PRACTICE_AREA}?practiceArea=${encodeURIComponent(practiceArea)}`);
+  }
+
+  // Search lawyers by location
+  async searchLawyersByLocation(location: string): Promise<ApiResponse<LawyerData[]>> {
+    return this.request(`${API_ENDPOINTS.SEARCH_LAWYERS_BY_LOCATION}?location=${encodeURIComponent(location)}`);
+  }
+
+  // ========================
+  // USER PROFILE METHODS
+  // ========================
+
+  // Get current user profile (protected)
+  async getCurrentUser(): Promise<ApiResponse<any>> {
+    return this.request(API_ENDPOINTS.GET_CURRENT_USER);
   }
 }
 

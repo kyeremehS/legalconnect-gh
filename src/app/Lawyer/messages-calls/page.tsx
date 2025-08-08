@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { div } from "framer-motion/client";
+import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 // import { useState, useRef, useEffect } from "react";
 // import { useUser } from "@clerk/nextjs";
 // import { useMessaging } from "../../../hooks/useMessaging";
@@ -138,15 +139,16 @@ export default function MessagesAndCalls() {
   // }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Hamburger Menu (Mobile) */}
-      <div
-        className={`fixed top-0 left-0 w-64 h-full bg-blue-800 text-white p-4 transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 md:hidden`}
-      >
-        <button
-          onClick={toggleMenu}
+    <LawyerAuthWrapper>
+      <div className="min-h-screen bg-gray-100 flex">
+        {/* Hamburger Menu (Mobile) */}
+        <div
+          className={`fixed top-0 left-0 w-64 h-full bg-blue-800 text-white p-4 transform ${
+            menuOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 md:hidden`}
+        >
+          <button
+            onClick={toggleMenu}
           className="text-white text-2xl mb-4"
           aria-label="Close Menu"
         >
@@ -373,6 +375,7 @@ export default function MessagesAndCalls() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </LawyerAuthWrapper>
   );
 }
