@@ -89,6 +89,8 @@ export default function ArticleReader({
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+            aria-label="Close article"
+            title="Close article"
           >
             <X className="w-5 h-5" />
           </button>

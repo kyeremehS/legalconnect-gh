@@ -324,7 +324,7 @@ export const videoCategories = [
         url: "/legal-videos/building-without-permit.mp4",
         lawyer: "Yudah Brown, Esq.",
         views: "8.2K",
-        duration: "7:15",
+        duration: "2:46",
         language: "English",
         thumbnail: "/thumbnails/land2.jpg",
         description:
