@@ -21,6 +21,17 @@ export const API_ENDPOINTS = {
   SEARCH_LAWYERS_BY_LOCATION: '/api/lawyers/search/location',
   GET_LAWYER_BY_USER_ID: (userId: string) => `/api/lawyers/user/${userId}`,
   GET_CURRENT_LAWYER_PROFILE: '/api/lawyers/profile/me',
+  // Appointment endpoints
+  CREATE_APPOINTMENT: '/api/appointments',
+  GET_APPOINTMENT: (id: string) => `/api/appointments/${id}`,
+  UPDATE_APPOINTMENT_STATUS: (id: string) => `/api/appointments/${id}/status`,
+  GET_LAWYER_APPOINTMENTS: '/api/appointments/lawyer/my-appointments',
+  GET_CLIENT_APPOINTMENTS: '/api/appointments/client/my-appointments',
+  GET_LAWYER_AVAILABILITY: (lawyerId: string) => `/api/appointments/lawyer/${lawyerId}/availability`,
+  SET_LAWYER_AVAILABILITY: '/api/appointments/lawyer/availability',
+  GET_APPOINTMENT_NOTIFICATIONS: '/api/appointments/notifications',
+  GET_USER_NOTIFICATIONS: '/api/appointments/user/notifications',
+  MARK_NOTIFICATION_READ: (id: string) => `/api/appointments/notifications/${id}/read`,
 };
 
 // Types for API requests/responses
@@ -85,6 +96,63 @@ export interface SearchLawyersParams {
   search?: string;
   page?: number;
   limit?: number;
+}
+
+// Appointment types
+export interface CreateAppointmentRequest {
+  lawyerId: string;
+  startTime: string;
+  endTime: string;
+  practiceArea?: string;
+  description?: string;
+  meetingType?: 'VIRTUAL' | 'IN_PERSON' | 'PHONE';
+  duration?: string;
+}
+
+export interface UpdateAppointmentStatusRequest {
+  status: 'PENDING' | 'SCHEDULED' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
+  notes?: string;
+}
+
+export interface AppointmentData {
+  id: string;
+  clientId: string;
+  lawyerId: string;
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+  meetingType: string;
+  meetingLink?: string;
+  notes?: string;
+  practiceArea?: string;
+  duration?: string;
+  createdAt: string;
+  updatedAt: string;
+  client?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+  };
+  lawyer?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+  };
+}
+
+export interface LawyerAvailability {
+  id: string;
+  lawyerId: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  isActive: boolean;
 }
 
 export interface ApiResponse<T = any> {
@@ -263,6 +331,100 @@ export class ApiClient {
   async getCurrentUser(): Promise<ApiResponse<any>> {
     return this.request(API_ENDPOINTS.GET_CURRENT_USER);
   }
+
+  // ========================
+  // APPOINTMENT METHODS
+  // ========================
+
+  // Create appointment (Client only)
+  async createAppointment(appointmentData: CreateAppointmentRequest): Promise<ApiResponse<AppointmentData>> {
+    return this.request(API_ENDPOINTS.CREATE_APPOINTMENT, {
+      method: 'POST',
+      body: JSON.stringify(appointmentData),
+    });
+  }
+
+  // Get appointment by ID
+  async getAppointment(id: string): Promise<ApiResponse<AppointmentData>> {
+    return this.request(API_ENDPOINTS.GET_APPOINTMENT(id));
+  }
+
+  // Update appointment status (Lawyer only)
+  async updateAppointmentStatus(id: string, statusData: UpdateAppointmentStatusRequest): Promise<ApiResponse<AppointmentData>> {
+    return this.request(API_ENDPOINTS.UPDATE_APPOINTMENT_STATUS(id), {
+      method: 'PUT',
+      body: JSON.stringify(statusData),
+    });
+  }
+
+  // Get lawyer's appointments
+  async getLawyerAppointments(filters?: { status?: string; date?: string }): Promise<ApiResponse<AppointmentData[]>> {
+    const queryParams = new URLSearchParams();
+    if (filters?.status) queryParams.append('status', filters.status);
+    if (filters?.date) queryParams.append('date', filters.date);
+    
+    const endpoint = queryParams.toString() 
+      ? `${API_ENDPOINTS.GET_LAWYER_APPOINTMENTS}?${queryParams.toString()}`
+      : API_ENDPOINTS.GET_LAWYER_APPOINTMENTS;
+    
+    return this.request(endpoint);
+  }
+
+  // Get client's appointments
+  async getClientAppointments(filters?: { status?: string }): Promise<ApiResponse<AppointmentData[]>> {
+    const queryParams = new URLSearchParams();
+    if (filters?.status) queryParams.append('status', filters.status);
+    
+    const endpoint = queryParams.toString() 
+      ? `${API_ENDPOINTS.GET_CLIENT_APPOINTMENTS}?${queryParams.toString()}`
+      : API_ENDPOINTS.GET_CLIENT_APPOINTMENTS;
+    
+    return this.request(endpoint);
+  }
+
+  // Get lawyer availability
+  async getLawyerAvailability(lawyerId: string, date?: string): Promise<ApiResponse<LawyerAvailability | LawyerAvailability[]>> {
+    const queryParams = new URLSearchParams();
+    if (date) queryParams.append('date', date);
+    
+    const endpoint = queryParams.toString() 
+      ? `${API_ENDPOINTS.GET_LAWYER_AVAILABILITY(lawyerId)}?${queryParams.toString()}`
+      : API_ENDPOINTS.GET_LAWYER_AVAILABILITY(lawyerId);
+    
+    return this.request(endpoint);
+  }
+
+  // Set lawyer availability (Lawyer only)
+  async setLawyerAvailability(availability: Omit<LawyerAvailability, 'id' | 'lawyerId'>[]): Promise<ApiResponse<any>> {
+    return this.request(API_ENDPOINTS.SET_LAWYER_AVAILABILITY, {
+      method: 'POST',
+      body: JSON.stringify(availability),
+    });
+  }
+
+  // Get appointment notifications for lawyer
+  async getAppointmentNotifications(): Promise<ApiResponse<any[]>> {
+    return this.request(API_ENDPOINTS.GET_APPOINTMENT_NOTIFICATIONS);
+  }
+
+  // Get user notifications
+  async getUserNotifications(unreadOnly?: boolean): Promise<ApiResponse<any[]>> {
+    const queryParams = new URLSearchParams();
+    if (unreadOnly) queryParams.append('unreadOnly', 'true');
+    
+    const endpoint = queryParams.toString() 
+      ? `${API_ENDPOINTS.GET_USER_NOTIFICATIONS}?${queryParams.toString()}`
+      : API_ENDPOINTS.GET_USER_NOTIFICATIONS;
+    
+    return this.request(endpoint);
+  }
+
+  // Mark notification as read
+  async markNotificationAsRead(id: string): Promise<ApiResponse<any>> {
+    return this.request(API_ENDPOINTS.MARK_NOTIFICATION_READ(id), {
+      method: 'PUT',
+    });
+  }
 }
 
 // Create a default instance
@@ -271,7 +433,7 @@ export const apiClient = new ApiClient();
 // Utility function to transform API lawyer data to frontend format
 export function transformLawyerData(apiLawyer: LawyerData): any {
   return {
-    id: apiLawyer.id || apiLawyer.userId,
+    id: apiLawyer.userId || apiLawyer.user?.id, // Use userId for appointments, not profile id
     name: apiLawyer.user ? `${apiLawyer.user.firstName} ${apiLawyer.user.lastName}` : 'Unknown',
     title: "Legal Practitioner", // Default title, could be enhanced
     firm: apiLawyer.firm,

@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import Sidebar from "../components/lawyer/Sidebar";
 import { useAuth } from "../../contexts/AuthContext";
 import LawyerAuthWrapper from "../components/auth/LawyerAuthWrapper";
+import { useAppointmentNotifications } from "../hooks/useAppointmentNotifications";
+import AppointmentNotificationPopup from "../components/scheduling/AppointmentNotificationPopup";
 
 const navItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
@@ -60,6 +62,12 @@ const recentActivities = [
 
 const LawyerDashboard = () => {
   const { user } = useAuth();
+  const {
+    notifications,
+    confirmAppointment,
+    rejectAppointment,
+    dismissNotification
+  } = useAppointmentNotifications();
 
   return (
     <LawyerAuthWrapper>
@@ -180,6 +188,16 @@ const LawyerDashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* Appointment Notification Popup */}
+      {notifications.length > 0 && (
+        <AppointmentNotificationPopup
+          notifications={notifications}
+          onConfirm={confirmAppointment}
+          onReject={rejectAppointment}
+          onClose={dismissNotification}
+        />
+      )}
     </div>
     </LawyerAuthWrapper>
   );

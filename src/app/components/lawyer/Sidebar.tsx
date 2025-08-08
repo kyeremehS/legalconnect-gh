@@ -35,6 +35,7 @@ const lawyerNavItems = [
   { name: "Clients", href: "#", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
   { name: "Settings", href: "/Lawyer/profile-settings", icon: Settings },
+
 ];
 
 const userNavItems = [
@@ -51,8 +52,10 @@ const userNavItems = [
     href: "/User-landing/profile-settings",
     icon: User,
   },
+  { name: "Booking Appointments", href: "/User-landing/appointment-booking", icon: Calendar },
   { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
   { name: "Settings", href: "/User-landing/profile-settings", icon: Settings },
+
    
 ];
 
