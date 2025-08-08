@@ -13,8 +13,8 @@ export default function Page() {
       <div className="flex flex-col bg-gradient-to-br from-[#e7daa5] via-[#ebeacf] to-[#eeeef2] md:flex-row py-36 md:gap-10 bg-gray-200 justify-center items-center h-auto">
         <div className="relative">
           <SignIn 
-            afterSignInUrl="/user-page"
-            redirectUrl="/user-page"
+            afterSignInUrl="/User-landing"
+            redirectUrl="/User-landing"
             appearance={{
               elements: {
                 formButtonPrimary: 'bg-[#d4a017] hover:bg-[#b38a15] text-sm normal-case',

@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { BookOpen, Tv, FileText, MessageSquare, X, Brain } from "lucide-react";
+import { BookOpen, Tv, FileText, MessageSquare, X, Brain, House } from "lucide-react";
 import { Inter } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
-type ContentType = "videos" | "articles" | "quizzes" | "templates" | "chatbot";
+type ContentType = "videos" | "articles" | "quizzes" | "templates" 
 
 import SidebarItem from "../components/content-sidebar";
 
@@ -19,6 +20,13 @@ export default function MobileSidebar({
   activeContent: ContentType;
   setActiveContent: (content: ContentType) => void;
 }) {
+  const router = useRouter();
+
+  const handleBackToDashboard = () => {
+    router.push("/User-landing");
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -68,6 +76,12 @@ export default function MobileSidebar({
                 {/* Navigation */}
                 <nav className="space-y-2">
                   <SidebarItem
+                    icon={<House className="w-5 h-5" />}
+                    label="Dashboard"
+                    onClick={handleBackToDashboard}
+                  />
+
+                  <SidebarItem
                     icon={<Tv className="w-5 h-5" />}
                     label="LawTok Videos"
                     active={activeContent === "videos"}
@@ -75,7 +89,7 @@ export default function MobileSidebar({
                       setActiveContent("videos");
                       onClose();
                     }}
-                    badge="New"
+                    // badge="New"
                   />
                   <SidebarItem
                     icon={<BookOpen className="w-5 h-5" />}
@@ -104,15 +118,8 @@ export default function MobileSidebar({
                       onClose();
                     }}
                   />
-                  <SidebarItem
-                    icon={<MessageSquare className="w-5 h-5" />}
-                    label="AI Assistant"
-                    active={activeContent === "chatbot"}
-                    onClick={() => {
-                      setActiveContent("chatbot");
-                      onClose();
-                    }}
-                  />
+                
+                  
                 </nav>
 
                 {/* Quick Stats */}
@@ -138,13 +145,13 @@ export default function MobileSidebar({
               </div>
 
               {/* Footer */}
-              <div className="border-t border-gray-200 pt-4">
+              {/* <div className="border-t border-gray-200 pt-4">
                 <div className="text-xs text-gray-400 space-y-1">
                   <div>© 2025 LegalConnect</div>
                   <div>Educational Content</div>
                   <div>Made in Ghana 🇬🇭</div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </motion.aside>
         </>

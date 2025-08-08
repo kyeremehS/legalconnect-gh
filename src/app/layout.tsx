@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/AuthContext";
 // import { ThemeProvider } from "@/components/ui/theme/theme-provider"; // Fixed typo
 
 const outfit = Outfit({
@@ -32,7 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange */}
         {/* > */}
-          <TooltipProvider>{children}</TooltipProvider>
+          <AuthProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </AuthProvider>
         {/* </ThemeProvider> */}
       </body>
     </html>

@@ -27,10 +27,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import ChatButton from "./components/ChatButton";
 import NavBar from "./components/NavBar";
 
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+
 
   // Handle scroll effects
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/sign-up"
+                href="/register"
                 className="bg-gray-900 text-white px-8 py-4 rounded-xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group"
               >
                 Get Started Free
@@ -146,6 +148,7 @@ export default function Home() {
       </motion.section>
       {/* Features Grid */}
       <motion.section
+        id="features"
         className="py-20 bg-white"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -230,7 +233,7 @@ export default function Home() {
       {/* CTA Section */}
       <motion.section
         // className="py-20 bg-[#d4a017] text-white relative overflow-hidden"
-        className="py-20 bg-[#090501] text-white relative overflow-hidden"
+        className="py-20 bg-gray-700 text-white relative overflow-hidden"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6 }}

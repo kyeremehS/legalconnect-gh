@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import React, { useState } from "react";
-import BookAppointment from "../../components/BookAppointment"
+import { useRouter } from "next/navigation";
+import BookAppointment from "../../components/BookAppointment";
+import { Calendar, Plus, Eye, Check, X, Clock, User, MapPin, ArrowLeft, Home } from "lucide-react";
 
 // Example data types
 type Appointment = {
@@ -37,6 +39,16 @@ const exampleAppointments: Appointment[] = [
     status: "pending",
     notes: "Discuss contract details and fees",
   },
+  {
+    id: 3,
+    client: "Akosua Asante",
+    date: "2025-06-17",
+    time: "09:00",
+    type: "Phone",
+    subject: "Employment Law Query",
+    status: "completed",
+    notes: "Follow-up required",
+  },
 ];
 
 // Replace this with real data from DB or API
@@ -46,6 +58,7 @@ const lawyer = {
 };
 
 export default function LawyerAppointments() {
+  const router = useRouter();
   const [appointments, setAppointments] =
     useState<Appointment[]>(exampleAppointments);
   const [selectedAppointment, setSelectedAppointment] =
@@ -61,71 +74,169 @@ export default function LawyerAppointments() {
     setShowModal(false);
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-green-100 text-green-700";
+      case "pending":
+        return "bg-yellow-100 text-yellow-700";
+      case "completed":
+        return "bg-blue-100 text-blue-700";
+      case "canceled":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white">
-      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+    <div className="min-h-screen bg-gray-50">
+      <main className="p-3 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="max-w-7xl mx-auto"
         >
+          {/* Back to Dashboard Button - Mobile Only */}
+          <div className="mb-4 sm:mb-6 lg:hidden">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => router.push("/User-landing")}
+              className="flex items-center gap-2 text-[#d4a017] hover:text-[#b8941f] transition-colors font-medium"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">Back to Dashboard</span>
+            </motion.button>
+          </div>
+
           {/* Header */}
-          <div className="mb-8 bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center">
-                  <svg
-                    className="w-8 h-8 text-[#d4a017]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
+          <div className="mb-6 sm:mb-8 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#fff8eb] flex items-center justify-center">
+                  <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-[#d4a017]" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-800">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">
                     Appointments
                   </h1>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Manage your upcoming consultations
                   </p>
                 </div>
               </div>
 
-              {/* Book New Appointment Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowBookingModal(true)}
-                className="bg-[#d4a017] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center gap-2"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {/* Button Group */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-3">
+                {/* Back to Dashboard Button - Desktop */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push("/User-landing")}
+                  className="hidden lg:flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-gray-200 transition-colors text-sm sm:text-base"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Book New Appointment
-              </motion.button>
+                  <Home className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>Dashboard</span>
+                </motion.button>
+
+                {/* Book New Appointment Button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowBookingModal(true)}
+                  className="bg-[#d4a017] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                >
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">Book New Appointment</span>
+                  <span className="sm:hidden">Book New</span>
+                </motion.button>
+              </div>
             </div>
           </div>
 
-          {/* Appointments Table */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-4">
+            {appointments.map((appt) => (
+              <motion.div
+                key={appt.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-xl border border-gray-200 shadow-sm p-4"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#d4a017]/10 flex items-center justify-center">
+                      <User className="w-5 h-5 text-[#d4a017]" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800 text-sm">
+                        {appt.client}
+                      </h3>
+                      <p className="text-xs text-gray-600">{appt.subject}</p>
+                    </div>
+                  </div>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      appt.status
+                    )}`}
+                  >
+                    {appt.status}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Calendar className="w-4 h-4" />
+                    <span>{appt.date}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Clock className="w-4 h-4" />
+                    <span>{appt.time}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <MapPin className="w-4 h-4" />
+                    <span>{appt.type}</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setSelectedAppointment(appt);
+                      setShowModal(true);
+                    }}
+                    className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
+                  >
+                    <Eye className="w-3 h-3" />
+                    View
+                  </button>
+                  {appt.status === "pending" && (
+                    <>
+                      <button
+                        onClick={() => updateStatus(appt.id, "confirmed")}
+                        className="flex-1 bg-green-100 text-green-700 py-2 px-3 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Check className="w-3 h-3" />
+                        Confirm
+                      </button>
+                      <button
+                        onClick={() => updateStatus(appt.id, "canceled")}
+                        className="flex-1 bg-red-100 text-red-700 py-2 px-3 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <X className="w-3 h-3" />
+                        Cancel
+                      </button>
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
@@ -170,29 +281,9 @@ export default function LawyerAppointments() {
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         <span
-                          className={`
-                          px-3 py-1 rounded-full text-xs font-medium
-                          ${
-                            appt.status === "confirmed"
-                              ? "bg-green-100 text-green-700"
-                              : ""
-                          }
-                          ${
-                            appt.status === "pending"
-                              ? "bg-[#fff8eb] text-[#d4a017]"
-                              : ""
-                          }
-                          ${
-                            appt.status === "completed"
-                              ? "bg-blue-100 text-blue-700"
-                              : ""
-                          }
-                          ${
-                            appt.status === "canceled"
-                              ? "bg-red-100 text-red-700"
-                              : ""
-                          }
-                        `}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                            appt.status
+                          )}`}
                         >
                           {appt.status}
                         </span>
@@ -253,52 +344,76 @@ export default function LawyerAppointments() {
             animate={{ scale: 1 }}
             exit={{ scale: 0.95 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 max-w-md w-full mx-4"
           >
-            <h2 className="text-xl font-bold mb-4 text-[#1A237E]">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">
               Appointment Details
             </h2>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Client:</span>{" "}
-              {selectedAppointment.client}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Date:</span>{" "}
-              {selectedAppointment.date}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Time:</span>{" "}
-              {selectedAppointment.time}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Type:</span>{" "}
-              {selectedAppointment.type}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Subject:</span>{" "}
-              {selectedAppointment.subject}
-            </div>
-            <div className="mb-2 text-[#003049]">
-              <span className="font-semibold">Status:</span>{" "}
-              <span className="capitalize">{selectedAppointment.status}</span>
-            </div>
-            {selectedAppointment.notes && (
-              <div className="mb-2 text-[#003049]">
-                <span className="font-semibold">Notes:</span>{" "}
-                {selectedAppointment.notes}
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <User className="w-4 h-4 text-gray-500" />
+                <div>
+                  <span className="font-semibold text-sm text-gray-600">Client:</span>
+                  <p className="text-gray-800">{selectedAppointment.client}</p>
+                </div>
               </div>
-            )}
-            <div className="flex gap-4 mt-6 justify-end">
+              
+              <div className="flex items-center gap-3">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <div>
+                  <span className="font-semibold text-sm text-gray-600">Date:</span>
+                  <p className="text-gray-800">{selectedAppointment.date}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Clock className="w-4 h-4 text-gray-500" />
+                <div>
+                  <span className="font-semibold text-sm text-gray-600">Time:</span>
+                  <p className="text-gray-800">{selectedAppointment.time}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <MapPin className="w-4 h-4 text-gray-500" />
+                <div>
+                  <span className="font-semibold text-sm text-gray-600">Type:</span>
+                  <p className="text-gray-800">{selectedAppointment.type}</p>
+                </div>
+              </div>
+              
+              <div className="border-t pt-3">
+                <span className="font-semibold text-sm text-gray-600">Subject:</span>
+                <p className="text-gray-800 mt-1">{selectedAppointment.subject}</p>
+              </div>
+              
+              <div>
+                <span className="font-semibold text-sm text-gray-600">Status:</span>
+                <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedAppointment.status)}`}>
+                  {selectedAppointment.status}
+                </span>
+              </div>
+              
+              {selectedAppointment.notes && (
+                <div>
+                  <span className="font-semibold text-sm text-gray-600">Notes:</span>
+                  <p className="text-gray-800 mt-1">{selectedAppointment.notes}</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <button
-                className="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded hover:bg-gray-300 transition"
+                className="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition text-sm"
                 onClick={() => setShowModal(false)}
               >
                 Close
               </button>
               {selectedAppointment.status === "pending" && (
-                <>
+                <div className="flex gap-2">
                   <button
-                    className="bg-green-600 text-white font-semibold px-4 py-2 rounded hover:bg-green-700 transition"
+                    className="flex-1 bg-green-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
                     onClick={() =>
                       updateStatus(selectedAppointment.id, "confirmed")
                     }
@@ -306,14 +421,14 @@ export default function LawyerAppointments() {
                     Confirm
                   </button>
                   <button
-                    className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 transition"
+                    className="flex-1 bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm"
                     onClick={() =>
                       updateStatus(selectedAppointment.id, "canceled")
                     }
                   >
                     Cancel
                   </button>
-                </>
+                </div>
               )}
             </div>
           </motion.div>
@@ -334,35 +449,23 @@ export default function LawyerAppointments() {
             animate={{ scale: 1 }}
             exit={{ scale: 0.95 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden mx-4"
           >
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
                   Book New Appointment
                 </h2>
                 <button
                   onClick={() => setShowBookingModal(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <svg
-                    className="w-6 h-6 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
                 </button>
               </div>
             </div>
 
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
               <BookAppointment
                 name={lawyer.name}
                 calendlyLink={lawyer.calendlyLink}
