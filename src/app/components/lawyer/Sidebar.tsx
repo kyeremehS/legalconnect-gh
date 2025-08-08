@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { UserButton } from "@clerk/nextjs";
+import { UserMenu } from "../customusermenu";
 
 const lawyerNavItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
@@ -99,7 +99,7 @@ export default function Sidebar({ role } : SidebarProps) {
             )}
           </button>
           <div className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
-            <UserButton />
+            <UserMenu />
           </div>
         </div>
       </div>

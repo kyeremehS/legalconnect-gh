@@ -6,7 +6,7 @@ import Sidebar from "../components/lawyer/Sidebar";
 import { motion } from "framer-motion";
 import ChatModal from "../components/ChatModal";
 import { useState } from "react";
-import {useUser} from "@clerk/nextjs";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 import { Bot, Calendar, MessageCircle, Video, User, Bell, BookOpen } from "lucide-react";
@@ -69,7 +69,7 @@ const userRecentActivities = [
 export default function UserDashboard() {
   const [showChatModal, setShowChatModal] = useState(false);
   const router = useRouter();
-  const { user } = useUser();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
