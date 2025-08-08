@@ -61,7 +61,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         </p>
 
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>{article.date}</span>
+          <span>{article.publishDate}</span>
           <span>{article.readTime}</span>
         </div>
 
