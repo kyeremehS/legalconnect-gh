@@ -131,6 +131,17 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.navbar-container {
+  position: relative;
+  z-index: 40;
+  overflow: visible !important;
+}
+
+.user-menu-dropdown {
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
