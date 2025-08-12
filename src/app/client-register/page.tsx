@@ -119,7 +119,7 @@ export default function ClientRegistration() {
         
         // Redirect after 2 seconds
         setTimeout(() => {
-          router.push("/sign-in");
+          router.push("/client-login");
         }, 2000);
       } else {
         setError(response.message || "Registration failed");
