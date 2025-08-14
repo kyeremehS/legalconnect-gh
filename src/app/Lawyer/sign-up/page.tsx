@@ -141,15 +141,33 @@ export default function LawyerSignUp() {
     }
   };
 
-  // File upload simulation (replace with actual upload service)
-  const uploadFile = async (file: File, type: string): Promise<string> => {
-    // Simulate file upload - replace with your actual file upload service
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const mockUrl = `https://your-storage.com/${type}/${Date.now()}-${file.name}`;
-        resolve(mockUrl);
-      }, 1000);
-    });
+  // File upload function using our real upload service
+  const uploadFile = async (file: File, type: string, lawyerId: string): Promise<string> => {
+    try {
+      const result = await fetch('http://localhost:4000/api/upload/lawyer/' + lawyerId + '/document/' + type, {
+        method: 'POST',
+        body: (() => {
+          const formData = new FormData();
+          formData.append('file', file);
+          return formData;
+        })()
+      });
+
+      if (!result.ok) {
+        throw new Error(`Upload failed: ${result.statusText}`);
+      }
+
+      const data = await result.json();
+      
+      if (data.success && data.url) {
+        return data.url;
+      } else {
+        throw new Error(data.error || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('File upload error:', error);
+      throw error;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,29 +192,8 @@ export default function LawyerSignUp() {
         setCertificateVerificationResult(certificationResult);
       }
 
-      // Step 2: Upload documents if provided
-      const documentUrls: Record<string, string> = {};
-      
-      if (formData.practisingCertificate) {
-        documentUrls.practisingCertificateUrl = await uploadFile(formData.practisingCertificate, 'practising-certificate');
-      }
-      if (formData.barLicense) {
-        documentUrls.barCertificateUrl = await uploadFile(formData.barLicense, 'bar-certificate');
-      }
-      if (formData.idDocument) {
-        documentUrls.idDocumentUrl = await uploadFile(formData.idDocument, 'id-document');
-      }
-      if (formData.cvResume) {
-        documentUrls.cvResumeUrl = await uploadFile(formData.cvResume, 'cv-resume');
-      }
-
-      // Step 3: Split fullName into firstName and lastName (no longer needed but keeping for reference)
-      const nameParts = formData.fullName.trim().split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      // Step 4: Register lawyer with complete data
-      const response = await fetch('http://localhost:4000/api/lawyer-registration/register', {
+      // Step 2: First register the user and lawyer to get the lawyerId
+      const registrationResponse = await fetch('http://localhost:4000/api/lawyer-registration/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -216,14 +213,31 @@ export default function LawyerSignUp() {
           languages: formData.languages ? formData.languages.split(',').map(l => l.trim()) : ['English'],
           website: formData.website,
           professionalSummary: formData.professionalSummary || `Experienced lawyer specializing in ${formData.practiceAreas.join(', ')}.`,
-          ...documentUrls,
         }),
       });
 
-      const result: RegistrationResult = await response.json();
+      const registrationResult: RegistrationResult = await registrationResponse.json();
 
-      if (!result.success) {
-        throw new Error(result.message || 'Registration failed');
+      if (!registrationResult.success || !registrationResult.data?.lawyer?.id) {
+        throw new Error(registrationResult.message || 'Registration failed');
+      }
+
+      const lawyerId = registrationResult.data.lawyer.id;
+
+      // Step 3: Upload documents if provided
+      const documentUrls: Record<string, string> = {};
+      
+      if (formData.practisingCertificate) {
+        documentUrls.practisingCertificateUrl = await uploadFile(formData.practisingCertificate, 'practising-certificate', lawyerId);
+      }
+      if (formData.barLicense) {
+        documentUrls.barCertificateUrl = await uploadFile(formData.barLicense, 'bar-certificate', lawyerId);
+      }
+      if (formData.idDocument) {
+        documentUrls.idDocumentUrl = await uploadFile(formData.idDocument, 'id-document', lawyerId);
+      }
+      if (formData.cvResume) {
+        documentUrls.cvResumeUrl = await uploadFile(formData.cvResume, 'cv-resume', lawyerId);
       }
 
       // Success! Mark registration as complete

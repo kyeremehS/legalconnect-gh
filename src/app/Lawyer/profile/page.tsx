@@ -1,12 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, Book, Star, ArrowLeft, Edit, Save, X, Plus, Building, Briefcase } from "lucide-react";
+import { User, Mail, Phone, MapPin, Book, Star, ArrowLeft, Edit, Save, X, Plus, Building, Briefcase, FileText } from "lucide-react";
 import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useLawyerProfile } from "../../../hooks/useLawyerProfile";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
+import DocumentManager from "../../components/lawyer/DocumentManager";
 
 type LawyerProfile = {
   name: string;
@@ -44,6 +45,7 @@ export default function Profile() {
   const [editProfile, setEditProfile] = useState(profile);
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<'profile' | 'documents'>('profile');
 
   // Ref for hidden file input
   const profilePicInputRef = useRef<HTMLInputElement>(null);
@@ -199,6 +201,39 @@ export default function Profile() {
             </div>
           )}
 
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mb-6">
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
+                activeTab === 'profile'
+                  ? 'border-[#d4a017] text-[#d4a017]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Profile Information
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('documents')}
+              className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
+                activeTab === 'documents'
+                  ? 'border-[#d4a017] text-[#d4a017]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Documents
+              </div>
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'profile' && (
+          <div>
           {/* Profile Content Grid */}
           <div className="grid grid-cols-12 gap-6">
             {/* Left Column - Main Info */}
@@ -555,6 +590,15 @@ export default function Profile() {
               </div>
             </div>
           </div>
+          </div>
+          )}
+
+          {/* Documents Tab */}
+          {activeTab === 'documents' && apiProfile?.id && (
+            <div>
+              <DocumentManager lawyerId={apiProfile.id} />
+            </div>
+          )}
         </motion.div>
       </main>
       </div>
