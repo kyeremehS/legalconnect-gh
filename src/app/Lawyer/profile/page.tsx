@@ -7,7 +7,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useLawyerProfile } from "../../../hooks/useLawyerProfile";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
-import DocumentManager from "../../components/lawyer/DocumentManager";
+import DocumentManager from "../../../components/lawyer/DocumentManager";
 
 type LawyerProfile = {
   name: string;
