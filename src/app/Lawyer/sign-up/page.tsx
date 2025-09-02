@@ -261,31 +261,30 @@ export default function LawyerSignUp() {
 
   // Success screen
   if (registrationComplete) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-50 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center"
-        >
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-green-600" />
-          </div>
-          
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Registration Submitted!</h2>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center"
+      >
+        <div className="w-20 h-20 bg-[#fff8eb] rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle className="w-10 h-10 text-[#d4a017]" />
+        </div>                  
+        <h2 className="text-3xl font-bold text-gray-800 mb-4">Registration Submitted!</h2>
           
           <div className="mb-6 space-y-4">
             {certificateVerificationResult && (
               <div className={`p-4 rounded-lg ${
                 certificateVerificationResult.verified 
-                  ? 'bg-green-50 border border-green-200' 
-                  : 'bg-yellow-50 border border-yellow-200'
+                  ? 'bg-[#fff8eb] border border-[#d4a017]/30' 
+                  : 'bg-orange-50 border border-orange-200'
               }`}>
                 <div className="flex items-center gap-2 mb-2">
                   {certificateVerificationResult.verified ? (
-                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <CheckCircle className="w-5 h-5 text-[#d4a017]" />
                   ) : (
-                    <AlertCircle className="w-5 h-5 text-yellow-600" />
+                    <AlertCircle className="w-5 h-5 text-orange-600" />
                   )}
                   <span className="font-medium text-sm">
                     Certificate Status: {certificateVerificationResult.verified ? 'Verified' : 'Requires Review'}
@@ -299,21 +298,21 @@ export default function LawyerSignUp() {
               <h3 className="font-semibold text-gray-800">What happens next?</h3>
               <ul className="text-sm text-gray-600 space-y-2">
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">1.</span>
+                  <span className="text-gray-800 font-bold">1.</span>
                   <span>Admin team will review your documents</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">2.</span>
+                  <span className="text-gray-800 font-bold">2.</span>
                   <span>Identity and credentials verification</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">3.</span>
+                  <span className="text-gray-800 font-bold">3.</span>
                   <span>Email notification with decision</span>
                 </li>
               </ul>
             </div>
             
-            <p className="text-sm text-gray-500 bg-blue-50 p-3 rounded-lg">
+            <p className="text-sm text-gray-500 bg-[#fff8eb] p-3 rounded-lg">
               <strong>⏱️ Estimated review time:</strong> 24-48 hours
             </p>
           </div>
@@ -321,7 +320,7 @@ export default function LawyerSignUp() {
           <div className="space-y-3">
             <Link
               href="/Lawyer/sign-in"
-              className="block w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="block w-full bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium"
             >
               Go to Login Page
             </Link>
@@ -339,7 +338,7 @@ export default function LawyerSignUp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Progress Bar */}
         <div className="mb-8">
@@ -349,7 +348,7 @@ export default function LawyerSignUp() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-emerald-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-yellow-600 to-yellow-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(step / 4) * 100}%` }}
             ></div>
           </div>
@@ -375,7 +374,7 @@ export default function LawyerSignUp() {
                   className="space-y-6"
                 >
                   <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <User className="w-6 h-6 text-blue-600" />
+                    <User className="w-6 h-6 text-[#d4a017]" />
                     Personal Information
                   </h2>
                   
@@ -391,7 +390,7 @@ export default function LawyerSignUp() {
                           value={formData.fullName}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="Enter your full legal name"
                         />
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -409,7 +408,7 @@ export default function LawyerSignUp() {
                           value={formData.email}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="Enter your professional email"
                         />
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -427,7 +426,7 @@ export default function LawyerSignUp() {
                           value={formData.password}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="Create a strong password"
                         />
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -452,7 +451,7 @@ export default function LawyerSignUp() {
                           value={formData.confirmPassword}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="Confirm your password"
                         />
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -477,7 +476,7 @@ export default function LawyerSignUp() {
                   className="space-y-6"
                 >
                   <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <Building className="w-6 h-6 text-blue-600" />
+                    <Building className="w-6 h-6 text-[#d4a017]" />
                     Professional Information
                   </h2>
                   
@@ -493,7 +492,7 @@ export default function LawyerSignUp() {
                           value={formData.firm}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="Your law firm name"
                         />
                         <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -511,7 +510,7 @@ export default function LawyerSignUp() {
                           value={formData.location}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="City, Region"
                         />
                         <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -529,7 +528,7 @@ export default function LawyerSignUp() {
                           value={formData.certificateNumber}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="e.g., GAR 11131 / 15"
                         />
                         <Award className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -547,7 +546,7 @@ export default function LawyerSignUp() {
                           value={formData.barAdmissionYear}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                           placeholder="YYYY or DD/MM/YYYY"
                         />
                         <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -565,7 +564,7 @@ export default function LawyerSignUp() {
                         onChange={handleInputChange}
                         min="0"
                         max="50"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                         placeholder="Years of practice"
                       />
                     </div>
@@ -579,7 +578,7 @@ export default function LawyerSignUp() {
                         name="education"
                         value={formData.education}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                         placeholder="Law school, degree, year"
                       />
                     </div>
@@ -595,7 +594,7 @@ export default function LawyerSignUp() {
                   className="space-y-6"
                 >
                   <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <Scale className="w-6 h-6 text-blue-600" />
+                    <Scale className="w-6 h-6 text-[#d4a017]" />
                     Practice Areas & Specializations
                   </h2>
                   
@@ -609,7 +608,7 @@ export default function LawyerSignUp() {
                           key={area}
                           className={`relative flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
                             formData.practiceAreas.includes(area)
-                              ? 'border-blue-500 bg-blue-50'
+                              ? 'border-[#d4a017] bg-[#fff8eb]'
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                         >
@@ -621,7 +620,7 @@ export default function LawyerSignUp() {
                           />
                           <span className="text-sm font-medium">{area}</span>
                           {formData.practiceAreas.includes(area) && (
-                            <CheckCircle className="absolute top-2 right-2 w-4 h-4 text-blue-600" />
+                            <CheckCircle className="absolute top-2 right-2 w-4 h-4 text-[#d4a017]" />
                           )}
                         </label>
                       ))}
@@ -638,7 +637,7 @@ export default function LawyerSignUp() {
                         name="specializations"
                         value={formData.specializations}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                         placeholder="e.g., Corporate Mergers, Criminal Defense"
                       />
                     </div>
@@ -652,7 +651,7 @@ export default function LawyerSignUp() {
                         name="languages"
                         value={formData.languages}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                         placeholder="e.g., English, Twi, French"
                       />
                     </div>
@@ -666,7 +665,7 @@ export default function LawyerSignUp() {
                         name="website"
                         value={formData.website}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                         placeholder="https://your-website.com"
                       />
                     </div>
@@ -680,7 +679,7 @@ export default function LawyerSignUp() {
                         value={formData.professionalSummary}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#d4a017] focus:border-[#d4a017] transition-all"
                         placeholder="Brief description of your experience and expertise..."
                       />
                     </div>
@@ -696,7 +695,7 @@ export default function LawyerSignUp() {
                   className="space-y-6"
                 >
                   <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <FileText className="w-6 h-6 text-blue-600" />
+                    <FileText className="w-6 h-6 text-[#d4a017]" />
                     Document Upload
                   </h2>
                   
@@ -706,10 +705,10 @@ export default function LawyerSignUp() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Practising Certificate * <span className="text-red-500">(Required)</span>
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#d4a017] transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <div className="text-sm text-gray-600">
-                          <label htmlFor="practisingCertificate" className="cursor-pointer text-blue-600 hover:text-blue-500">
+                          <label htmlFor="practisingCertificate" className="cursor-pointer text-[#d4a017] hover:text-[#b8941f]">
                             Click to upload
                           </label>
                           <span> or drag and drop</span>
@@ -738,10 +737,10 @@ export default function LawyerSignUp() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Bar Certificate <span className="text-gray-500">(Optional)</span>
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#d4a017] transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <div className="text-sm text-gray-600">
-                          <label htmlFor="barLicense" className="cursor-pointer text-blue-600 hover:text-blue-500">
+                          <label htmlFor="barLicense" className="cursor-pointer text-[#d4a017] hover:text-[#b8941f]">
                             Click to upload
                           </label>
                           <span> or drag and drop</span>
@@ -769,10 +768,10 @@ export default function LawyerSignUp() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Government ID <span className="text-gray-500">(Optional)</span>
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#d4a017] transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <div className="text-sm text-gray-600">
-                          <label htmlFor="idDocument" className="cursor-pointer text-blue-600 hover:text-blue-500">
+                          <label htmlFor="idDocument" className="cursor-pointer text-[#d4a017] hover:text-[#b8941f]">
                             Click to upload
                           </label>
                           <span> or drag and drop</span>
@@ -800,10 +799,10 @@ export default function LawyerSignUp() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         CV/Resume <span className="text-gray-500">(Optional)</span>
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#d4a017] transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <div className="text-sm text-gray-600">
-                          <label htmlFor="cvResume" className="cursor-pointer text-blue-600 hover:text-blue-500">
+                          <label htmlFor="cvResume" className="cursor-pointer text-[#d4a017] hover:text-[#b8941f]">
                             Click to upload
                           </label>
                           <span> or drag and drop</span>
@@ -826,9 +825,9 @@ export default function LawyerSignUp() {
                       </div>
                     </div>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-blue-800 mb-2">🔒 Document Security</h3>
-                      <ul className="text-sm text-blue-700 space-y-1">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-[#d4a017] mb-2">🔒 Document Security</h3>
+                      <ul className="text-sm text-gray-700 space-y-1">
                         <li>• All documents are encrypted and stored securely</li>
                         <li>• Only authorized admin staff can access your documents</li>
                         <li>• Documents are used solely for verification purposes</li>
@@ -850,12 +849,12 @@ export default function LawyerSignUp() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6 border-t border-gray-200">
+              <div className="flex justify-between pt-6 border-t border-yellow-600">
                 {step > 1 && (
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 border bg-yellow-600 border-yellow-600 text-white rounded-lg hover:bg-yellow-800 transition-colors"
                   >
                     Previous
                   </button>
@@ -865,7 +864,7 @@ export default function LawyerSignUp() {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="ml-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="ml-auto px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-800 transition-colors"
                   >
                     Next Step
                   </button>
@@ -873,7 +872,7 @@ export default function LawyerSignUp() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="ml-auto px-8 py-3 bg-gradient-to-r from-emerald-600 to-blue-600 text-white rounded-lg hover:from-emerald-700 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    className="ml-auto px-8 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
                     {isLoading ? (
                       <span className="flex items-center gap-2">
@@ -895,7 +894,7 @@ export default function LawyerSignUp() {
             <div className="mt-8 text-center">
               <p className="text-gray-600">
                 Already have an account?{' '}
-                <Link href="/Lawyer/sign-in" className="text-blue-600 hover:text-blue-500 font-medium">
+                <Link href="/Lawyer/sign-in" className="text-[#d4a017] hover:text-[#b8941f] font-medium">
                   Sign in here
                 </Link>
               </p>
