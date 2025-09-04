@@ -24,9 +24,12 @@ export class VideoService {
    */
   static async getAllLawyerVideos(): Promise<VideoItem[]> {
     try {
+      console.log('🔍 Attempting to fetch videos from API...');
       const response = await apiClient.getAllLawyerVideos();
+      console.log('📡 API Response:', response);
       
-      if (response.success && response.data) {
+      if (response.success && response.data && response.data.length > 0) {
+        console.log('✅ Found real videos:', response.data.length);
         // Transform API data to match the VideoItem interface
         return response.data.map((video, index) => ({
           id: video.id,
@@ -43,9 +46,11 @@ export class VideoService {
         }));
       }
       
+      console.log('📭 No videos found in API response');
       return [];
     } catch (error) {
-      console.error('Error fetching lawyer videos:', error);
+      console.log('❌ API Error (will use mock data only):', error instanceof Error ? error.message : error);
+      // Return empty array instead of throwing error - let getCombinedVideoFeed handle fallbacks
       return [];
     }
   }
@@ -127,10 +132,32 @@ export class VideoService {
    * Combine real videos with mock videos for better content variety
    */
   static async getCombinedVideoFeed(): Promise<VideoItem[]> {
-    const realVideos = await this.getAllLawyerVideos();
+    console.log('🎬 Fetching combined video feed...');
+    
+    let realVideos: VideoItem[] = [];
+    
+    try {
+      realVideos = await this.getAllLawyerVideos();
+      console.log('✅ Real videos fetched:', realVideos.length);
+    } catch (error) {
+      console.log('⚠️ Error fetching real videos (will use mock data only):', error instanceof Error ? error.message : error);
+      realVideos = []; // Ensure it's an empty array
+    }
     
     // Mock videos for fallback/variety
     const mockVideos: VideoItem[] = [
+      {
+        id: "uploaded_video_1",
+        title: "Recently Uploaded Legal Content",
+        url: "https://legalconnect-bucket.s3.eu-north-1.amazonaws.com/lawyer-videos/cmebptmg00002940ootz16ivm/a25e529d-c6b9-4d9d-b741-cf10c1d83718.mp4",
+        lawyer: "Current Lawyer",
+        category: "General Law",
+        views: "1",
+        duration: "3:45",
+        language: "English",
+        thumbnail: "/thumbnails/default1.jpg",
+        description: "Recently uploaded video content from your dashboard.",
+      },
       {
         id: "mock_1",
         title: "Understanding Landlord and Tenant Rights",
@@ -170,6 +197,9 @@ export class VideoService {
     ];
 
     // Combine real videos with mock videos, prioritizing real videos
-    return [...realVideos, ...mockVideos];
+    const combinedVideos = [...realVideos, ...mockVideos];
+    console.log('📊 Combined video feed:', combinedVideos.length, 'videos total');
+    
+    return combinedVideos;
   }
 }

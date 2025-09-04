@@ -122,7 +122,10 @@ export default function LegalContentHub() {
     const fetchVideos = async () => {
       setIsLoadingVideos(true);
       try {
+        console.log('Fetching videos from VideoService...');
         const fetchedVideos = await VideoService.getCombinedVideoFeed();
+        console.log('Fetched videos:', fetchedVideos);
+        
         setVideos(fetchedVideos);
         // Initialize interaction arrays based on fetched videos length
         setLikes(Array(fetchedVideos.length).fill(3292));
@@ -131,6 +134,7 @@ export default function LegalContentHub() {
       } catch (error) {
         console.error('Error fetching videos:', error);
         // Fallback to mock data if API fails
+        console.log('Falling back to mock data...');
         const mockVideos = flattenVideos();
         setVideos(mockVideos);
         setLikes(Array(mockVideos.length).fill(3292));
