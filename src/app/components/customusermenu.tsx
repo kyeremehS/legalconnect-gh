@@ -5,15 +5,26 @@ import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Menu, ChevronRight, Scale, User, LogOut, Settings, ChevronDown } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useRoleBasedNavigation } from "../../hooks/useRoleBasedNavigation";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
 export const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
   const { user, logout } = useAuth();
+  const { 
+    getDashboardUrl, 
+    getProfileUrl, 
+    getDashboardLabel, 
+    getLoginUrl 
+  } = useRoleBasedNavigation();
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+
 
   useEffect(() => {
     setMounted(true);
@@ -63,16 +74,50 @@ export const UserMenu = () => {
     try {
       await logout();
       setIsOpen(false);
-      // Redirect to home page or login page after logout
-      window.location.href = '/';
+      router.push(getLoginUrl());
     } catch (error) {
       console.error('Logout failed:', error);
       setIsOpen(false);
+      router.push('/');
     }
   };
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (routeType: 'dashboard' | 'profile') => {
     setIsOpen(false);
+    
+    if (!user?.role) return;
+    
+    if (routeType === 'dashboard') {
+      // Role-based dashboard routing logic
+      switch (user.role) {
+        case 'LAWYER':
+          router.push('/Lawyer');
+          break;
+        case 'CLIENT':
+          router.push('/User-landing');
+          break;
+        case 'ADMIN':
+          router.push('/admin-dashboard');
+          break;
+        default:
+          router.push('/User-landing');
+      }
+    } else if (routeType === 'profile') {
+      // Role-based profile routing logic
+      switch (user.role) {
+        case 'LAWYER':
+          router.push('/Lawyer/profile');
+          break;
+        case 'CLIENT':
+          router.push('/User-landing/profile');
+          break;
+        case 'ADMIN':
+          router.push('/admin/profile');
+          break;
+        default:
+          router.push('/profile');
+      }
+    }
   };
 
   const toggleMenu = (e: React.MouseEvent) => {
@@ -113,23 +158,21 @@ export const UserMenu = () => {
             </div>
             
             <div className="py-2">
-              <Link 
-                href="/User-landing"
-                className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                onClick={handleLinkClick}
+              <button 
+                onClick={() => handleLinkClick('dashboard')}
+                className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors text-left"
               >
                 <User className="w-4 h-4" />
-                Dashboard
-              </Link>
+                {getDashboardLabel()}
+              </button>
               
-              <Link 
-                href="/User-landing/profile-settings"
-                className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                onClick={handleLinkClick}
+              <button 
+                onClick={() => handleLinkClick('profile')}
+                className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors text-left"
               >
                 <Settings className="w-4 h-4" />
                 Profile Settings
-              </Link>
+              </button>
               
               <button
                 onClick={handleLogout}

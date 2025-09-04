@@ -2,7 +2,7 @@
  * Upload Service for handling file uploads to the backend
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export interface UploadResult {
   success: boolean;
@@ -50,7 +50,7 @@ export class UploadService {
         }
       });
 
-      const response = await fetch(`${API_BASE_URL}/upload/lawyer/${lawyerId}/documents`, {
+      const response = await fetch(`${API_BASE_URL}/api/uploads/lawyer/${lawyerId}/documents`, {
         method: 'POST',
         body: formData,
       });
@@ -79,7 +79,7 @@ export class UploadService {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`${API_BASE_URL}/upload/lawyer/${lawyerId}/document/${documentType}`, {
+      const response = await fetch(`${API_BASE_URL}/api/uploads/lawyer/${lawyerId}/document/${documentType}`, {
         method: 'POST',
         body: formData,
       });
@@ -104,12 +104,22 @@ export class UploadService {
       const formData = new FormData();
       formData.append('video', videoFile);
 
-      const response = await fetch(`${API_BASE_URL}/upload/lawyer/${lawyerId}/video`, {
+      const url = `${API_BASE_URL}/api/uploads/lawyer/${lawyerId}/video`;
+      console.log('Upload URL:', url);
+      console.log('Lawyer ID:', lawyerId);
+      console.log('Video file:', videoFile.name, videoFile.size);
+
+      const response = await fetch(url, {
         method: 'POST',
         body: formData,
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response statusText:', response.statusText);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.log('Error response:', errorText);
         throw new Error(`Video upload failed: ${response.statusText}`);
       }
 
@@ -130,7 +140,7 @@ export class UploadService {
     documentUrl: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const response = await fetch(`${API_BASE_URL}/upload/lawyer/${lawyerId}/document/${documentType}`, {
+      const response = await fetch(`${API_BASE_URL}/api/uploads/lawyer/${lawyerId}/document/${documentType}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +165,7 @@ export class UploadService {
    */
   static async getLawyerDocuments(lawyerId: string): Promise<LawyerDocuments> {
     try {
-      const response = await fetch(`${API_BASE_URL}/upload/lawyer/${lawyerId}/documents`);
+      const response = await fetch(`${API_BASE_URL}/api/uploads/lawyer/${lawyerId}/documents`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch documents: ${response.statusText}`);
@@ -174,7 +184,7 @@ export class UploadService {
    */
   static async getPresignedUrl(s3Key: string): Promise<string> {
     try {
-      const response = await fetch(`${API_BASE_URL}/upload/presigned/${encodeURIComponent(s3Key)}`);
+      const response = await fetch(`${API_BASE_URL}/api/uploads/presigned/${encodeURIComponent(s3Key)}`);
 
       if (!response.ok) {
         throw new Error(`Failed to get presigned URL: ${response.statusText}`);

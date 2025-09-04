@@ -61,6 +61,7 @@ import {
   legalTemplates,
   videoCategories,
 } from "../../components/mockdata";
+import { VideoService, VideoItem as VideoItemType } from "../../../services/videoService";
 
 // Configure Inter font
 const inter = Inter({
@@ -75,19 +76,7 @@ declare global {
   }
 }
 
-type VideoItem = {
-  id: string;
-  title: string;
-  url: string;
-  lawyer: string;
-  category: string;
-  views: string;
-  duration: string;
-  language: string;
-  thumbnail: string;
-  description: string;
-  tags?: string[];
-};
+type VideoItem = VideoItemType;
 
 // Content Types
 type ContentType = "videos" | "articles" | "quizzes" | "templates";
@@ -110,10 +99,11 @@ function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {
 
 export default function LegalContentHub() {
   const router = useRouter();
-  const videos = flattenVideos();
-  const [likes, setLikes] = useState(Array(videos.length).fill(3292));
-  const [comments, setComments] = useState(Array(videos.length).fill(84));
-  const [shares, setShares] = useState(Array(videos.length).fill(68));
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  const [likes, setLikes] = useState<number[]>([]);
+  const [comments, setComments] = useState<number[]>([]);
+  const [shares, setShares] = useState<number[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -126,6 +116,33 @@ export default function LegalContentHub() {
   const [videoProgress, setVideoProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+
+  // Fetch videos on component mount
+  useEffect(() => {
+    const fetchVideos = async () => {
+      setIsLoadingVideos(true);
+      try {
+        const fetchedVideos = await VideoService.getCombinedVideoFeed();
+        setVideos(fetchedVideos);
+        // Initialize interaction arrays based on fetched videos length
+        setLikes(Array(fetchedVideos.length).fill(3292));
+        setComments(Array(fetchedVideos.length).fill(84));
+        setShares(Array(fetchedVideos.length).fill(68));
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        // Fallback to mock data if API fails
+        const mockVideos = flattenVideos();
+        setVideos(mockVideos);
+        setLikes(Array(mockVideos.length).fill(3292));
+        setComments(Array(mockVideos.length).fill(84));
+        setShares(Array(mockVideos.length).fill(68));
+      } finally {
+        setIsLoadingVideos(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
 
   // Handlers for actions
   const handleLike = (idx: number) => {
@@ -405,7 +422,23 @@ export default function LegalContentHub() {
                 transform: `translateY(-${activeIdx * 100}vh)`,
               }}
             >
-              {videos.map((video, idx) => (
+              {isLoadingVideos ? (
+                <div className="absolute inset-0 w-full h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-white text-lg">Loading videos...</p>
+                  </div>
+                </div>
+              ) : videos.length === 0 ? (
+                <div className="absolute inset-0 w-full h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">📹</div>
+                    <p className="text-white text-lg">No videos available yet</p>
+                    <p className="text-gray-300 text-sm mt-2">Check back later for new content!</p>
+                  </div>
+                </div>
+              ) : (
+                videos.map((video, idx) => (
                 <motion.div
                   key={video.id}
                   className="absolute inset-0 w-full h-screen flex items-center justify-center"
@@ -597,7 +630,8 @@ export default function LegalContentHub() {
                     )}
                   </div>
                 </motion.div>
-              ))}
+              ))
+              )}
             </div>
           </main>
         );

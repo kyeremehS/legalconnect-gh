@@ -21,6 +21,9 @@ export const API_ENDPOINTS = {
   SEARCH_LAWYERS_BY_LOCATION: '/api/lawyers/search/location',
   GET_LAWYER_BY_USER_ID: (userId: string) => `/api/lawyers/user/${userId}`,
   GET_CURRENT_LAWYER_PROFILE: '/api/lawyers/profile/me',
+  // Video endpoints
+  GET_ALL_LAWYER_VIDEOS: '/api/lawyers/videos',
+  GET_LAWYER_VIDEOS: (lawyerId: string) => `/api/lawyers/${lawyerId}/videos`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
   GET_APPOINTMENT: (id: string) => `/api/appointments/${id}`,
@@ -96,6 +99,24 @@ export interface SearchLawyersParams {
   search?: string;
   page?: number;
   limit?: number;
+}
+
+// Video types
+export interface LawyerVideoData {
+  id: string;
+  url: string;
+  lawyer: {
+    id: string;
+    name: string;
+    firm: string;
+    practiceAreas: string[];
+  };
+  views: number;
+  duration: string;
+  uploadedAt: string;
+  title?: string;
+  description?: string;
+  category?: string;
 }
 
 // Appointment types
@@ -321,6 +342,20 @@ export class ApiClient {
   // Search lawyers by location
   async searchLawyersByLocation(location: string): Promise<ApiResponse<LawyerData[]>> {
     return this.request(`${API_ENDPOINTS.SEARCH_LAWYERS_BY_LOCATION}?location=${encodeURIComponent(location)}`);
+  }
+
+  // ========================
+  // VIDEO METHODS
+  // ========================
+
+  // Get all lawyer videos
+  async getAllLawyerVideos(): Promise<ApiResponse<LawyerVideoData[]>> {
+    return this.request(API_ENDPOINTS.GET_ALL_LAWYER_VIDEOS);
+  }
+
+  // Get videos by specific lawyer
+  async getLawyerVideos(lawyerId: string): Promise<ApiResponse<LawyerVideoData[]>> {
+    return this.request(API_ENDPOINTS.GET_LAWYER_VIDEOS(lawyerId));
   }
 
   // ========================
