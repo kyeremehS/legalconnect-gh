@@ -60,7 +60,6 @@ import {
   legalArticles,
   legalQuizzes,
   legalTemplates,
-  videoCategories,
 } from "../../components/mockdata";
 import { VideoService, VideoItem as VideoItemType } from "../../../services/videoService";
 import { apiClient } from "../../../lib/api";
@@ -82,17 +81,6 @@ type VideoItem = VideoItemType;
 
 // Content Types
 type ContentType = "videos" | "articles" | "quizzes" | "templates";
-
-// Flatten all videos into a single array for feed
-function flattenVideos() {
-  const videos: VideoItem[] = [];
-  for (const cat of videoCategories) {
-    for (const vid of cat.videos) {
-      videos.push({ ...vid, category: cat.label });
-    }
-  }
-  return videos;
-}
 
 // Template Card Component
 function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {

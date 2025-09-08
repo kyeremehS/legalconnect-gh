@@ -66,10 +66,12 @@ function MobileSidebar({
   isOpen,
   onClose,
   onBackToDashboard,
+  lawyersCount,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onBackToDashboard: () => void;
+  lawyersCount: number;
 }) {
   return (
     <AnimatePresence>
@@ -131,7 +133,7 @@ function MobileSidebar({
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Listed Practitioners</span>
-                    <span className="font-medium">{lawyers.length}</span>
+                    <span className="font-medium">{lawyersCount}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Practice Areas</span>
@@ -222,6 +224,7 @@ export default function LegalDirectoryPage() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         onBackToDashboard={handleBackToDashboard}
+        lawyersCount={filteredLawyers.length}
       />
 
       <div className="flex h-screen pt-16 lg:pt-0">
