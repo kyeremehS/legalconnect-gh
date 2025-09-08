@@ -27,6 +27,7 @@ export const API_ENDPOINTS = {
   // Video interactions
   TOGGLE_VIDEO_LIKE: '/api/videos/like',
   ADD_VIDEO_COMMENT: '/api/videos/comment',
+  RECORD_VIDEO_VIEW: '/api/videos/view',
   GET_VIDEO_COMMENTS: '/api/videos/comments',
   GET_VIDEO_STATS: '/api/videos/test-stats-simple',
   DELETE_VIDEO_COMMENT: (commentId: string) => `/api/videos/comment/${commentId}`,
@@ -118,6 +119,8 @@ export interface LawyerVideoData {
     practiceAreas: string[];
   };
   views: number;
+  likes: number; // Real like count from API
+  comments: number; // Real comment count from API
   duration: string;
   uploadedAt: string;
   title?: string;
@@ -590,6 +593,40 @@ export class ApiClient {
     } catch (error) {
       console.error('Error deleting video comment:', error);
       throw error;
+    }
+  }
+
+  async recordVideoView(lawyerId: string, videoUrl: string, duration?: number): Promise<any> {
+    try {
+      console.log('Recording video view:', { lawyerId, videoUrl, duration });
+      
+      const response = await fetch(API_ENDPOINTS.RECORD_VIDEO_VIEW, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeaders(),
+        },
+        body: JSON.stringify({
+          lawyerId,
+          videoUrl,
+          duration
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('Error response body:', errorText);
+        throw new Error(`Failed to record view: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('View recorded:', result);
+      return result.data || result;
+    } catch (error) {
+      console.error('Error recording video view:', error);
+      // Don't throw error for view recording - it's not critical
+      // Just log it and continue
+      return null;
     }
   }
 }

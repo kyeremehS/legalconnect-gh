@@ -12,6 +12,8 @@ export interface VideoItem {
   lawyerId: string; // Add lawyerId for video interactions
   category: string;
   views: string;
+  likes?: number; // Real like count from API
+  comments?: number; // Real comment count from API
   duration: string;
   language: string;
   thumbnail: string;
@@ -40,6 +42,8 @@ export class VideoService {
           lawyerId: video.lawyer.id, // Include lawyerId for interactions
           category: this.determineCategoryFromPracticeAreas(video.lawyer.practiceAreas),
           views: this.formatViews(video.views),
+          likes: video.likes, // Include real like count from API
+          comments: video.comments, // Include real comment count from API
           duration: video.duration,
           language: "English", // Default language
           thumbnail: `/thumbnails/default${(index % 4) + 1}.jpg`, // Default thumbnails
@@ -73,6 +77,8 @@ export class VideoService {
           lawyerId: video.lawyer.id, // Include lawyerId for interactions
           category: this.determineCategoryFromPracticeAreas(video.lawyer.practiceAreas),
           views: this.formatViews(video.views),
+          likes: video.likes, // Include real like count from API
+          comments: video.comments, // Include real comment count from API
           duration: video.duration,
           language: "English",
           thumbnail: `/thumbnails/default${(index % 4) + 1}.jpg`,

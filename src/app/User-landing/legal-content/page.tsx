@@ -63,6 +63,7 @@ import {
   videoCategories,
 } from "../../components/mockdata";
 import { VideoService, VideoItem as VideoItemType } from "../../../services/videoService";
+import { apiClient } from "../../../lib/api";
 
 // Configure Inter font
 const inter = Inter({
@@ -128,16 +129,19 @@ export default function LegalContentHub() {
         console.log('Fetched videos:', fetchedVideos);
         
         setVideos(fetchedVideos);
-        // Initialize interaction arrays based on fetched videos length
-        setLikes(Array(fetchedVideos.length).fill(3292));
-        setComments(Array(fetchedVideos.length).fill(84));
-        setShares(Array(fetchedVideos.length).fill(68));
+        // Extract real like and comment counts from the API data
+        const realLikes = fetchedVideos.map(video => video.likes || 0);
+        const realComments = fetchedVideos.map(video => video.comments || 0);
+        setLikes(realLikes);
+        setComments(realComments);
+        setShares(Array(fetchedVideos.length).fill(68)); // Keep shares as mock for now
       } catch (error) {
         console.error('Error fetching videos:', error);
         // Fallback to mock data if API fails
         console.log('Falling back to mock data...');
         const mockVideos = flattenVideos();
         setVideos(mockVideos);
+        // For mock videos, use dummy values
         setLikes(Array(mockVideos.length).fill(3292));
         setComments(Array(mockVideos.length).fill(84));
         setShares(Array(mockVideos.length).fill(68));
@@ -174,6 +178,17 @@ export default function LegalContentHub() {
     });
   };
 
+  // Function to record video view
+  const recordVideoView = async (video: VideoItem) => {
+    try {
+      console.log('Recording view for video:', video.title);
+      await apiClient.recordVideoView(video.lawyerId, video.url);
+    } catch (error) {
+      console.error('Failed to record video view:', error);
+      // Don't show error to user - view recording is not critical
+    }
+  };
+
   // Update your handlePlayPause function (around line 130)
   const handlePlayPause = () => {
     const currentVideo = document.querySelector(
@@ -185,6 +200,10 @@ export default function LegalContentHub() {
         currentVideo.pause();
         setIsPlaying(false);
       } else {
+        // Record view when video starts playing
+        if (videos[activeIdx]) {
+          recordVideoView(videos[activeIdx]);
+        }
         currentVideo.play().catch((error) => {
           console.log("Play failed:", error);
         });
@@ -258,6 +277,10 @@ export default function LegalContentHub() {
         ) as HTMLVideoElement;
 
         if (newVideo) {
+          // Record view when auto-playing new video
+          if (videos[newIndex]) {
+            recordVideoView(videos[newIndex]);
+          }
           newVideo.play().catch(console.log);
         }
       }, 300); // Match transition duration
@@ -392,6 +415,10 @@ export default function LegalContentHub() {
         ) as HTMLVideoElement;
 
         if (currentVideo) {
+          // Record view when auto-playing
+          if (videos[activeIdx]) {
+            recordVideoView(videos[activeIdx]);
+          }
           currentVideo.play().catch((error) => {
             console.log("Auto-play failed:", error);
             // If auto-play fails, update the state to reflect reality
