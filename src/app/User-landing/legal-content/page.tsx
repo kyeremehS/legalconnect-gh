@@ -137,14 +137,12 @@ export default function LegalContentHub() {
         setShares(Array(fetchedVideos.length).fill(68)); // Keep shares as mock for now
       } catch (error) {
         console.error('Error fetching videos:', error);
-        // Fallback to mock data if API fails
-        console.log('Falling back to mock data...');
-        const mockVideos = flattenVideos();
-        setVideos(mockVideos);
-        // For mock videos, use dummy values
-        setLikes(Array(mockVideos.length).fill(3292));
-        setComments(Array(mockVideos.length).fill(84));
-        setShares(Array(mockVideos.length).fill(68));
+        // No fallback to mock data - show empty state instead
+        console.log('No videos available.');
+        setVideos([]);
+        setLikes([]);
+        setComments([]);
+        setShares([]);
       } finally {
         setIsLoadingVideos(false);
       }
@@ -181,8 +179,13 @@ export default function LegalContentHub() {
   // Function to record video view
   const recordVideoView = async (video: VideoItem) => {
     try {
-      console.log('Recording view for video:', video.title);
-      await apiClient.recordVideoView(video.lawyerId, video.url);
+      // Only record views for real videos (not mock videos)
+      if (video.lawyerId && !video.lawyerId.startsWith('mock_')) {
+        console.log('Recording view for video:', video.title);
+        await apiClient.recordVideoView(video.lawyerId, video.url);
+      } else {
+        console.log('Skipping view recording for mock video:', video.title);
+      }
     } catch (error) {
       console.error('Failed to record video view:', error);
       // Don't show error to user - view recording is not critical

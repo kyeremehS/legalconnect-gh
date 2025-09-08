@@ -210,6 +210,8 @@ export class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
+    console.log('🔗 Making API request to:', url);
+    console.log('🔧 Request config:', options);
     
     const config: RequestInit = {
       headers: {
@@ -222,6 +224,7 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, config);
+      console.log('📡 Response status:', response.status);
       const data = await response.json();
 
       if (!response.ok) {
@@ -230,7 +233,9 @@ export class ApiClient {
 
       return data;
     } catch (error) {
-      console.error('API request error:', error);
+      console.error('❌ API request error for URL:', url);
+      console.error('❌ Error details:', error);
+      console.error('❌ Network error or server down?', error instanceof TypeError);
       throw error;
     }
   }
@@ -600,7 +605,7 @@ export class ApiClient {
     try {
       console.log('Recording video view:', { lawyerId, videoUrl, duration });
       
-      const response = await fetch(API_ENDPOINTS.RECORD_VIDEO_VIEW, {
+      const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.RECORD_VIDEO_VIEW}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

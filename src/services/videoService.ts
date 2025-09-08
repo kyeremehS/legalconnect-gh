@@ -138,81 +138,23 @@ export class VideoService {
   }
 
   /**
-   * Combine real videos with mock videos for better content variety
+   * Get only real videos from the API (no mock data)
    */
   static async getCombinedVideoFeed(): Promise<VideoItem[]> {
-    console.log('🎬 Fetching combined video feed...');
-    
-    let realVideos: VideoItem[] = [];
+    console.log('🎬 Fetching real video feed...');
     
     try {
-      realVideos = await this.getAllLawyerVideos();
+      const realVideos = await this.getAllLawyerVideos();
       console.log('✅ Real videos fetched:', realVideos.length);
-    } catch (error) {
-      console.log('⚠️ Error fetching real videos (will use mock data only):', error instanceof Error ? error.message : error);
-      realVideos = []; // Ensure it's an empty array
-    }
-    
-    // Mock videos for fallback/variety
-    const mockVideos: VideoItem[] = [
-      {
-        id: "uploaded_video_1",
-        title: "Recently Uploaded Legal Content",
-        url: "https://legalconnect-bucket.s3.eu-north-1.amazonaws.com/lawyer-videos/cmebptmg00002940ootz16ivm/a25e529d-c6b9-4d9d-b741-cf10c1d83718.mp4",
-        lawyer: "Current Lawyer",
-        lawyerId: "current_lawyer_1", // Mock lawyerId
-        category: "General Law",
-        views: "1",
-        duration: "3:45",
-        language: "English",
-        thumbnail: "/thumbnails/default1.jpg",
-        description: "Recently uploaded video content from your dashboard.",
-      },
-      {
-        id: "mock_1",
-        title: "Understanding Landlord and Tenant Rights",
-        url: "/legal-videos/tenant-and-landlord.mp4",
-        lawyer: "Yudah Brown, Esq.",
-        lawyerId: "mock_lawyer_1", // Mock lawyerId
-        category: "Land Law",
-        views: "12.5K",
-        duration: "5:32",
-        language: "English",
-        thumbnail: "/thumbnails/land1.jpg",
-        description: "Education on getting a rent card from the landlord and understanding your rights as a tenant.",
-      },
-      {
-        id: "mock_2",
-        title: "Building without permits",
-        url: "/legal-videos/building-without-permit.mp4",
-        lawyer: "Yudah Brown, Esq.",
-        lawyerId: "mock_lawyer_1", // Mock lawyerId
-        category: "Land Law",
-        views: "8.2K",
-        duration: "2:46",
-        language: "English",
-        thumbnail: "/thumbnails/land2.jpg",
-        description: "Education on being served with a notice to stop building without a permit and the legal implications.",
-      },
-      {
-        id: "mock_3",
-        title: "Marriage and Divorce Laws",
-        url: "/legal-videos/getting-divorce-in-ghana.mp4",
-        lawyer: "Tina, Esq.",
-        lawyerId: "mock_lawyer_2", // Mock lawyerId
-        category: "Family Law",
-        views: "15.1K",
-        duration: "3:09",
-        language: "Twi",
-        thumbnail: "/thumbnails/family1.jpg",
-        description: "Understanding how to get a divorce in a Ghanaian court.",
+      
+      if (realVideos.length === 0) {
+        console.log('📭 No videos available. Please upload some videos through the lawyer dashboard.');
       }
-    ];
-
-    // Combine real videos with mock videos, prioritizing real videos
-    const combinedVideos = [...realVideos, ...mockVideos];
-    console.log('📊 Combined video feed:', combinedVideos.length, 'videos total');
-    
-    return combinedVideos;
+      
+      return realVideos;
+    } catch (error) {
+      console.log('⚠️ Error fetching videos:', error instanceof Error ? error.message : error);
+      return []; // Return empty array - no fallback to mock data
+    }
   }
 }
