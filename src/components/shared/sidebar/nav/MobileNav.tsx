@@ -43,17 +43,7 @@ const MobileNav = () => {
 
         {/* User Profile */}
         <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 min-w-[60px]">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8"
-                  }
-                }}
-              />
-            </div>
-          </TooltipTrigger>
+          
           <TooltipContent side="top">
             <p>Profile & Settings</p>
           </TooltipContent>
