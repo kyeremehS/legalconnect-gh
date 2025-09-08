@@ -25,14 +25,10 @@ export const API_ENDPOINTS = {
   GET_ALL_LAWYER_VIDEOS: '/api/lawyers/videos',
   GET_LAWYER_VIDEOS: (lawyerId: string) => `/api/lawyers/${lawyerId}/videos`,
   // Video interactions
-  TOGGLE_VIDEO_LIKE: (lawyerId: string, videoUrl: string) => 
-    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/like`,
-  ADD_VIDEO_COMMENT: (lawyerId: string, videoUrl: string) => 
-    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/comment`,
-  GET_VIDEO_COMMENTS: (lawyerId: string, videoUrl: string) => 
-    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/comments`,
-  GET_VIDEO_STATS: (lawyerId: string, videoUrl: string) => 
-    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/stats`,
+  TOGGLE_VIDEO_LIKE: '/api/videos/like',
+  ADD_VIDEO_COMMENT: '/api/videos/comment',
+  GET_VIDEO_COMMENTS: '/api/videos/comments',
+  GET_VIDEO_STATS: '/api/videos/test-stats-simple',
   DELETE_VIDEO_COMMENT: (commentId: string) => `/api/videos/comment/${commentId}`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
@@ -202,6 +198,7 @@ export class ApiClient {
 
   private getAuthHeaders(): Record<string, string> {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    console.log('Auth token from localStorage:', token ? 'present' : 'missing');
     return token ? { 'Authorization': `Bearer ${token}` } : {};
   }
 
@@ -474,19 +471,31 @@ export class ApiClient {
   // Video interaction methods
   async toggleVideoLike(lawyerId: string, videoUrl: string): Promise<{ liked: boolean; likeCount: number }> {
     try {
-      const response = await fetch(API_ENDPOINTS.TOGGLE_VIDEO_LIKE(lawyerId, videoUrl), {
+      console.log('Toggling like for:', { lawyerId, videoUrl });
+      
+      const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.TOGGLE_VIDEO_LIKE}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...this.getAuthHeaders(),
         },
+        body: JSON.stringify({
+          lawyerId,
+          videoUrl
+        }),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`Failed to toggle like: ${response.statusText}`);
+        const errorText = await response.text();
+        console.log('Error response body:', errorText);
+        throw new Error(`Failed to toggle like: ${response.status} ${response.statusText}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      console.log('API Response:', result);
+      return result.data || result;
     } catch (error) {
       console.error('Error toggling video like:', error);
       throw error;
@@ -495,20 +504,25 @@ export class ApiClient {
 
   async addVideoComment(lawyerId: string, videoUrl: string, content: string): Promise<any> {
     try {
-      const response = await fetch(API_ENDPOINTS.ADD_VIDEO_COMMENT(lawyerId, videoUrl), {
+      const response = await fetch(API_ENDPOINTS.ADD_VIDEO_COMMENT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...this.getAuthHeaders(),
         },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({
+          lawyerId,
+          videoUrl,
+          content
+        }),
       });
 
       if (!response.ok) {
         throw new Error(`Failed to add comment: ${response.statusText}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data || result;
     } catch (error) {
       console.error('Error adding video comment:', error);
       throw error;
@@ -517,7 +531,7 @@ export class ApiClient {
 
   async getVideoComments(lawyerId: string, videoUrl: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
     try {
-      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS(lawyerId, videoUrl)}?page=${page}&limit=${limit}`;
+      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS}?lawyerId=${encodeURIComponent(lawyerId)}&videoUrl=${encodeURIComponent(videoUrl)}&page=${page}&limit=${limit}`;
       const response = await fetch(url, {
         headers: this.getAuthHeaders(),
       });
@@ -526,7 +540,8 @@ export class ApiClient {
         throw new Error(`Failed to fetch comments: ${response.statusText}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data || result;
     } catch (error) {
       console.error('Error fetching video comments:', error);
       throw error;
@@ -535,15 +550,27 @@ export class ApiClient {
 
   async getVideoStats(lawyerId: string, videoUrl: string): Promise<{ likeCount: number; commentCount: number; userLiked: boolean }> {
     try {
-      const response = await fetch(API_ENDPOINTS.GET_VIDEO_STATS(lawyerId, videoUrl), {
-        headers: this.getAuthHeaders(),
+      // Use GET with query parameters for the test endpoint
+      const url = `${this.baseUrl}${API_ENDPOINTS.GET_VIDEO_STATS}?lawyerId=${encodeURIComponent(lawyerId)}&videoUrl=${encodeURIComponent(videoUrl)}`;
+      console.log('Fetching stats from:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        // Temporarily remove auth for test endpoint
+        // headers: this.getAuthHeaders(),
       });
 
+      console.log('Stats response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch video stats: ${response.statusText}`);
+        const errorText = await response.text();
+        console.log('Stats error response:', errorText);
+        throw new Error(`Failed to fetch video stats: ${response.status} ${response.statusText}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      console.log('Stats API Response:', result);
+      return result.data || result;
     } catch (error) {
       console.error('Error fetching video stats:', error);
       throw error;

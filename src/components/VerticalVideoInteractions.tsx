@@ -33,7 +33,13 @@ export default function VerticalVideoInteractions({
 
   const loadVideoStats = async () => {
     try {
-      if (!user) return;
+      if (!user || !lawyerId || !videoUrl) {
+        console.log('Skipping video stats load:', { user: !!user, lawyerId, videoUrl });
+        setStats({ likeCount: 0, commentCount: 0, userLiked: false });
+        return;
+      }
+      
+      console.log('Loading video stats for:', { lawyerId, videoUrl });
       const statsData = await apiClient.getVideoStats(lawyerId, videoUrl);
       setStats(statsData);
     } catch (error) {
@@ -50,7 +56,14 @@ export default function VerticalVideoInteractions({
         return;
       }
 
+      if (!lawyerId || !videoUrl) {
+        console.error('Missing required parameters:', { lawyerId, videoUrl });
+        alert('Error: Missing video information');
+        return;
+      }
+
       setLoading(true);
+      console.log('Toggling like for video:', { lawyerId, videoUrl, user: user?.id });
       const response = await apiClient.toggleVideoLike(lawyerId, videoUrl);
       setStats(prev => ({
         ...prev,
@@ -59,7 +72,7 @@ export default function VerticalVideoInteractions({
       }));
     } catch (error) {
       console.error('Error toggling like:', error);
-      // You could show a toast notification here instead
+      alert('Failed to like video. Please try again.');
     } finally {
       setLoading(false);
     }
