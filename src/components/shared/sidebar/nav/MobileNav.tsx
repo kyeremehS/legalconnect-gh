@@ -5,7 +5,7 @@ import { useNavigation } from "../../../../../hooks/useNavigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { UserButton } from "@clerk/nextjs";
+
 
 type Props = {}
 

@@ -19,7 +19,6 @@ import { motion } from "framer-motion";
 import { div } from "framer-motion/client";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 // import { useState, useRef, useEffect } from "react";
-// import { useUser } from "@clerk/nextjs";
 // import { useMessaging } from "../../../hooks/useMessaging";
 // import { Chat, Message } from "../../../lib/messaging";
 
