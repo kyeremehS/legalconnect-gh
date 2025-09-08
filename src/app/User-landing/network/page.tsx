@@ -6,7 +6,10 @@ import { Inter } from 'next/font/google';
 import { useRouter } from "next/navigation";
 import BookAppointment from "../../components/BookAppointment";
 import LawyerCard from "@/app/components/lawyer/LawyerCard";
-import { useLawyers } from "../../../hooks/useLawyers";
+
+import {
+lawyers, Lawyer as MockLawyer
+} from "../../components/mockdata";
 
 import {
   Users,
@@ -66,12 +69,10 @@ function MobileSidebar({
   isOpen,
   onClose,
   onBackToDashboard,
-  lawyersCount,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onBackToDashboard: () => void;
-  lawyersCount: number;
 }) {
   return (
     <AnimatePresence>
@@ -133,7 +134,7 @@ function MobileSidebar({
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Listed Practitioners</span>
-                    <span className="font-medium">{lawyersCount}</span>
+                    <span className="font-medium">{lawyers.length}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Practice Areas</span>
@@ -168,22 +169,45 @@ function MobileSidebar({
 
 export default function LegalDirectoryPage() {
   const router = useRouter();
+  const [filteredLawyers, setFilteredLawyers] = useState(lawyers);
   const [selectedPracticeArea, setSelectedPracticeArea] = useState("All Areas");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Use the custom hook to fetch lawyers with filters
-  const { lawyers: filteredLawyers, loading, error } = useLawyers({
-    practiceArea: selectedPracticeArea,
-    location: selectedLocation,
-    search: searchQuery
-  });
-
   // Navigation function
   const handleBackToDashboard = () => {
     router.push("/User-landing");
   };
+
+  // Filter lawyers based on selected filters
+  React.useEffect(() => {
+    let filtered = lawyers;
+
+    if (selectedPracticeArea !== "All Areas") {
+      filtered = filtered.filter(lawyer =>
+        lawyer.practiceAreas.includes(selectedPracticeArea)
+      );
+    }
+
+    if (selectedLocation !== "All Locations") {
+      filtered = filtered.filter(lawyer =>
+        lawyer.location.includes(selectedLocation)
+      );
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter(lawyer =>
+        lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lawyer.practiceAreas.some(area =>
+          area.toLowerCase().includes(searchQuery.toLowerCase())
+        ) ||
+        lawyer.firm.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredLawyers(filtered);
+  }, [selectedPracticeArea, selectedLocation, searchQuery]);
 
   return (
     <div className={`min-h-screen bg-gray-50 mb-20 lg:mb-0 ${inter.className}`}>
@@ -224,7 +248,6 @@ export default function LegalDirectoryPage() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         onBackToDashboard={handleBackToDashboard}
-        lawyersCount={filteredLawyers.length}
       />
 
       <div className="flex h-screen pt-16 lg:pt-0">
@@ -371,65 +394,26 @@ export default function LegalDirectoryPage() {
               </div>
             </div>
 
-            {/* Loading State */}
-            {loading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-12"
-              >
-                <div className="w-12 h-12 border-4 border-gray-200 border-t-[#d4a017] rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading lawyers...</p>
-              </motion.div>
-            )}
-
-            {/* Error State */}
-            {error && !loading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-12"
-              >
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-red-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  Failed to load lawyers
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  {error}
-                </p>
-                <button
-                  className="bg-[#d4a017] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#b8941f] transition-colors"
-                  onClick={() => window.location.reload()}
-                >
-                  Try Again
-                </button>
-              </motion.div>
-            )}
-
             {/* Lawyers Grid */}
-            {!loading && !error && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-              >
-                {filteredLawyers.map((lawyer, index) => (
-                  <motion.div
-                    key={lawyer.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <LawyerCard lawyer={lawyer} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+            >
+              {filteredLawyers.map((lawyer, index) => (
+                <motion.div
+                  key={lawyer.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <LawyerCard lawyer={lawyer} />
+                </motion.div>
+              ))}
+            </motion.div>
 
             {/* Empty State */}
-            {!loading && !error && filteredLawyers.length === 0 && (
+            {filteredLawyers.length === 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
