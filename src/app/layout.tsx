@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
-import { Outfit } from "next/font/google";
 import "./globals.css";
-import { TooltipProvider } from "@/components/ui/tooltip";
-// import { ThemeProvider } from "@/components/ui/theme/theme-provider"; // Fixed typo
+import { AuthProvider } from "../contexts/AuthContext";
+import { Outfit } from "next/font/google";
 
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
   title: "LegalConnect",
-  description: "Your trusted partner in legal solutions.",
+  description: "Connect with legal professionals",
 };
 
 export default function RootLayout({
@@ -20,23 +19,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const content = (
-    <html lang="en" className={`${outfit.variable} antialiased`} suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/Coat_of_arms_of_Ghana.svg" />
-      </head>
-      <body className={outfit.variable} suppressHydrationWarning>
-        {/* <ThemeProvider */}
-          {/* attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange */}
-        {/* > */}
-          <TooltipProvider>{children}</TooltipProvider>
-        {/* </ThemeProvider> */}
+  return (
+    <html lang="en">
+      <body className={`${outfit.variable} antialiased`}>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
-
-  return <ClerkProvider>{content}</ClerkProvider>;
 }

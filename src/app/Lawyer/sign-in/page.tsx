@@ -1,14 +1,21 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { User, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, Lock, AlertCircle } from "lucide-react";
+import { useAuth } from "../../../contexts/AuthContext";
+import { apiClient } from "../../../lib/api";
 
 export default function LawyerSignIn() {
+  const { login } = useAuth();
+  const router = useRouter();
+  
   const [formData, setFormData] = useState({
-    identifier: "",
+    email: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,15 +28,35 @@ export default function LawyerSignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    // TODO: Implement form submission logic
-    console.log("Sign-in data:", formData);
+    try {
+      const response = await apiClient.loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    // Simulate API call
-    setTimeout(() => {
+      if (response.success && response.data) {
+        const { user, token } = response.data;
+        
+        // Check if user is a lawyer or admin
+        if (user.role !== 'LAWYER' && user.role !== 'ADMIN') {
+          setError('Access denied. This login is for verified lawyers only.');
+          setIsLoading(false);
+          return;
+        }
+
+        // Login and redirect
+        login(user, token);
+        router.push('/Lawyer');
+      } else {
+        setError(response.message || 'Login failed');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
       setIsLoading(false);
-      // Redirect to lawyer dashboard or show success message
-    }, 2000);
+    }
   };
 
   return (
@@ -41,19 +68,25 @@ export default function LawyerSignIn() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+          
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
               <User className="w-4 h-4" />
-              Email or Username
+              Email Address
             </label>
             <input
-              type="text"
-              name="identifier"
-              value={formData.identifier}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[#d4a017] focus:border-[#d4a017] transition-colors"
-              placeholder="Enter your email or username"
+              placeholder="Enter your email address"
             />
           </div>
 

@@ -48,7 +48,7 @@ export default function LawyerCard({ lawyer }: { lawyer: MockLawyer }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -5 }}
-        className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all duration-300 h-[400px] flex flex-col cursor-pointer"
+        className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all duration-300 max-h-[400px] flex flex-col cursor-pointer"
         onClick={handleViewProfile}
       >
         {/* Header - Fixed Height */}

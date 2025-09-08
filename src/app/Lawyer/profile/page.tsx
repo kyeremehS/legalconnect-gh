@@ -1,9 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, Book, Star, ArrowLeft } from "lucide-react";
+import { User, Mail, Phone, MapPin, Book, Star, ArrowLeft, Edit, Save, X, Plus, Building, Briefcase, FileText } from "lucide-react";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useLawyerProfile } from "../../../hooks/useLawyerProfile";
+import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
+import DocumentManager from "../../../components/lawyer/DocumentManager";
 
 type LawyerProfile = {
   name: string;
@@ -20,33 +24,75 @@ type LawyerProfile = {
 };
 
 export default function Profile() {
+  const { user, isAuthenticated } = useAuth();
+  const { profile: apiProfile, loading, error, createProfile, updateProfile } = useLawyerProfile();
+  
   const [profile, setProfile] = useState<LawyerProfile>({
-    name: "Ama Kwarteng",
-    email: "ama.kwarteng@legalconnect.com",
-    phone: "+233 123 456 789",
-    location: "Accra, Ghana",
-    specialization: "Corporate Law",
-    experience: 8,
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    specialization: "",
+    experience: 0,
     rating: 4.8,
-    bio: "Experienced corporate lawyer with expertise in business law and contracts.",
-    education: [
-      "LLB, University of Ghana",
-      "Master of Laws (LLM), Harvard Law School",
-    ],
-    expertise: [
-      "Corporate Law",
-      "Business Contracts",
-      "Mergers & Acquisitions",
-      "Intellectual Property",
-    ],
-    languages: ["English", "Twi", "French"],
+    bio: "",
+    education: [],
+    expertise: [],
+    languages: ["English"],
   });
+  
   const [editMode, setEditMode] = useState(false);
   const [editProfile, setEditProfile] = useState(profile);
   const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<'profile' | 'documents'>('profile');
 
   // Ref for hidden file input
   const profilePicInputRef = useRef<HTMLInputElement>(null);
+
+  // Update profile state when API data loads
+  useEffect(() => {
+    if (user) {
+      const updatedProfile = {
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        phone: apiProfile?.phone || "",
+        location: apiProfile?.location || "",
+        specialization: apiProfile?.practiceAreas?.[0] || "",
+        experience: apiProfile?.experience || 0,
+        rating: 4.8, // Static for now
+        bio: apiProfile?.professionalSummary || "",
+        education: apiProfile?.education ? [apiProfile.education] : [],
+        expertise: apiProfile?.practiceAreas || [],
+        languages: apiProfile?.languages || ["English"],
+      };
+      setProfile(updatedProfile);
+      setEditProfile(updatedProfile);
+    }
+  }, [user, apiProfile]);
+
+  // Show loading or auth required states
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h1>
+          <p className="text-gray-600">Please log in to view your profile.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4a017] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Handle profile picture change
   const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,9 +112,37 @@ export default function Profile() {
     setEditProfile({ ...editProfile, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    setProfile(editProfile);
-    setEditMode(false);
+  const handleSave = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      // Convert frontend profile format to API format
+      const apiProfileData = {
+        firm: editProfile.location, // You might want a separate firm field
+        location: editProfile.location,
+        practiceAreas: editProfile.expertise,
+        experience: editProfile.experience,
+        professionalSummary: editProfile.bio,
+        education: editProfile.education.join(', '),
+        barAssociation: "Ghana Bar Association", // Default
+        phone: editProfile.phone,
+        languages: editProfile.languages,
+      };
+
+      if (apiProfile) {
+        await updateProfile(apiProfileData);
+      } else {
+        await createProfile(apiProfileData);
+      }
+
+      setProfile(editProfile);
+      setEditMode(false);
+    } catch (err) {
+      console.error('Error saving profile:', err);
+      // Handle error - you might want to show a toast notification here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -77,15 +151,16 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="p-4 lg:p-8 pt-20 lg:pt-8">
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Header with Back Button */}
-          <div className="mb-8">
+    <LawyerAuthWrapper>
+      <div className="min-h-screen bg-white">
+        <main className="p-4 lg:p-8 pt-20 lg:pt-8">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Header with Back Button */}
+            <div className="mb-8">
             <Link
               href="/Lawyer"
               className="inline-flex items-center gap-2 text-[#d4a017] hover:text-[#b17d25] mb-4 group transition-colors"
@@ -99,6 +174,66 @@ export default function Profile() {
             </p>
           </div>
 
+          {/* Error Display */}
+          {error && (
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-800">{error}</p>
+            </div>
+          )}
+
+          {/* No Profile State */}
+          {!apiProfile && !editMode && (
+            <div className="text-center py-12 bg-gray-50 rounded-lg mb-6">
+              <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                Complete Your Lawyer Profile
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Set up your professional profile to connect with clients.
+              </p>
+              <button
+                onClick={() => setEditMode(true)}
+                className="bg-[#d4a017] text-white px-6 py-3 rounded-lg hover:bg-[#b8941f] transition-colors flex items-center space-x-2 mx-auto"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Create Profile</span>
+              </button>
+            </div>
+          )}
+
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mb-6">
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
+                activeTab === 'profile'
+                  ? 'border-[#d4a017] text-[#d4a017]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Profile Information
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('documents')}
+              className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
+                activeTab === 'documents'
+                  ? 'border-[#d4a017] text-[#d4a017]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Documents
+              </div>
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'profile' && (
+          <div>
           {/* Profile Content Grid */}
           <div className="grid grid-cols-12 gap-6">
             {/* Left Column - Main Info */}
@@ -202,15 +337,27 @@ export default function Profile() {
                   {editMode ? (
                     <div className="flex flex-col gap-2">
                       <button
-                        className="px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b17d25] transition-colors"
+                        className="px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b17d25] transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
                         onClick={handleSave}
+                        disabled={isSubmitting}
                         type="button"
                       >
-                        Save
+                        {isSubmitting ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <span>Saving...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4" />
+                            <span>Save</span>
+                          </>
+                        )}
                       </button>
                       <button
                         className="px-4 py-2 bg-gray-200 text-[#d4a017] rounded-lg hover:bg-gray-300 transition-colors"
                         onClick={handleCancel}
+                        disabled={isSubmitting}
                         type="button"
                       >
                         Cancel
@@ -443,8 +590,18 @@ export default function Profile() {
               </div>
             </div>
           </div>
+          </div>
+          )}
+
+          {/* Documents Tab */}
+          {activeTab === 'documents' && apiProfile?.id && (
+            <div>
+              <DocumentManager lawyerId={apiProfile.id} />
+            </div>
+          )}
         </motion.div>
       </main>
-    </div>
+      </div>
+    </LawyerAuthWrapper>
   );
 }

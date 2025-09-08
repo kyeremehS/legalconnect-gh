@@ -53,14 +53,16 @@ import SidebarItem from "../../components/content-sidebar";
 import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import ActionButton from "../../components/videoaction";
+import VerticalVideoInteractions from "../../../components/VerticalVideoInteractions";
 
 
 import {
   legalArticles,
   legalQuizzes,
   legalTemplates,
-  videoCategories,
 } from "../../components/mockdata";
+import { VideoService, VideoItem as VideoItemType } from "../../../services/videoService";
+import { apiClient } from "../../../lib/api";
 
 // Configure Inter font
 const inter = Inter({
@@ -75,33 +77,10 @@ declare global {
   }
 }
 
-type VideoItem = {
-  id: string;
-  title: string;
-  url: string;
-  lawyer: string;
-  category: string;
-  views: string;
-  duration: string;
-  language: string;
-  thumbnail: string;
-  description: string;
-  tags?: string[];
-};
+type VideoItem = VideoItemType;
 
 // Content Types
 type ContentType = "videos" | "articles" | "quizzes" | "templates";
-
-// Flatten all videos into a single array for feed
-function flattenVideos() {
-  const videos: VideoItem[] = [];
-  for (const cat of videoCategories) {
-    for (const vid of cat.videos) {
-      videos.push({ ...vid, category: cat.label });
-    }
-  }
-  return videos;
-}
 
 // Template Card Component
 function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {
@@ -110,10 +89,11 @@ function TemplateCard({ template }: { template: (typeof legalTemplates)[0] }) {
 
 export default function LegalContentHub() {
   const router = useRouter();
-  const videos = flattenVideos();
-  const [likes, setLikes] = useState(Array(videos.length).fill(3292));
-  const [comments, setComments] = useState(Array(videos.length).fill(84));
-  const [shares, setShares] = useState(Array(videos.length).fill(68));
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  const [likes, setLikes] = useState<number[]>([]);
+  const [comments, setComments] = useState<number[]>([]);
+  const [shares, setShares] = useState<number[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -126,6 +106,38 @@ export default function LegalContentHub() {
   const [videoProgress, setVideoProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+
+  // Fetch videos on component mount
+  useEffect(() => {
+    const fetchVideos = async () => {
+      setIsLoadingVideos(true);
+      try {
+        console.log('Fetching videos from VideoService...');
+        const fetchedVideos = await VideoService.getCombinedVideoFeed();
+        console.log('Fetched videos:', fetchedVideos);
+        
+        setVideos(fetchedVideos);
+        // Extract real like and comment counts from the API data
+        const realLikes = fetchedVideos.map(video => video.likes || 0);
+        const realComments = fetchedVideos.map(video => video.comments || 0);
+        setLikes(realLikes);
+        setComments(realComments);
+        setShares(Array(fetchedVideos.length).fill(68)); // Keep shares as mock for now
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        // No fallback to mock data - show empty state instead
+        console.log('No videos available.');
+        setVideos([]);
+        setLikes([]);
+        setComments([]);
+        setShares([]);
+      } finally {
+        setIsLoadingVideos(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
 
   // Handlers for actions
   const handleLike = (idx: number) => {
@@ -152,6 +164,22 @@ export default function LegalContentHub() {
     });
   };
 
+  // Function to record video view
+  const recordVideoView = async (video: VideoItem) => {
+    try {
+      // Only record views for real videos (not mock videos)
+      if (video.lawyerId && !video.lawyerId.startsWith('mock_')) {
+        console.log('Recording view for video:', video.title);
+        await apiClient.recordVideoView(video.lawyerId, video.url);
+      } else {
+        console.log('Skipping view recording for mock video:', video.title);
+      }
+    } catch (error) {
+      console.error('Failed to record video view:', error);
+      // Don't show error to user - view recording is not critical
+    }
+  };
+
   // Update your handlePlayPause function (around line 130)
   const handlePlayPause = () => {
     const currentVideo = document.querySelector(
@@ -163,6 +191,10 @@ export default function LegalContentHub() {
         currentVideo.pause();
         setIsPlaying(false);
       } else {
+        // Record view when video starts playing
+        if (videos[activeIdx]) {
+          recordVideoView(videos[activeIdx]);
+        }
         currentVideo.play().catch((error) => {
           console.log("Play failed:", error);
         });
@@ -236,6 +268,10 @@ export default function LegalContentHub() {
         ) as HTMLVideoElement;
 
         if (newVideo) {
+          // Record view when auto-playing new video
+          if (videos[newIndex]) {
+            recordVideoView(videos[newIndex]);
+          }
           newVideo.play().catch(console.log);
         }
       }, 300); // Match transition duration
@@ -370,6 +406,10 @@ export default function LegalContentHub() {
         ) as HTMLVideoElement;
 
         if (currentVideo) {
+          // Record view when auto-playing
+          if (videos[activeIdx]) {
+            recordVideoView(videos[activeIdx]);
+          }
           currentVideo.play().catch((error) => {
             console.log("Auto-play failed:", error);
             // If auto-play fails, update the state to reflect reality
@@ -405,7 +445,23 @@ export default function LegalContentHub() {
                 transform: `translateY(-${activeIdx * 100}vh)`,
               }}
             >
-              {videos.map((video, idx) => (
+              {isLoadingVideos ? (
+                <div className="absolute inset-0 w-full h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-white text-lg">Loading videos...</p>
+                  </div>
+                </div>
+              ) : videos.length === 0 ? (
+                <div className="absolute inset-0 w-full h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">📹</div>
+                    <p className="text-white text-lg">No videos available yet</p>
+                    <p className="text-gray-300 text-sm mt-2">Check back later for new content!</p>
+                  </div>
+                </div>
+              ) : (
+                videos.map((video, idx) => (
                 <motion.div
                   key={video.id}
                   className="absolute inset-0 w-full h-screen flex items-center justify-center"
@@ -577,27 +633,18 @@ export default function LegalContentHub() {
                           </motion.button>
                         </div>
 
-                        {/* Action Buttons - Made smaller */}
-                        <ActionButton
-                          icon={<Heart className="w-5 h-5" />}
-                          count={likes[activeIdx]}
-                          onClick={() => handleLike(activeIdx)}
-                        />
-                        <ActionButton
-                          icon={<MessageCircle className="w-5 h-5" />}
-                          count={comments[activeIdx]}
-                          onClick={() => handleComment(activeIdx)}
-                        />
-                        <ActionButton
-                          icon={<Share className="w-5 h-5" />}
-                          count={shares[activeIdx]}
-                          onClick={() => handleShare(activeIdx)}
+                        {/* Action Buttons - Replace with VideoInteractions */}
+                        <VerticalVideoInteractions
+                          lawyerId={video.lawyerId}
+                          videoUrl={video.url}
+                          className=""
                         />
                       </div>
                     )}
                   </div>
                 </motion.div>
-              ))}
+              ))
+              )}
             </div>
           </main>
         );

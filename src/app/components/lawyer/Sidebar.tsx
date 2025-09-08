@@ -17,11 +17,11 @@ import {
   BookOpen,
   Bot,
   BarChart2,
-  BookOpenText
+  BookOpenText,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { UserButton } from "@clerk/nextjs";
+import { UserMenu } from "../customusermenu";
 
 const lawyerNavItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
@@ -39,21 +39,28 @@ const lawyerNavItems = [
 
 const userNavItems = [
   { name: "Dashboard", href: "/User-landing", icon: Activity },
-  { name: "Legal Directory", href: "/User-landing/network", icon: BookOpenText },
-  { name: "Legal Resources", href: "User-landing/legal-content", icon: BookOpen },
+  {
+    name: "Legal Directory",
+    href: "/User-landing/network",
+    icon: BookOpenText,
+  },
+  {
+    name: "Legal Resources",
+    href: "User-landing/legal-content",
+    icon: BookOpen,
+  },
   {
     name: "Message & Call",
     href: "/User-landing/user-message-call",
     icon: Phone,
   },
   {
-    name: "Profile Settings",
-    href: "/User-landing/profile-settings",
-    icon: User,
+    name: "Booking Appointments",
+    href: "/User-landing/appointment-booking",
+    icon: Calendar,
   },
   { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
   { name: "Settings", href: "/User-landing/profile-settings", icon: Settings },
-   
 ];
 
 const adminNavItems = [
@@ -62,16 +69,24 @@ const adminNavItems = [
   { name: "Lawyers", href: "/Admin/lawyer-verification", icon: User },
   { name: "Case Oversight", href: "/Admin/case-oversight", icon: FileText },
   { name: "Billing & Reports", href: "/Admin/billing-report", icon: FileText },
-  { name: "Platform Usage Analytics", href: "/Admin/platform-analytics", icon: BarChart2 },
+  {
+    name: "Platform Usage Analytics",
+    href: "/Admin/platform-analytics",
+    icon: BarChart2,
+  },
   { name: "Content Management", href: "/Admin/content-manage", icon: BookOpen },
-  { name: "Platform Settings", href: "/Admin/platform-settings", icon: Settings },
+  {
+    name: "Platform Settings",
+    href: "/Admin/platform-settings",
+    icon: Settings,
+  },
 ];
 
 type SidebarProps = {
   role: "lawyer" | "user" | "admin";
 };
 
-export default function Sidebar({ role } : SidebarProps) {
+export default function Sidebar({ role }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Choose nav items based on role
@@ -79,14 +94,17 @@ export default function Sidebar({ role } : SidebarProps) {
     role === "lawyer"
       ? lawyerNavItems
       : role === "admin"
-      ? adminNavItems
-      : userNavItems;
+        ? adminNavItems
+        : userNavItems;
 
   return (
     <>
       {/* Mobile Header */}
       <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-50">
-        <h1 className="text-xl font-bold text-[#d4a017]">LegalConnect</h1>
+        <Link href="/">
+          {" "}
+          <h1 className="text-xl font-bold text-[#d4a017] cursor-pointer">LegalConnect</h1>
+        </Link>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -99,7 +117,7 @@ export default function Sidebar({ role } : SidebarProps) {
             )}
           </button>
           <div className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
-            <UserButton />
+            <UserMenu />
           </div>
         </div>
       </div>
@@ -114,7 +132,10 @@ export default function Sidebar({ role } : SidebarProps) {
         `}
       >
         <div className="h-16 items-center px-6 border-b border-gray-100 lg:flex hidden">
-          <h1 className="text-2xl font-bold text-[#d4a017]">LegalConnect</h1>
+          <Link href="/">
+          {" "}
+          <h1 className="text-xl font-bold text-[#d4a017] cursor-pointer">LegalConnect</h1>
+        </Link>
         </div>
 
         <nav className="mt-16 lg:mt-0 px-3">

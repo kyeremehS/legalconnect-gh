@@ -1,24 +1,26 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@tailwind utilities;
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
-
-
 @custom-variant dark (&:is(.dark *));
 
 body {
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-outfit), system-ui, sans-serif;
 }
 
 * {
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-outfit), system-ui, sans-serif;
 }
 
 /* e.g. in globals.css */
 @keyframes slide-in {
-  from { transform: translateX(-100%);}
-  to { transform: translateX(0);}
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 .animate-slide-in {
   animation: slide-in 0.5s ease-out;
@@ -129,6 +131,17 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+.navbar-container {
+  position: relative;
+  z-index: 40;
+  overflow: visible !important;
+}
+
+.user-menu-dropdown {
+  position: fixed !important;
+  z-index: 9999 !important;
 }
 
 @layer base {

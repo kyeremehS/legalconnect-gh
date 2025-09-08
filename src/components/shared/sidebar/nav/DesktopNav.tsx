@@ -5,8 +5,9 @@ import { useNavigation } from "../../../../../hooks/useNavigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "@/components/ui/theme/theme-toggle";
+
+
 
 type Props = {}
 
@@ -67,17 +68,7 @@ const DesktopNav = () => {
       {/* Bottom section - User Profile */}
       <div className="flex flex-col items-center w-full">
         <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="p-2 w-full flex items-center justify-center">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-10 h-10"
-                  }
-                }}
-              />
-            </div>
-          </TooltipTrigger>
+         
           <TooltipContent side="right">
             <p>Profile & Settings</p>
           </TooltipContent>

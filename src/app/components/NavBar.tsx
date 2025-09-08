@@ -3,18 +3,19 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { UserButton, useAuth } from "@clerk/nextjs";
-import { Menu, ChevronRight, Scale } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
-import { User } from "@clerk/nextjs/server";
+import { Menu, ChevronRight, Scale, User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { UserMenu } from "../components/customusermenu";
 
-const NavBar = () => {
+export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const { isSignedIn } = useAuth();
-  const { user } = useUser();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
+
+  const closeMobileMenu = () => setIsMenuOpen(false);
 
   useEffect(() => {
     setMounted(true);
@@ -53,7 +54,7 @@ const NavBar = () => {
           shadow-lg shadow-amber-100/20 
           rounded-full px-6 py-4 
           transition-all duration-300
-          relative overflow-hidden
+          relative
           ${scrollY > 50 ? "bg-white/75 backdrop-blur-lg" : ""}
         `}
         >
@@ -110,24 +111,24 @@ const NavBar = () => {
                 </Link>
               )}
               <Link
-                href="/Lawyer"
+                href="Lawyer/sign-up"
                 className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
               >
                 For Lawyers
               </Link>
-              {isSignedIn ? (
-                <UserButton />
+              {isAuthenticated ? (
+                <UserMenu />
               ) : (
                 <>
                   <Link
-                    href="/sign-in"
+                    href="/client-login"
                     className="text-gray-600 hover:text-amber-600 transition-colors"
-                  >
+                  > 
                     Sign in
                   </Link>
 
                   <Link
-                    href="/sign-up"
+                    href="/client-register"
                     className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
                   >
                     Sign up
@@ -145,7 +146,7 @@ const NavBar = () => {
               >
                 <Menu className="w-7 h-7 text-[#b98a11]" />
               </button>
-              <UserButton />
+              {isAuthenticated && <UserMenu />}
             </div>
           </div>
         </nav>
@@ -162,7 +163,7 @@ const NavBar = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 className="fixed inset-0 z-40 md:hidden"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMobileMenu}
               />
               {/* Mobile Menu Overlay */}
               <motion.div
@@ -178,6 +179,7 @@ const NavBar = () => {
                     <Link
                       href="/User-landing"
                       className="text-gray-600 px-2 hover:text-amber-600 transition-colors"
+                      onClick={closeMobileMenu}
                     >
                       Dashboard
                     </Link>
@@ -185,7 +187,7 @@ const NavBar = () => {
                   <Link
                     href="#features"
                     className="text-gray-600 px-2 hover:text-amber-600 transition-colors hover:bg-amber-50 rounded-lg"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={closeMobileMenu}
                   >
                     Features
                   </Link>
@@ -193,25 +195,31 @@ const NavBar = () => {
                   <Link
                     href="/Lawyer"
                     className="bg-[#b98a11] text-white p-2 rounded-lg hover:bg-amber-700 transition-colors w-full"
+                    onClick={closeMobileMenu}
                   >
                     For Lawyers
                   </Link>
-                  {!isSignedIn && (
+                  {!isAuthenticated && (
                     <>
                       <Link
-                        href="/sign-in"
+                        href="/client-login"
                         className="text-gray-600 hover:text-amber-600 transition-colors"
+                        onClick={closeMobileMenu}
                       >
                         Sign in
                       </Link>
 
                       <Link
-                        href="/sign-up"
+                        href="/client-register"
                         className="bg-[#b98a11] text-white px-4 py-2 rounded-full hover:bg-amber-700 transition-colors"
+                        onClick={closeMobileMenu}
                       >
                         Sign up
                       </Link>
                     </>
+                  )}
+                  {isAuthenticated && (
+                    <UserMenu />
                   )}
                 </div>
               </motion.div>
