@@ -24,6 +24,16 @@ export const API_ENDPOINTS = {
   // Video endpoints
   GET_ALL_LAWYER_VIDEOS: '/api/lawyers/videos',
   GET_LAWYER_VIDEOS: (lawyerId: string) => `/api/lawyers/${lawyerId}/videos`,
+  // Video interactions
+  TOGGLE_VIDEO_LIKE: (lawyerId: string, videoUrl: string) => 
+    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/like`,
+  ADD_VIDEO_COMMENT: (lawyerId: string, videoUrl: string) => 
+    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/comment`,
+  GET_VIDEO_COMMENTS: (lawyerId: string, videoUrl: string) => 
+    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/comments`,
+  GET_VIDEO_STATS: (lawyerId: string, videoUrl: string) => 
+    `/api/videos/lawyer/${lawyerId}/video/${encodeURIComponent(videoUrl)}/stats`,
+  DELETE_VIDEO_COMMENT: (commentId: string) => `/api/videos/comment/${commentId}`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
   GET_APPOINTMENT: (id: string) => `/api/appointments/${id}`,
@@ -459,6 +469,101 @@ export class ApiClient {
     return this.request(API_ENDPOINTS.MARK_NOTIFICATION_READ(id), {
       method: 'PUT',
     });
+  }
+
+  // Video interaction methods
+  async toggleVideoLike(lawyerId: string, videoUrl: string): Promise<{ liked: boolean; likeCount: number }> {
+    try {
+      const response = await fetch(API_ENDPOINTS.TOGGLE_VIDEO_LIKE(lawyerId, videoUrl), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeaders(),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to toggle like: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error toggling video like:', error);
+      throw error;
+    }
+  }
+
+  async addVideoComment(lawyerId: string, videoUrl: string, content: string): Promise<any> {
+    try {
+      const response = await fetch(API_ENDPOINTS.ADD_VIDEO_COMMENT(lawyerId, videoUrl), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeaders(),
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add comment: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error adding video comment:', error);
+      throw error;
+    }
+  }
+
+  async getVideoComments(lawyerId: string, videoUrl: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
+    try {
+      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS(lawyerId, videoUrl)}?page=${page}&limit=${limit}`;
+      const response = await fetch(url, {
+        headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch comments: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching video comments:', error);
+      throw error;
+    }
+  }
+
+  async getVideoStats(lawyerId: string, videoUrl: string): Promise<{ likeCount: number; commentCount: number; userLiked: boolean }> {
+    try {
+      const response = await fetch(API_ENDPOINTS.GET_VIDEO_STATS(lawyerId, videoUrl), {
+        headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch video stats: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching video stats:', error);
+      throw error;
+    }
+  }
+
+  async deleteVideoComment(commentId: string): Promise<void> {
+    try {
+      const response = await fetch(API_ENDPOINTS.DELETE_VIDEO_COMMENT(commentId), {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete comment: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error deleting video comment:', error);
+      throw error;
+    }
   }
 }
 

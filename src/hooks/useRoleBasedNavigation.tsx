@@ -85,11 +85,11 @@ export function useRoleBasedNavigation() {
     
     switch (user.role.toUpperCase()) {
       case 'LAWYER':
-        return 'Lawyer Dashboard';
+        return 'Dashboard';
       case 'CLIENT':
-        return 'Client Dashboard';
+        return 'Dashboard';
       case 'ADMIN':
-        return 'Admin Dashboard';
+        return 'Dashboard';
       default:
         return 'Dashboard';
     }

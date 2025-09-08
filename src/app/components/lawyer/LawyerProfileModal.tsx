@@ -94,7 +94,7 @@ export default function LawyerProfileModal({
                     <Users className="w-5 h-5 text-[#d4a017]" />
                     Professional Summary
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-sm">
                     {lawyer.detailedBio || lawyer.professionalSummary}
                   </p>
                 </div>

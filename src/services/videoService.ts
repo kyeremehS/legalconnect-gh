@@ -9,6 +9,7 @@ export interface VideoItem {
   title: string;
   url: string;
   lawyer: string;
+  lawyerId: string; // Add lawyerId for video interactions
   category: string;
   views: string;
   duration: string;
@@ -36,6 +37,7 @@ export class VideoService {
           title: video.title || `Legal Video ${index + 1}`,
           url: video.url,
           lawyer: video.lawyer.name,
+          lawyerId: video.lawyer.id, // Include lawyerId for interactions
           category: this.determineCategoryFromPracticeAreas(video.lawyer.practiceAreas),
           views: this.formatViews(video.views),
           duration: video.duration,
@@ -68,6 +70,7 @@ export class VideoService {
           title: video.title || `Legal Video ${index + 1}`,
           url: video.url,
           lawyer: video.lawyer.name,
+          lawyerId: video.lawyer.id, // Include lawyerId for interactions
           category: this.determineCategoryFromPracticeAreas(video.lawyer.practiceAreas),
           views: this.formatViews(video.views),
           duration: video.duration,
@@ -151,6 +154,7 @@ export class VideoService {
         title: "Recently Uploaded Legal Content",
         url: "https://legalconnect-bucket.s3.eu-north-1.amazonaws.com/lawyer-videos/cmebptmg00002940ootz16ivm/a25e529d-c6b9-4d9d-b741-cf10c1d83718.mp4",
         lawyer: "Current Lawyer",
+        lawyerId: "current_lawyer_1", // Mock lawyerId
         category: "General Law",
         views: "1",
         duration: "3:45",
@@ -163,6 +167,7 @@ export class VideoService {
         title: "Understanding Landlord and Tenant Rights",
         url: "/legal-videos/tenant-and-landlord.mp4",
         lawyer: "Yudah Brown, Esq.",
+        lawyerId: "mock_lawyer_1", // Mock lawyerId
         category: "Land Law",
         views: "12.5K",
         duration: "5:32",
@@ -175,6 +180,7 @@ export class VideoService {
         title: "Building without permits",
         url: "/legal-videos/building-without-permit.mp4",
         lawyer: "Yudah Brown, Esq.",
+        lawyerId: "mock_lawyer_1", // Mock lawyerId
         category: "Land Law",
         views: "8.2K",
         duration: "2:46",
@@ -187,6 +193,7 @@ export class VideoService {
         title: "Marriage and Divorce Laws",
         url: "/legal-videos/getting-divorce-in-ghana.mp4",
         lawyer: "Tina, Esq.",
+        lawyerId: "mock_lawyer_2", // Mock lawyerId
         category: "Family Law",
         views: "15.1K",
         duration: "3:09",

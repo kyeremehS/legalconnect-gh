@@ -53,6 +53,7 @@ import SidebarItem from "../../components/content-sidebar";
 import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import ActionButton from "../../components/videoaction";
+import VerticalVideoInteractions from "../../../components/VerticalVideoInteractions";
 
 
 import {
@@ -614,21 +615,11 @@ export default function LegalContentHub() {
                           </motion.button>
                         </div>
 
-                        {/* Action Buttons - Made smaller */}
-                        <ActionButton
-                          icon={<Heart className="w-5 h-5" />}
-                          count={likes[activeIdx]}
-                          onClick={() => handleLike(activeIdx)}
-                        />
-                        <ActionButton
-                          icon={<MessageCircle className="w-5 h-5" />}
-                          count={comments[activeIdx]}
-                          onClick={() => handleComment(activeIdx)}
-                        />
-                        <ActionButton
-                          icon={<Share className="w-5 h-5" />}
-                          count={shares[activeIdx]}
-                          onClick={() => handleShare(activeIdx)}
+                        {/* Action Buttons - Replace with VideoInteractions */}
+                        <VerticalVideoInteractions
+                          lawyerId={video.lawyerId}
+                          videoUrl={video.url}
+                          className=""
                         />
                       </div>
                     )}
