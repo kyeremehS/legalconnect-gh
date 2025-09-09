@@ -13,6 +13,9 @@ import {
   Loader,
 } from "lucide-react";
 import { useState } from "react";
+
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 import Link from "next/link";
 import styles from "./page.module.css";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
@@ -139,7 +142,7 @@ export default function CreateContent() {
 
       // Upload the video - first get lawyer profile to get lawyer ID
       const token = localStorage.getItem('authToken');
-      const lawyerResponse = await fetch(`http://localhost:4000/api/lawyers/user/${user.id}`, {
+      const lawyerResponse = await fetch(`${API_BASE_URL}/api/lawyers/user/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

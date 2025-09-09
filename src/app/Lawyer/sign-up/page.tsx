@@ -6,6 +6,9 @@ import Link from "next/link";
 import { Upload, FileText, User, Calendar, Award, Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Building, MapPin, Scale } from "lucide-react";
 import { motion } from "framer-motion";
 
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
 interface VerificationResult {
   verified: boolean;
   certificate?: {
@@ -105,7 +108,7 @@ export default function LawyerSignUp() {
   // Certificate verification function
   const verifyCertificate = async (): Promise<VerificationResult> => {
     try {
-      const response = await fetch('http://localhost:4000/api/lawyer-registration/verify-certificate', {
+      const response = await fetch(`${API_BASE_URL}/api/lawyer-registration/verify-certificate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +147,7 @@ export default function LawyerSignUp() {
   // File upload function using our real upload service
   const uploadFile = async (file: File, type: string, lawyerId: string): Promise<string> => {
     try {
-      const result = await fetch('http://localhost:4000/api/upload/lawyer/' + lawyerId + '/document/' + type, {
+      const result = await fetch(`${API_BASE_URL}/api/upload/lawyer/${lawyerId}/document/${type}`, {
         method: 'POST',
         body: (() => {
           const formData = new FormData();
@@ -193,7 +196,7 @@ export default function LawyerSignUp() {
       }
 
       // Step 2: First register the user and lawyer to get the lawyerId
-      const registrationResponse = await fetch('http://localhost:4000/api/lawyer-registration/register', {
+      const registrationResponse = await fetch(`${API_BASE_URL}/api/lawyer-registration/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
