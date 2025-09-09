@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Inter } from 'next/font/google';
+import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
 import BookAppointment from "../../components/BookAppointment";
 import LawyerCard from "@/app/components/lawyer/LawyerCard";
 
 // API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 // Real Lawyer interface from your backend (matching mockdata interface)
 interface Lawyer {
@@ -63,19 +63,12 @@ import {
   Home,
 } from "lucide-react";
 
-// Configure Inter font
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
-
 // Filter options
 const practiceAreaFilters = [
   "All Areas",
   "Corporate Law",
   "Land Law",
-  "Family Law", 
+  "Family Law",
   "Criminal Law",
   "Employment Law",
   "Commercial Law",
@@ -85,7 +78,7 @@ const practiceAreaFilters = [
 const locationFilters = [
   "All Locations",
   "Accra",
-  "Kumasi", 
+  "Kumasi",
   "Takoradi",
   "Tema",
   "Cape Coast",
@@ -124,7 +117,7 @@ function MobileSidebar({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 120 }}
-            className={`fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-gray-200 z-50 lg:hidden overflow-y-auto ${inter.className}`}
+            className={`fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-gray-200 z-50 lg:hidden overflow-y-auto`}
           >
             <div className="p-4">
               {/* Header */}
@@ -134,8 +127,12 @@ function MobileSidebar({
                     <Users className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="font-bold text-lg text-gray-800">Legal Directory</h1>
-                    <p className="text-xs text-gray-500">Find Legal Practitioners</p>
+                    <h1 className="font-bold text-lg text-gray-800">
+                      Legal Directory
+                    </h1>
+                    <p className="text-xs text-gray-500">
+                      Find Legal Practitioners
+                    </p>
                   </div>
                 </div>
                 <motion.button
@@ -156,27 +153,37 @@ function MobileSidebar({
                 className="w-full flex items-center gap-3 p-3 mb-4 bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl hover:from-[#d4a017]/20 hover:to-[#b8941f]/20 transition-all"
               >
                 <ArrowLeft className="w-4 h-4 text-[#d4a017]" />
-                <span className="text-sm font-medium text-gray-800">Back to Dashboard</span>
+                <span className="text-sm font-medium text-gray-800">
+                  Back to Dashboard
+                </span>
               </motion.button>
 
               {/* Professional Directory Info */}
               <div className="bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl p-3 mb-4">
-                <h3 className="font-semibold text-gray-800 mb-2 text-sm">Directory Information</h3>
+                <h3 className="font-semibold text-gray-800 mb-2 text-sm">
+                  Directory Information
+                </h3>
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Listed Practitioners</span>
-                    <span className="font-medium">{isLoading ? '...' : lawyersCount}</span>
+                    <span className="font-medium">
+                      {isLoading ? "..." : lawyersCount}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Practice Areas</span>
-                    <span className="font-medium">{practiceAreaFilters.length - 1}</span>
+                    <span className="font-medium">
+                      {practiceAreaFilters.length - 1}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Directory Actions */}
               <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-sm">Directory</h3>
+                <h3 className="font-semibold text-gray-700 text-sm">
+                  Directory
+                </h3>
                 <button className="w-full text-left p-2 rounded-lg hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-2">
                     <Search className="w-4 h-4 text-[#d4a017]" />
@@ -215,47 +222,59 @@ export default function LegalDirectoryPage() {
       try {
         setIsLoading(true);
         const response = await fetch(`${API_BASE_URL}/api/lawyers`);
-        
+
         if (!response.ok) {
-          throw new Error('Failed to fetch lawyers');
+          throw new Error("Failed to fetch lawyers");
         }
-        
+
         const data = await response.json();
-        
+
         // Transform backend data to match frontend interface
         const transformedLawyers: Lawyer[] = data.map((lawyer: any) => ({
           id: lawyer.id,
-          name: lawyer.fullName || `${lawyer.firstName || ''} ${lawyer.lastName || ''}`.trim(),
-          title: lawyer.title || 'Legal Practitioner',
-          firm: lawyer.firm || 'Independent Practice',
-          location: lawyer.location || 'Accra',
-          barAdmissionYear: lawyer.barAdmissionYear || new Date().getFullYear() - (lawyer.yearsOfExperience || 5),
+          name:
+            lawyer.fullName ||
+            `${lawyer.firstName || ""} ${lawyer.lastName || ""}`.trim(),
+          title: lawyer.title || "Legal Practitioner",
+          firm: lawyer.firm || "Independent Practice",
+          location: lawyer.location || "Accra",
+          barAdmissionYear:
+            lawyer.barAdmissionYear ||
+            new Date().getFullYear() - (lawyer.yearsOfExperience || 5),
           experience: lawyer.yearsOfExperience || 5,
-          practiceAreas: lawyer.specialization || ['General Practice'],
-          education: lawyer.education || 'Ghana School of Law',
-          barAssociation: 'Ghana Bar Association',
-          profileImage: lawyer.profilePicture || '/default-lawyer.jpg',
+          practiceAreas: lawyer.specialization || ["General Practice"],
+          education: lawyer.education || "Ghana School of Law",
+          barAssociation: "Ghana Bar Association",
+          profileImage: lawyer.profilePicture || "/default-lawyer.jpg",
           isConnected: false,
           isPending: false,
           connectionCount: Math.floor(Math.random() * 100) + 10,
-          professionalSummary: lawyer.bio || lawyer.description || 'Experienced legal practitioner committed to providing quality legal services.',
+          professionalSummary:
+            lawyer.bio ||
+            lawyer.description ||
+            "Experienced legal practitioner committed to providing quality legal services.",
           publications: [],
-          calendlyLink: lawyer.calendlyLink || "https://calendly.com/legal-consultation/30min",
+          calendlyLink:
+            lawyer.calendlyLink ||
+            "https://calendly.com/legal-consultation/30min",
           email: lawyer.email,
-          phone: lawyer.phone || '',
+          phone: lawyer.phone || "",
           website: lawyer.website,
-          detailedBio: lawyer.bio || lawyer.description || 'Experienced legal practitioner with a strong commitment to justice and client service.',
-          specializations: lawyer.specialization || ['General Practice'],
+          detailedBio:
+            lawyer.bio ||
+            lawyer.description ||
+            "Experienced legal practitioner with a strong commitment to justice and client service.",
+          specializations: lawyer.specialization || ["General Practice"],
           awards: [],
-          languages: ['English', 'Twi']
+          languages: ["English", "Twi"],
         }));
-        
+
         setLawyers(transformedLawyers);
         setFilteredLawyers(transformedLawyers);
         setError(null);
       } catch (err) {
-        console.error('Error fetching lawyers:', err);
-        setError('Failed to load lawyers. Please try again.');
+        console.error("Error fetching lawyers:", err);
+        setError("Failed to load lawyers. Please try again.");
         // Set empty array as fallback
         setLawyers([]);
         setFilteredLawyers([]);
@@ -289,12 +308,14 @@ export default function LegalDirectoryPage() {
     }
 
     if (searchQuery) {
-      filtered = filtered.filter((lawyer: Lawyer) =>
-        lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lawyer.practiceAreas.some((area: string) =>
-          area.toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        (lawyer.firm && lawyer.firm.toLowerCase().includes(searchQuery.toLowerCase()))
+      filtered = filtered.filter(
+        (lawyer: Lawyer) =>
+          lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          lawyer.practiceAreas.some((area: string) =>
+            area.toLowerCase().includes(searchQuery.toLowerCase())
+          ) ||
+          (lawyer.firm &&
+            lawyer.firm.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -302,7 +323,7 @@ export default function LegalDirectoryPage() {
   }, [selectedPracticeArea, selectedLocation, searchQuery, lawyers]);
 
   return (
-    <div className={`min-h-screen bg-gray-50 mb-20 lg:mb-0 ${inter.className}`}>
+    <div className={`min-h-screen bg-gray-50 mb-20 lg:mb-0`}>
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-30">
         <div className="flex items-center justify-between">
@@ -319,7 +340,9 @@ export default function LegalDirectoryPage() {
             <div className="w-7 h-7 bg-[#d4a017] rounded-lg flex items-center justify-center">
               <Users className="w-4 h-4 text-white" />
             </div>
-            <h1 className="font-bold text-base text-gray-800">Legal Directory</h1>
+            <h1 className="font-bold text-base text-gray-800">
+              Legal Directory
+            </h1>
           </div>
 
           {/* Mobile Back Button */}
@@ -359,11 +382,15 @@ export default function LegalDirectoryPage() {
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="font-bold text-lg text-gray-800">Legal Directory</h1>
-                  <p className="text-xs text-gray-500">Find Legal Practitioners</p>
+                  <h1 className="font-bold text-lg text-gray-800">
+                    Legal Directory
+                  </h1>
+                  <p className="text-xs text-gray-500">
+                    Find Legal Practitioners
+                  </p>
                 </div>
               </div>
-              
+
               {/* Desktop Back Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -443,10 +470,13 @@ export default function LegalDirectoryPage() {
 
             {/* Regulatory Compliance Notice */}
             <div className="mt-6 p-3 bg-gray-50 rounded-xl">
-              <h4 className="font-semibold text-gray-700 mb-1 text-xs">Professional Directory</h4>
+              <h4 className="font-semibold text-gray-700 mb-1 text-xs">
+                Professional Directory
+              </h4>
               <p className="text-xs text-gray-600 leading-relaxed">
-                This directory lists qualified legal practitioners for informational purposes. 
-                All practitioners are members of the Ghana Bar Association.
+                This directory lists qualified legal practitioners for
+                informational purposes. All practitioners are members of the
+                Ghana Bar Association.
               </p>
             </div>
           </div>
@@ -465,8 +495,11 @@ export default function LegalDirectoryPage() {
                 Ghana Legal Practitioners Directory
               </h1>
               <p className="text-sm text-gray-600">
-                Professional directory of qualified legal practitioners in Ghana. 
-                {isLoading ? ' Loading...' : ` Found ${filteredLawyers.length} practitioners.`}
+                Professional directory of qualified legal practitioners in
+                Ghana.
+                {isLoading
+                  ? " Loading..."
+                  : ` Found ${filteredLawyers.length} practitioners.`}
               </p>
             </motion.div>
 
@@ -493,7 +526,10 @@ export default function LegalDirectoryPage() {
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {[...Array(6)].map((_, index) => (
-                  <div key={index} className="bg-white rounded-xl p-6 shadow-sm animate-pulse">
+                  <div
+                    key={index}
+                    className="bg-white rounded-xl p-6 shadow-sm animate-pulse"
+                  >
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
                       <div className="flex-1">
@@ -518,9 +554,7 @@ export default function LegalDirectoryPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">
                   Failed to Load Lawyers
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  {error}
-                </p>
+                <p className="text-sm text-gray-600 mb-4">{error}</p>
                 <button
                   className="bg-[#d4a017] text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#b8941f] transition-colors"
                   onClick={() => window.location.reload()}

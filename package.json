@@ -15,7 +15,6 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "1.25.4",
     "framer-motion": "^12.19.1",
     "lucide-react": "^0.508.0",
     "next": "15.3.1",
@@ -27,7 +26,8 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/next": "^9.0.0",
     "@types/node": "^20",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
