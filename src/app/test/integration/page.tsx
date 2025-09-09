@@ -56,7 +56,8 @@ export default function IntegrationTestPage() {
 
     // Test 3: API Health Check
     try {
-      const healthResponse = await fetch('http://localhost:4000/api/lawyers');
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const healthResponse = await fetch(`${API_BASE_URL}/api/lawyers`);
       const healthData = await healthResponse.json();
       
       results.push({
