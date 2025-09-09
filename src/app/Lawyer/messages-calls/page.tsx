@@ -26,7 +26,7 @@ export default function MessagesAndCalls() {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   
-  // Get current user ID from Clerk
+  // Get current user ID from auth system
   const currentUserId = user?.id;
   
   const {
