@@ -19,10 +19,10 @@ import { motion } from "framer-motion";
 import { div } from "framer-motion/client";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 import { useMessaging } from "../../../hooks/useMessaging";
-import { useUser } from "@clerk/nextjs";
 
 export default function MessagesAndCalls() {
-  const { user } = useUser();
+  // Temporary user ID for testing - in production this would come from your auth system
+  const user = { id: "lawyer-user-id" };
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   
@@ -90,16 +90,6 @@ export default function MessagesAndCalls() {
     const participantName = getOtherParticipantName(chat);
     return participantName.toLowerCase().includes(searchQuery.toLowerCase());
   });
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-[#1a1a1a] mb-4">Please sign in to access messaging</h2>
-        </div>
-      </div>
-    );
-  }
 
   // const [newMessage, setNewMessage] = useState("");
   // const [searchQuery, setSearchQuery] = useState("");
