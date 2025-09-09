@@ -251,18 +251,35 @@ export default function LawyerProfileModal({
                   </div>
                 </div>
 
-                {/* Book Appointment Button */}
-                {lawyer.calendlyLink && (
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  {/* Send Message Button */}
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[#d4a017] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
-                    onClick={() => setShowBookingModal(true)}
+                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                    onClick={() => {
+                      // Navigate to messages page with lawyer pre-selected
+                      window.location.href = `/User-landing/messages?lawyer=${lawyer.id}&name=${encodeURIComponent(lawyer.name)}`;
+                    }}
                   >
-                    <Calendar className="w-5 h-5" />
-                    Book Consultation
+                    <MessageCircle className="w-5 h-5" />
+                    Send Message
                   </motion.button>
-                )}
+
+                  {/* Book Appointment Button */}
+                  {lawyer.calendlyLink && (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full bg-[#d4a017] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-2"
+                      onClick={() => setShowBookingModal(true)}
+                    >
+                      <Calendar className="w-5 h-5" />
+                      Book Consultation
+                    </motion.button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

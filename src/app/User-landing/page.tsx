@@ -24,7 +24,7 @@ const features = [
   {
     name: "Message & Call Lawyer",
     description: "Chat or call your lawyer directly.",
-    href: "/User-landing/user-message-call",
+    href: "/User-landing/messages",
     icon: "/phone.png",
     mobileIcon: MessageCircle,
   },
