@@ -29,10 +29,11 @@ import VerticalVideoInteractions from "../../../components/VerticalVideoInteract
 
 import {
   legalArticles,
-  legalQuizzes,
-  legalTemplates,
-  videoCategories,
-} from "../../components/mockdata";
+} from "../../../types/lawyer";
+// TODO: These need to be moved to types or services
+const legalQuizzes: any[] = [];
+const legalTemplates: any[] = [];
+const videoCategories: any[] = [];
 import {
   VideoService,
   VideoItem as VideoItemType,

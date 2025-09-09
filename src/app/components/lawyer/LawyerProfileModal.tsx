@@ -1,10 +1,7 @@
 
-import {
-lawyers, Lawyer as MockLawyer
-} from "../../components/mockdata";
-
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Lawyer } from "../../../types/lawyer";
 import BookAppointment from "../../components/BookAppointment";
 
 
@@ -37,7 +34,7 @@ export default function LawyerProfileModal({
   isOpen, 
   onClose 
 }: { 
-  lawyer: MockLawyer; 
+  lawyer: Lawyer; 
   isOpen: boolean; 
   onClose: () => void; 
 }) {
@@ -66,7 +63,7 @@ export default function LawyerProfileModal({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-2xl">
-                  {lawyer.name.split(' ').map(n => n[0]).join('')}
+                  {lawyer.name.split(' ').map((n: string) => n[0]).join('')}
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold">{lawyer.name}</h2>
@@ -106,7 +103,7 @@ export default function LawyerProfileModal({
                     Practice Areas
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {lawyer.practiceAreas.map((area, idx) => (
+                    {lawyer.practiceAreas.map((area: string, idx: number) => (
                       <span
                         key={idx}
                         className="px-3 py-1 bg-[#d4a017]/10 text-[#d4a017] rounded-full font-medium text-sm"
@@ -125,7 +122,7 @@ export default function LawyerProfileModal({
                       Specializations
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {lawyer.specializations.map((spec, idx) => (
+                      {lawyer.specializations.map((spec: string, idx: number) => (
                         <div key={idx} className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-[#d4a017] rounded-full" />
                           <span className="text-gray-700">{spec}</span>
@@ -143,7 +140,7 @@ export default function LawyerProfileModal({
                       Publications
                     </h3>
                     <div className="space-y-2">
-                      {lawyer.publications.map((pub, idx) => (
+                      {lawyer.publications.map((pub: string, idx: number) => (
                         <div key={idx} className="flex items-start gap-2">
                           <div className="w-2 h-2 bg-[#d4a017] rounded-full mt-2" />
                           <span className="text-gray-700">{pub}</span>
@@ -161,7 +158,7 @@ export default function LawyerProfileModal({
                       Awards & Recognition
                     </h3>
                     <div className="space-y-2">
-                      {lawyer.awards.map((award, idx) => (
+                      {lawyer.awards.map((award: string, idx: number) => (
                         <div key={idx} className="flex items-start gap-2">
                           <Award className="w-4 h-4 text-yellow-500 mt-0.5" />
                           <span className="text-gray-700">{award}</span>
@@ -214,7 +211,7 @@ export default function LawyerProfileModal({
                       Languages
                     </h3>
                     <div className="flex flex-wrap gap-1">
-                      {lawyer.languages.map((lang, idx) => (
+                      {lawyer.languages.map((lang: string, idx: number) => (
                         <span
                           key={idx}
                           className="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs"
