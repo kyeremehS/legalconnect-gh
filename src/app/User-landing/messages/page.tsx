@@ -326,6 +326,7 @@ export default function ClientMessages() {
           </div>
         </div>
       </div>
+      </div>
     </ClientAuthWrapper>
   );
 }
