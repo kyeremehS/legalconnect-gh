@@ -94,8 +94,8 @@ export default function Sidebar({ role }: SidebarProps) {
     role === "lawyer"
       ? lawyerNavItems
       : role === "admin"
-        ? adminNavItems
-        : userNavItems;
+      ? adminNavItems
+      : userNavItems;
 
   return (
     <>
@@ -103,9 +103,11 @@ export default function Sidebar({ role }: SidebarProps) {
       <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:hidden z-50">
         <Link href="/">
           {" "}
-          <h1 className="text-xl font-bold text-[#d4a017] cursor-pointer">LegalConnect</h1>
+          <h1 className="text-xl font-bold text-[#d4a017] cursor-pointer">
+            LegalConnect
+          </h1>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-2 hover:bg-gray-100 rounded-lg"
@@ -116,7 +118,7 @@ export default function Sidebar({ role }: SidebarProps) {
               <Menu className="w-6 h-6 text-gray-600" />
             )}
           </button>
-          <div className="px-2 pt-2 items-center justify-center rounded-full font-semibold border border-[#d4a017] text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
+          <div className="px-2 items-center justify-center font-semibold text-[#d4a017] bg-white hover:bg-[#d4a017] hover:text-white transition">
             <UserMenu />
           </div>
         </div>
@@ -133,9 +135,11 @@ export default function Sidebar({ role }: SidebarProps) {
       >
         <div className="h-16 items-center px-6 border-b border-gray-100 lg:flex hidden">
           <Link href="/">
-          {" "}
-          <h1 className="text-xl font-bold text-[#d4a017] cursor-pointer">LegalConnect</h1>
-        </Link>
+            {" "}
+            <h1 className="text-xl font-bold text-[#d4a017] cursor-pointer">
+              LegalConnect
+            </h1>
+          </Link>
         </div>
 
         <nav className="mt-16 lg:mt-0 px-3">
