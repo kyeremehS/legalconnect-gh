@@ -31,6 +31,9 @@ export const API_ENDPOINTS = {
   GET_VIDEO_COMMENTS: '/api/videos/comments',
   GET_VIDEO_STATS: '/api/videos/test-stats-simple',
   DELETE_VIDEO_COMMENT: (commentId: string) => `/api/videos/comment/${commentId}`,
+  // Message endpoints
+  SEND_MESSAGE: '/api/messages',
+  GET_CONVERSATION: (senderId: string, receiverId: string) => `/api/messages/${senderId}/${receiverId}`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
   GET_APPOINTMENT: (id: string) => `/api/appointments/${id}`,
@@ -183,6 +186,39 @@ export interface LawyerAvailability {
   startTime: string;
   endTime: string;
   isActive: boolean;
+}
+
+// Message types
+export interface SendMessageRequest {
+  senderId: string;
+  receiverId: string;
+  senderRole: string;
+  content: string;
+}
+
+export interface MessageData {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  senderRole: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  readAt?: string;
+  sender?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+  };
+  receiver?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+  };
 }
 
 export interface ApiResponse<T = any> {
@@ -633,6 +669,23 @@ export class ApiClient {
       // Just log it and continue
       return null;
     }
+  }
+
+  // ========================
+  // MESSAGING API METHODS
+  // ========================
+
+  // Send a message
+  async sendMessage(messageData: SendMessageRequest): Promise<ApiResponse<MessageData>> {
+    return this.request(API_ENDPOINTS.SEND_MESSAGE, {
+      method: 'POST',
+      body: JSON.stringify(messageData),
+    });
+  }
+
+  // Get conversation between two users
+  async getConversation(senderId: string, receiverId: string): Promise<ApiResponse<MessageData[]>> {
+    return this.request(API_ENDPOINTS.GET_CONVERSATION(senderId, receiverId));
   }
 }
 
