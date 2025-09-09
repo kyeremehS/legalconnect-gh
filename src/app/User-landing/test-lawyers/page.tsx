@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Lawyer, fetchLawyers } from "../../../../types/lawyer";
-import LawyerCard from "../../../components/lawyer/LawyerCard";
+import { Lawyer, fetchLawyers } from "../../../types/lawyer";
+import LawyerCard from "../../components/lawyer/LawyerCard";
 
 export default function TestLawyersPage() {
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
