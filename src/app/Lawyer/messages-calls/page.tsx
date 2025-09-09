@@ -53,7 +53,7 @@ export default function MessagesAndCalls() {
 
   useEffect(() => {
     if (selectedChat && messages.length > 0) {
-      messages.forEach((message) => {
+      messages.forEach((message: any) => {
         if (!message.readAt && message.senderId !== currentUserId) {
           markMessageAsRead(message.id);
         }
