@@ -201,14 +201,6 @@ export default function ClientLogin() {
             Sign up
           </Link>
         </div>
-
-        {/* Social Login Link */}
-        <div className="text-center mt-4 text-sm text-gray-500">
-          Or{" "}
-          <Link href="/auth/social" className="text-[#d4a017] hover:text-[#b38a15] font-medium">
-            use social login
-          </Link>
-        </div>
       </motion.div>
 
       {/* Right side illustration */}

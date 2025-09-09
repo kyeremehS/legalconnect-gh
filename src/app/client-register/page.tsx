@@ -302,14 +302,6 @@ export default function ClientRegistration() {
             Sign in
           </Link>
         </div>
-
-        {/* Social Registration Link */}
-        <div className="text-center mt-4 text-sm text-gray-500">
-          Or{" "}
-          <Link href="/auth/social" className="text-[#d4a017] hover:text-[#b38a15] font-medium">
-            use social registration
-          </Link>
-        </div>
       </motion.div>
 
       {/* Right side illustration */}

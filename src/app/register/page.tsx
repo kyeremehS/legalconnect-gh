@@ -25,7 +25,7 @@ export default function RegistrationOptions() {
         </motion.div>
 
         {/* Registration Cards */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           {/* Client Registration */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
