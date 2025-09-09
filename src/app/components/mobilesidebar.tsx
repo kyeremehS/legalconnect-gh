@@ -1,11 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { BookOpen, Tv, FileText, MessageSquare, X, Brain, House } from "lucide-react";
-import { Inter } from "next/font/google";
+import {
+  BookOpen,
+  Tv,
+  FileText,
+  MessageSquare,
+  X,
+  Brain,
+  House,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const inter = Inter({ subsets: ["latin"] });
-
-type ContentType = "videos" | "articles" | "quizzes" | "templates" 
+type ContentType = "videos" | "articles" | "quizzes" | "templates";
 
 import SidebarItem from "../components/content-sidebar";
 
@@ -46,7 +51,7 @@ export default function MobileSidebar({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 120 }}
-            className={`fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-gray-200 z-50 lg:hidden overflow-y-auto ${inter.className}`}
+            className={`fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-gray-200 z-50 lg:hidden overflow-y-auto`}
           >
             <div className="flex flex-col justify-between h-full py-6 px-4">
               <div>
@@ -118,8 +123,6 @@ export default function MobileSidebar({
                       onClose();
                     }}
                   />
-                
-                  
                 </nav>
 
                 {/* Quick Stats */}

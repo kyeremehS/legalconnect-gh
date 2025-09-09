@@ -1,18 +1,20 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Inter } from 'next/font/google';
-import { Calendar, Clock, User, MapPin, Star, Filter, Search, Briefcase, GraduationCap } from 'lucide-react';
-import BookAppointmentModal from '../../components/scheduling/BookAppointmentModal';
-import AuthWrapper from '../../components/auth/AuthWrapper';
-import { apiClient } from '../../../lib/api';
-
-// Configure Inter font
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Calendar,
+  Clock,
+  User,
+  MapPin,
+  Star,
+  Filter,
+  Search,
+  Briefcase,
+  GraduationCap,
+} from "lucide-react";
+import BookAppointmentModal from "../../components/scheduling/BookAppointmentModal";
+import AuthWrapper from "../../components/auth/AuthWrapper";
+import { apiClient } from "../../../lib/api";
 
 interface LawyerCardProps {
   lawyer: {
@@ -34,14 +36,16 @@ function LawyerCard({ lawyer }: LawyerCardProps) {
     try {
       const response = await apiClient.createAppointment(appointmentData);
       if (response.success) {
-        alert('Appointment request sent successfully! The lawyer will be notified.');
+        alert(
+          "Appointment request sent successfully! The lawyer will be notified."
+        );
         setShowBookingModal(false);
       } else {
-        alert('Failed to send appointment request. Please try again.');
+        alert("Failed to send appointment request. Please try again.");
       }
     } catch (error) {
-      console.error('Error booking appointment:', error);
-      alert('Failed to send appointment request. Please try again.');
+      console.error("Error booking appointment:", error);
+      alert("Failed to send appointment request. Please try again.");
     }
   };
 
@@ -60,7 +64,9 @@ function LawyerCard({ lawyer }: LawyerCardProps) {
               <User className="w-8 h-8 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{lawyer.name}</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">
+                {lawyer.name}
+              </h3>
               <p className="text-amber-600 font-medium">{lawyer.firm}</p>
               <div className="flex items-center text-gray-500 text-sm mt-1">
                 <MapPin className="w-4 h-4 mr-1" />
@@ -75,7 +81,9 @@ function LawyerCard({ lawyer }: LawyerCardProps) {
           {/* Experience */}
           <div className="flex items-center text-gray-600">
             <Briefcase className="w-5 h-5 mr-2 text-amber-500" />
-            <span className="font-medium">{lawyer.experience} years experience</span>
+            <span className="font-medium">
+              {lawyer.experience} years experience
+            </span>
           </div>
 
           {/* Practice Areas */}
@@ -142,7 +150,7 @@ function LawyerCard({ lawyer }: LawyerCardProps) {
           id: lawyer.id,
           name: lawyer.name,
           practiceAreas: lawyer.practiceAreas,
-          avatar: lawyer.avatar
+          avatar: lawyer.avatar,
         }}
         onBook={handleBookAppointment}
       />
@@ -154,9 +162,9 @@ export default function AppointmentBookingPage() {
   const [lawyers, setLawyers] = useState<any[]>([]);
   const [filteredLawyers, setFilteredLawyers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPracticeArea, setSelectedPracticeArea] = useState('All Areas');
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPracticeArea, setSelectedPracticeArea] = useState("All Areas");
 
   useEffect(() => {
     fetchLawyers();
@@ -170,27 +178,29 @@ export default function AppointmentBookingPage() {
     try {
       setLoading(true);
       const response = await apiClient.getLawyers();
-      
+
       if (response.success && response.data) {
         // Transform API data to match our component interface
         const transformedLawyers = response.data.map((lawyer: any) => ({
           id: lawyer.userId || lawyer.user?.id, // Use the user ID for appointments
-          name: `${lawyer.user?.firstName || ''} ${lawyer.user?.lastName || ''}`.trim(),
+          name: `${lawyer.user?.firstName || ""} ${
+            lawyer.user?.lastName || ""
+          }`.trim(),
           firm: lawyer.firm,
           location: lawyer.location,
           practiceAreas: lawyer.practiceAreas || [],
           experience: lawyer.experience,
           avatar: lawyer.user?.avatar,
-          professionalSummary: lawyer.professionalSummary
+          professionalSummary: lawyer.professionalSummary,
         }));
-        
+
         setLawyers(transformedLawyers);
       } else {
-        setError('Failed to fetch lawyers');
+        setError("Failed to fetch lawyers");
       }
     } catch (error) {
-      console.error('Error fetching lawyers:', error);
-      setError('Failed to fetch lawyers');
+      console.error("Error fetching lawyers:", error);
+      setError("Failed to fetch lawyers");
     } finally {
       setLoading(false);
     }
@@ -201,18 +211,19 @@ export default function AppointmentBookingPage() {
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(lawyer =>
-        lawyer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lawyer.firm.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lawyer.practiceAreas.some((area: string) => 
-          area.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      filtered = filtered.filter(
+        (lawyer) =>
+          lawyer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          lawyer.firm.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          lawyer.practiceAreas.some((area: string) =>
+            area.toLowerCase().includes(searchTerm.toLowerCase())
+          )
       );
     }
 
     // Filter by practice area
-    if (selectedPracticeArea !== 'All Areas') {
-      filtered = filtered.filter(lawyer =>
+    if (selectedPracticeArea !== "All Areas") {
+      filtered = filtered.filter((lawyer) =>
         lawyer.practiceAreas.includes(selectedPracticeArea)
       );
     }
@@ -221,14 +232,17 @@ export default function AppointmentBookingPage() {
   };
 
   // Get unique practice areas from all lawyers
-  const practiceAreas = ['All Areas', ...Array.from(new Set(
-    lawyers.flatMap(lawyer => lawyer.practiceAreas)
-  ))];
+  const practiceAreas = [
+    "All Areas",
+    ...Array.from(new Set(lawyers.flatMap((lawyer) => lawyer.practiceAreas))),
+  ];
 
   if (loading) {
     return (
       <AuthWrapper requiredRole="CLIENT">
-        <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-amber-50 ${inter.className}`}>
+        <div
+          className={`min-h-screen bg-gradient-to-br from-gray-50 to-amber-50`}
+        >
           <div className="flex items-center justify-center h-screen">
             <motion.div
               animate={{ rotate: 360 }}
@@ -244,7 +258,9 @@ export default function AppointmentBookingPage() {
   if (error) {
     return (
       <AuthWrapper requiredRole="CLIENT">
-        <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-amber-50 flex items-center justify-center ${inter.className}`}>
+        <div
+          className={`min-h-screen bg-gradient-to-br from-gray-50 to-amber-50 flex items-center justify-center`}
+        >
           <div className="text-center">
             <div className="text-red-600 text-lg font-medium mb-2">{error}</div>
             <button
@@ -261,7 +277,9 @@ export default function AppointmentBookingPage() {
 
   return (
     <AuthWrapper requiredRole="CLIENT">
-      <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-amber-50 ${inter.className}`}>
+      <div
+        className={`min-h-screen bg-gradient-to-br from-gray-50 to-amber-50`}
+      >
         {/* Header */}
         <div className="bg-white shadow-sm border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -275,7 +293,9 @@ export default function AppointmentBookingPage() {
                 Book Your Legal Consultation
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Connect with experienced legal professionals in Ghana. Choose from our network of qualified lawyers and schedule your consultation today.
+                Connect with experienced legal professionals in Ghana. Choose
+                from our network of qualified lawyers and schedule your
+                consultation today.
               </p>
             </motion.div>
           </div>
@@ -337,8 +357,8 @@ export default function AppointmentBookingPage() {
               </div>
               <button
                 onClick={() => {
-                  setSearchTerm('');
-                  setSelectedPracticeArea('All Areas');
+                  setSearchTerm("");
+                  setSelectedPracticeArea("All Areas");
                 }}
                 className="mt-4 bg-amber-500 text-white px-6 py-2 rounded-lg hover:bg-amber-600 transition-colors"
               >
@@ -372,7 +392,8 @@ export default function AppointmentBookingPage() {
             <div className="text-center text-gray-600">
               <p className="mb-2">Need help choosing the right lawyer?</p>
               <p className="text-sm">
-                Our lawyers are verified members of the Ghana Bar Association and are committed to providing quality legal services.
+                Our lawyers are verified members of the Ghana Bar Association
+                and are committed to providing quality legal services.
               </p>
             </div>
           </div>

@@ -143,18 +143,34 @@ export default function LawyerCard({ lawyer }: { lawyer: MockLawyer }) {
 
         {/* Action Buttons - Fixed at Bottom */}
         <div className="mt-auto space-y-2">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-gray-100 text-gray-700 py-2 px-3 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleViewProfile();
-            }}
-          >
-            <Eye className="w-3 h-3" />
-            <span className="truncate">View Profile</span>
-          </motion.button>
+          <div className="grid grid-cols-2 gap-2">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-gray-100 text-gray-700 py-2 px-3 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewProfile();
+              }}
+            >
+              <Eye className="w-3 h-3" />
+              <span className="truncate">View</span>
+            </motion.button>
+            
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-blue-100 text-blue-700 py-2 px-3 rounded-xl text-xs font-medium hover:bg-blue-200 transition-colors flex items-center justify-center gap-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Navigate to messages page with lawyer pre-selected
+                window.location.href = `/User-landing/messages?lawyer=${lawyer.id}&name=${encodeURIComponent(lawyer.name)}`;
+              }}
+            >
+              <MessageCircle className="w-3 h-3" />
+              <span className="truncate">Message</span>
+            </motion.button>
+          </div>
           
           {/* Book Appointment Button */}
           {lawyer.calendlyLink && (

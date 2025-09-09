@@ -2,49 +2,22 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
 import {
-  Heart,
-  MessageCircle,
-  Share,
   Home,
-  Compass,
   User,
-  PlusSquare,
   Tv,
-  MoreHorizontal,
   Play,
-  Pause,
-  Volume2,
-  VolumeX,
   ChevronUp,
   ChevronDown,
   Menu,
-  X,
-  Search,
-  Filter,
   BookOpen,
-  Download,
-  MessageSquare,
-  Award,
-  Calendar,
   FileText,
   Brain,
-  HelpCircle,
   Languages,
-  Clock,
-  Eye,
-  Star,
-  Bookmark,
-  Share2,
-  Check,
-  ChevronRight,
   ArrowLeft,
   House,
 } from "lucide-react";
-
-import InteractiveQuiz from "../../components/InteractiveQuiz";
 import UserProgressModal from "../../components/UserProgressModal";
 import TemplateDownloader from "../../components/TemplateDownloader";
 import ArticleCard from "../../components/ArticleCard";
@@ -52,9 +25,7 @@ import VideoControls from "../../components/videocontrol";
 import SidebarItem from "../../components/content-sidebar";
 import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
-import ActionButton from "../../components/videoaction";
 import VerticalVideoInteractions from "../../../components/VerticalVideoInteractions";
-
 
 import {
   legalArticles,
@@ -62,15 +33,11 @@ import {
   legalTemplates,
   videoCategories,
 } from "../../components/mockdata";
-import { VideoService, VideoItem as VideoItemType } from "../../../services/videoService";
+import {
+  VideoService,
+  VideoItem as VideoItemType,
+} from "../../../services/videoService";
 import { apiClient } from "../../../lib/api";
-
-// Configure Inter font
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 declare global {
   interface Window {
@@ -124,21 +91,21 @@ export default function LegalContentHub() {
     const fetchVideos = async () => {
       setIsLoadingVideos(true);
       try {
-        console.log('Fetching videos from VideoService...');
+        console.log("Fetching videos from VideoService...");
         const fetchedVideos = await VideoService.getCombinedVideoFeed();
-        console.log('Fetched videos:', fetchedVideos);
-        
+        console.log("Fetched videos:", fetchedVideos);
+
         setVideos(fetchedVideos);
         // Extract real like and comment counts from the API data
-        const realLikes = fetchedVideos.map(video => video.likes || 0);
-        const realComments = fetchedVideos.map(video => video.comments || 0);
+        const realLikes = fetchedVideos.map((video) => video.likes || 0);
+        const realComments = fetchedVideos.map((video) => video.comments || 0);
         setLikes(realLikes);
         setComments(realComments);
         setShares(Array(fetchedVideos.length).fill(68)); // Keep shares as mock for now
       } catch (error) {
-        console.error('Error fetching videos:', error);
+        console.error("Error fetching videos:", error);
         // No fallback to mock data - show empty state instead
-        console.log('No videos available.');
+        console.log("No videos available.");
         setVideos([]);
         setLikes([]);
         setComments([]);
@@ -180,14 +147,14 @@ export default function LegalContentHub() {
   const recordVideoView = async (video: VideoItem) => {
     try {
       // Only record views for real videos (not mock videos)
-      if (video.lawyerId && !video.lawyerId.startsWith('mock_')) {
-        console.log('Recording view for video:', video.title);
+      if (video.lawyerId && !video.lawyerId.startsWith("mock_")) {
+        console.log("Recording view for video:", video.title);
         await apiClient.recordVideoView(video.lawyerId, video.url);
       } else {
-        console.log('Skipping view recording for mock video:', video.title);
+        console.log("Skipping view recording for mock video:", video.title);
       }
     } catch (error) {
-      console.error('Failed to record video view:', error);
+      console.error("Failed to record video view:", error);
       // Don't show error to user - view recording is not critical
     }
   };
@@ -219,7 +186,7 @@ export default function LegalContentHub() {
     const currentVideo = document.querySelector(
       `#video-${activeIdx}`
     ) as HTMLVideoElement;
-    
+
     if (currentVideo) {
       currentVideo.muted = !isMuted;
       setIsMuted(!isMuted);
@@ -359,9 +326,9 @@ export default function LegalContentHub() {
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
       if (activeContent !== "videos") return;
-      
+
       event.preventDefault();
-      
+
       // Debounce wheel events
       clearTimeout(window.scrollTimeout);
       window.scrollTimeout = setTimeout(() => {
@@ -468,194 +435,203 @@ export default function LegalContentHub() {
                 <div className="absolute inset-0 w-full h-screen flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-6xl mb-4">📹</div>
-                    <p className="text-white text-lg">No videos available yet</p>
-                    <p className="text-gray-300 text-sm mt-2">Check back later for new content!</p>
+                    <p className="text-white text-lg">
+                      No videos available yet
+                    </p>
+                    <p className="text-gray-300 text-sm mt-2">
+                      Check back later for new content!
+                    </p>
                   </div>
                 </div>
               ) : (
                 videos.map((video, idx) => (
-                <motion.div
-                  key={video.id}
-                  className="absolute inset-0 w-full h-screen flex items-center justify-center"
-                  style={{
-                    top: `${idx * 100}vh`,
-                    zIndex: idx === activeIdx ? 10 : 1,
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: Math.abs(idx - activeIdx) <= 1 ? 1 : 0,
-                    scale: idx === activeIdx ? 1 : 0.95,
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="relative w-full h-full flex justify-center items-center">
-                    <video
-                      id={`video-${idx}`}
-                      src={video.url}
-                      autoPlay={idx === activeIdx && isPlaying}
-                      loop
-                      muted={isMuted}
-                      playsInline
-                      className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer max-h-screen lg:max-h-[97vh]"
-                      style={{
-                        maxWidth: "420px",
-                      }}
-                      onClick={handlePlayPause}
-                      onTimeUpdate={(e) => {
-                        if (idx === activeIdx) {
-                          handleTimeUpdate(e.currentTarget);
-                        }
-                      }}
-                      onLoadedMetadata={(e) => {
-                        if (idx === activeIdx) {
-                          handleLoadedMetadata(e.currentTarget);
-                        }
-                      }}
-                      onCanPlay={(e) => {
-                        if (idx === activeIdx && isPlaying) {
-                          e.currentTarget.play().catch(console.log);
-                        }
-                      }}
-                      onEnded={() => {
-                        if (idx === activeIdx && activeIdx < videos.length - 1) {
-                          setActiveIdx(activeIdx + 1);
-                          setVideoProgress(0);
-                        }
-                      }}
-                    />
-
-                    {/* Video Info Overlay - Only show for active video */}
-                    {idx === activeIdx && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
-                      >
-                        <div className="mb-4">
-                          <h2 className="text-xl font-bold text-white mb-2">
-                            {video.title}
-                          </h2>
-                          <div className="flex items-center gap-4 text-sm">
-                            <span className="text-[#d4a017] font-medium">
-                              {video.lawyer}
-                            </span>
-                            <span className="text-white/60">
-                              {video.views} views
-                            </span>
-                            <span className="text-white/60">
-                              {video.duration}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 mt-2">
-                            <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
-                              #{video.category}
-                            </div>
-                            <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
-                              <Languages className="w-3 h-3" />
-                              {video.language}
-                            </div>
-                          </div>
-                          <p className="text-white/80 text-sm mt-2 line-clamp-2">
-                            {video.description}
-                          </p>
-                        </div>
-
-                        {/* Progress bar - Update margin to avoid overlap with controls */}
-                        <div className="space-y-2 mb-8">
-                          <div className="flex justify-between text-xs text-white/70">
-                            <span>{formatTime(currentTime)}</span>
-                            <span>{formatTime(videoDuration)}</span>
-                          </div>
-
-                          <div
-                            className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
-                            onClick={(e) => {
-                              const rect = e.currentTarget.getBoundingClientRect();
-                              const clickX = e.clientX - rect.left;
-                              const width = rect.width;
-                              const percentage = (clickX / width) * 100;
-                              const videoElement = document.querySelector(
-                                `#video-${activeIdx}`
-                              ) as HTMLVideoElement;
-                              if (videoElement && videoDuration) {
-                                const newTime = (percentage / 100) * videoDuration;
-                                videoElement.currentTime = newTime;
-                                setVideoProgress(percentage);
-                              }
-                            }}
-                          >
-                            <motion.div
-                              animate={{ width: `${videoProgress}%` }}
-                              className="h-full bg-[#d4a017] rounded-full relative"
-                              transition={{ duration: 0.1 }}
-                            >
-                              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
-                            </motion.div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Optional: Play/Pause indicator overlay */}
-                    {idx === activeIdx && !isPlaying && (
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
-                      >
-                        <div className="p-6 bg-black/40 backdrop-blur-sm rounded-full">
-                          <Play className="w-12 h-12 text-white" />
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Video Controls - Only volume control */}
-                    {idx === activeIdx && (
-                      <VideoControls
-                        isMuted={isMuted}
-                        onMuteToggle={handleMuteToggle}
+                  <motion.div
+                    key={video.id}
+                    className="absolute inset-0 w-full h-screen flex items-center justify-center"
+                    style={{
+                      top: `${idx * 100}vh`,
+                      zIndex: idx === activeIdx ? 10 : 1,
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: Math.abs(idx - activeIdx) <= 1 ? 1 : 0,
+                      scale: idx === activeIdx ? 1 : 0.95,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="relative w-full h-full flex justify-center items-center">
+                      <video
+                        id={`video-${idx}`}
+                        src={video.url}
+                        autoPlay={idx === activeIdx && isPlaying}
+                        loop
+                        muted={isMuted}
+                        playsInline
+                        className="w-full max-w-md h-full object-cover lg:rounded-2xl shadow-2xl cursor-pointer max-h-screen lg:max-h-[97vh]"
+                        style={{
+                          maxWidth: "420px",
+                        }}
+                        onClick={handlePlayPause}
+                        onTimeUpdate={(e) => {
+                          if (idx === activeIdx) {
+                            handleTimeUpdate(e.currentTarget);
+                          }
+                        }}
+                        onLoadedMetadata={(e) => {
+                          if (idx === activeIdx) {
+                            handleLoadedMetadata(e.currentTarget);
+                          }
+                        }}
+                        onCanPlay={(e) => {
+                          if (idx === activeIdx && isPlaying) {
+                            e.currentTarget.play().catch(console.log);
+                          }
+                        }}
+                        onEnded={() => {
+                          if (
+                            idx === activeIdx &&
+                            activeIdx < videos.length - 1
+                          ) {
+                            setActiveIdx(activeIdx + 1);
+                            setVideoProgress(0);
+                          }
+                        }}
                       />
-                    )}
 
-                    {/* Navigation Controls - Moved to top of right side */}
-                    {idx === activeIdx && (
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-50">
-                        {/* Up/Down Navigation at the top */}
-                        <div className="flex flex-col gap-2 -mb-1">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
-                            onClick={() => navigateVideo("up")}
-                            disabled={activeIdx === 0}
-                          >
-                            <ChevronUp className="w-4 h-4" />
-                          </motion.button>
+                      {/* Video Info Overlay - Only show for active video */}
+                      {idx === activeIdx && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                          className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:rounded-b-2xl"
+                        >
+                          <div className="mb-4">
+                            <h2 className="text-xl font-bold text-white mb-2">
+                              {video.title}
+                            </h2>
+                            <div className="flex items-center gap-4 text-sm">
+                              <span className="text-[#d4a017] font-medium">
+                                {video.lawyer}
+                              </span>
+                              <span className="text-white/60">
+                                {video.views} views
+                              </span>
+                              <span className="text-white/60">
+                                {video.duration}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 mt-2">
+                              <div className="inline-block px-3 py-1 bg-[#d4a017]/20 text-[#d4a017] text-xs rounded-full">
+                                #{video.category}
+                              </div>
+                              <div className="inline-flex px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full items-center gap-1">
+                                <Languages className="w-3 h-3" />
+                                {video.language}
+                              </div>
+                            </div>
+                            <p className="text-white/80 text-sm mt-2 line-clamp-2">
+                              {video.description}
+                            </p>
+                          </div>
 
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
-                            onClick={() => navigateVideo("down")}
-                            disabled={activeIdx === videos.length - 1}
-                          >
-                            <ChevronDown className="w-4 h-4" />
-                          </motion.button>
-                        </div>
+                          {/* Progress bar - Update margin to avoid overlap with controls */}
+                          <div className="space-y-2 mb-8">
+                            <div className="flex justify-between text-xs text-white/70">
+                              <span>{formatTime(currentTime)}</span>
+                              <span>{formatTime(videoDuration)}</span>
+                            </div>
 
-                        {/* Action Buttons - Replace with VideoInteractions */}
-                        <VerticalVideoInteractions
-                          lawyerId={video.lawyerId}
-                          videoUrl={video.url}
-                          className=""
+                            <div
+                              className="w-full h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer"
+                              onClick={(e) => {
+                                const rect =
+                                  e.currentTarget.getBoundingClientRect();
+                                const clickX = e.clientX - rect.left;
+                                const width = rect.width;
+                                const percentage = (clickX / width) * 100;
+                                const videoElement = document.querySelector(
+                                  `#video-${activeIdx}`
+                                ) as HTMLVideoElement;
+                                if (videoElement && videoDuration) {
+                                  const newTime =
+                                    (percentage / 100) * videoDuration;
+                                  videoElement.currentTime = newTime;
+                                  setVideoProgress(percentage);
+                                }
+                              }}
+                            >
+                              <motion.div
+                                animate={{ width: `${videoProgress}%` }}
+                                className="h-full bg-[#d4a017] rounded-full relative"
+                                transition={{ duration: 0.1 }}
+                              >
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#d4a017] rounded-full shadow-lg transform translate-x-1/2" />
+                              </motion.div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {/* Optional: Play/Pause indicator overlay */}
+                      {idx === activeIdx && !isPlaying && (
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+                        >
+                          <div className="p-6 bg-black/40 backdrop-blur-sm rounded-full">
+                            <Play className="w-12 h-12 text-white" />
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {/* Video Controls - Only volume control */}
+                      {idx === activeIdx && (
+                        <VideoControls
+                          isMuted={isMuted}
+                          onMuteToggle={handleMuteToggle}
                         />
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))
+                      )}
+
+                      {/* Navigation Controls - Moved to top of right side */}
+                      {idx === activeIdx && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-50">
+                          {/* Up/Down Navigation at the top */}
+                          <div className="flex flex-col gap-2 -mb-1">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
+                              onClick={() => navigateVideo("up")}
+                              disabled={activeIdx === 0}
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </motion.button>
+
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="p-2 bg-black/60 backdrop-blur-sm rounded-full text-white hover:bg-black/80 transition-all disabled:opacity-50 border border-white/20 shadow-lg"
+                              onClick={() => navigateVideo("down")}
+                              disabled={activeIdx === videos.length - 1}
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </motion.button>
+                          </div>
+
+                          {/* Action Buttons - Replace with VideoInteractions */}
+                          <VerticalVideoInteractions
+                            lawyerId={video.lawyerId}
+                            videoUrl={video.url}
+                            className=""
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))
               )}
             </div>
           </main>
@@ -790,7 +766,7 @@ export default function LegalContentHub() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 flex ${inter.className}`}>
+    <div className={`min-h-screen bg-gray-50 flex`}>
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-3">
         <div className="flex items-center justify-between">
@@ -837,7 +813,7 @@ export default function LegalContentHub() {
                   <p className="text-sm text-gray-500">Learn & Explore</p>
                 </div>
               </div>
-              
+
               {/* Back to Dashboard Button - Desktop */}
               <motion.button
                 whileHover={{ scale: 1.05 }}

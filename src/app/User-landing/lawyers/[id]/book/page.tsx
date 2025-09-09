@@ -3,19 +3,11 @@
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Inter } from 'next/font/google';
 import AuthWrapper from "../../../../components/auth/AuthWrapper";
 import BookAppointmentModal from "../../../../components/scheduling/BookAppointmentModal";
 import { apiClient } from "../../../../../lib/api";
 import { ArrowLeft, Calendar, Clock, MapPin, Star, User } from "lucide-react";
 import Link from "next/link";
-
-// Configure Inter font
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
 
 interface LawyerData {
   id: string;
@@ -35,7 +27,7 @@ export default function BookLawyerAppointment() {
   const [lawyer, setLawyer] = useState<LawyerData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchLawyerData();
@@ -44,33 +36,36 @@ export default function BookLawyerAppointment() {
   const fetchLawyerData = async () => {
     try {
       setIsLoading(true);
-      setError('');
-      
+      setError("");
+
       // Fetch lawyer data from API
       const response = await apiClient.getLawyerById(lawyerId);
       if (response.success && response.data) {
         const userId = response.data.userId || response.data.user?.id;
         if (!userId) {
-          setError('Invalid lawyer data');
+          setError("Invalid lawyer data");
           return;
         }
-        
+
         setLawyer({
           id: userId, // Use userId for appointments
-          name: `${response.data.user?.firstName || ''} ${response.data.user?.lastName || ''}`.trim() || 'Unknown Lawyer',
-          title: response.data.professionalSummary || 'Legal Practitioner',
-          firm: response.data.firm || 'Law Firm',
-          practiceAreas: response.data.practiceAreas || ['General Practice'],
+          name:
+            `${response.data.user?.firstName || ""} ${
+              response.data.user?.lastName || ""
+            }`.trim() || "Unknown Lawyer",
+          title: response.data.professionalSummary || "Legal Practitioner",
+          firm: response.data.firm || "Law Firm",
+          practiceAreas: response.data.practiceAreas || ["General Practice"],
           experience: response.data.experience,
           location: response.data.location,
-          bio: response.data.professionalSummary
+          bio: response.data.professionalSummary,
         });
       } else {
-        setError('Lawyer not found');
+        setError("Lawyer not found");
       }
     } catch (error) {
-      console.error('Error fetching lawyer:', error);
-      setError('Failed to load lawyer information');
+      console.error("Error fetching lawyer:", error);
+      setError("Failed to load lawyer information");
     } finally {
       setIsLoading(false);
     }
@@ -80,26 +75,30 @@ export default function BookLawyerAppointment() {
     try {
       const response = await apiClient.createAppointment({
         ...appointmentData,
-        lawyerId: lawyerId
+        lawyerId: lawyerId,
       });
-      
+
       if (response.success) {
         setShowBookingModal(false);
         // Show success message
-        alert('Appointment request sent successfully! The lawyer will be notified.');
+        alert(
+          "Appointment request sent successfully! The lawyer will be notified."
+        );
       } else {
-        alert('Failed to book appointment. Please try again.');
+        alert("Failed to book appointment. Please try again.");
       }
     } catch (error) {
-      console.error('Error booking appointment:', error);
-      alert('Failed to book appointment. Please try again.');
+      console.error("Error booking appointment:", error);
+      alert("Failed to book appointment. Please try again.");
     }
   };
 
   if (isLoading) {
     return (
       <AuthWrapper requiredRole="CLIENT">
-        <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${inter.className}`}>
+        <div
+          className={`min-h-screen bg-gray-50 flex items-center justify-center `}
+        >
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
       </AuthWrapper>
@@ -109,7 +108,9 @@ export default function BookLawyerAppointment() {
   if (error || !lawyer) {
     return (
       <AuthWrapper requiredRole="CLIENT">
-        <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${inter.className}`}>
+        <div
+          className={`min-h-screen bg-gray-50 flex items-center justify-center `}
+        >
           <div className="text-center max-w-md mx-auto">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="w-8 h-8 text-red-600" />
@@ -118,7 +119,8 @@ export default function BookLawyerAppointment() {
               Lawyer Not Found
             </h1>
             <p className="text-gray-600 mb-4">
-              The lawyer you're looking for doesn't exist or is no longer available.
+              The lawyer you're looking for doesn't exist or is no longer
+              available.
             </p>
             <Link
               href="/User-landing"
@@ -135,7 +137,7 @@ export default function BookLawyerAppointment() {
 
   return (
     <AuthWrapper requiredRole="CLIENT">
-      <div className={`min-h-screen bg-gray-50 ${inter.className}`}>
+      <div className={`min-h-screen bg-gray-50 `}>
         <main className="p-4 lg:p-8 pt-20 lg:pt-8">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -152,37 +154,36 @@ export default function BookLawyerAppointment() {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Lawyers
               </Link>
-              
+
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-start gap-6">
                   <div className="w-20 h-20 bg-gradient-to-br from-[#d4a017] to-[#b8941f] rounded-full flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">
-                    {lawyer.name.split(' ').map(n => n[0]).join('')}
+                    {lawyer.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </div>
                   <div className="flex-1">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">
                       {lawyer.name}
                     </h1>
-                    <p className="text-xl text-gray-600 mb-2">
-                      {lawyer.title}
-                    </p>
-                    <p className="text-gray-600 mb-3">
-                      {lawyer.firm}
-                    </p>
-                    
+                    <p className="text-xl text-gray-600 mb-2">{lawyer.title}</p>
+                    <p className="text-gray-600 mb-3">{lawyer.firm}</p>
+
                     {lawyer.location && (
                       <div className="flex items-center text-gray-600 mb-3">
                         <MapPin className="w-4 h-4 mr-2" />
                         {lawyer.location}
                       </div>
                     )}
-                    
+
                     {lawyer.experience && (
                       <div className="flex items-center text-gray-600 mb-4">
                         <Star className="w-4 h-4 mr-2" />
                         {lawyer.experience} years of experience
                       </div>
                     )}
-                    
+
                     <div className="flex flex-wrap gap-2">
                       {lawyer.practiceAreas.map((area, idx) => (
                         <span
@@ -205,7 +206,8 @@ export default function BookLawyerAppointment() {
                   Schedule Your Consultation
                 </h2>
                 <p className="text-gray-600">
-                  Book a consultation with {lawyer.name} to discuss your legal needs.
+                  Book a consultation with {lawyer.name} to discuss your legal
+                  needs.
                 </p>
               </div>
 
@@ -227,13 +229,17 @@ export default function BookLawyerAppointment() {
 
                   {lawyer.bio && (
                     <div className="p-4 bg-gray-50 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2">About</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">
+                        About
+                      </h3>
                       <p className="text-gray-700 text-sm">{lawyer.bio}</p>
                     </div>
                   )}
 
                   <div className="p-4 bg-green-50 rounded-lg">
-                    <h3 className="font-semibold text-green-900 mb-2">What to Expect</h3>
+                    <h3 className="font-semibold text-green-900 mb-2">
+                      What to Expect
+                    </h3>
                     <ul className="text-green-800 space-y-1 text-sm">
                       <li>• Professional legal consultation</li>
                       <li>• Case assessment and recommendations</li>
@@ -271,7 +277,7 @@ export default function BookLawyerAppointment() {
             lawyer={{
               id: lawyerId,
               name: lawyer.name,
-              practiceAreas: lawyer.practiceAreas
+              practiceAreas: lawyer.practiceAreas,
             }}
             onBook={handleBookAppointment}
           />

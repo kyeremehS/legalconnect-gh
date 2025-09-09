@@ -50,9 +50,9 @@ const userNavItems = [
     icon: BookOpen,
   },
   {
-    name: "Message & Call",
-    href: "/User-landing/user-message-call",
-    icon: Phone,
+    name: "Messages",
+    href: "/User-landing/messages",
+    icon: MessageSquare,
   },
   {
     name: "Booking Appointments",

@@ -303,11 +303,11 @@ export default function ClientRegistration() {
           </Link>
         </div>
 
-        {/* Clerk Registration Link */}
+        {/* Social Registration Link */}
         <div className="text-center mt-4 text-sm text-gray-500">
           Or{" "}
-          <Link href="/sign-up" className="text-[#d4a017] hover:text-[#b38a15] font-medium">
-            use Clerk registration
+          <Link href="/auth/social" className="text-[#d4a017] hover:text-[#b38a15] font-medium">
+            use social registration
           </Link>
         </div>
       </motion.div>
