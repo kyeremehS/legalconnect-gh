@@ -142,17 +142,6 @@ export default function UserDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
               className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 hover:border-[#d4a017] transition-all hover:shadow-lg cursor-pointer"
-              onClick={() => {
-                if (stat.label === "Appointments") {
-                  router.push("/User-landing/appointments");
-                }
-                if (stat.label === "Messages") {
-                  router.push("/User-landing/user-message-call");
-                }
-                if (stat.label === "Videos Watched") {
-                  router.push("/User-landing/legal-content");
-                }
-              }}
             >
               <p className="text-gray-600 text-xs sm:text-sm">{stat.label}</p>
               <div className="flex items-end gap-2 mt-2">
