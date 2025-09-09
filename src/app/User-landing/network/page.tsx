@@ -6,37 +6,10 @@ import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
 import BookAppointment from "../../components/BookAppointment";
 import LawyerCard from "@/app/components/lawyer/LawyerCard";
+import { Lawyer, fetchLawyers } from "../../../types/lawyer";
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-
-// Real Lawyer interface from your backend (matching mockdata interface)
-interface Lawyer {
-  id: string;
-  name: string;
-  title: string;
-  firm: string;
-  location: string;
-  barAdmissionYear: number;
-  experience: number;
-  practiceAreas: string[];
-  education: string;
-  barAssociation: string;
-  profileImage: string;
-  isConnected: boolean;
-  isPending: boolean;
-  connectionCount: number;
-  professionalSummary: string;
-  publications: string[];
-  calendlyLink: string;
-  email: string;
-  phone: string;
-  website?: string;
-  detailedBio: string;
-  specializations: string[];
-  awards: string[];
-  languages: string[];
-}
 
 import {
   Users,
@@ -218,64 +191,17 @@ export default function LegalDirectoryPage() {
 
   // Fetch lawyers from API
   useEffect(() => {
-    const fetchLawyers = async () => {
+    const loadLawyers = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`${API_BASE_URL}/api/lawyers`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch lawyers");
-        }
-
-        const data = await response.json();
-
-        // Transform backend data to match frontend interface
-        const transformedLawyers: Lawyer[] = data.map((lawyer: any) => ({
-          id: lawyer.id,
-          name:
-            lawyer.fullName ||
-            `${lawyer.firstName || ""} ${lawyer.lastName || ""}`.trim(),
-          title: lawyer.title || "Legal Practitioner",
-          firm: lawyer.firm || "Independent Practice",
-          location: lawyer.location || "Accra",
-          barAdmissionYear:
-            lawyer.barAdmissionYear ||
-            new Date().getFullYear() - (lawyer.yearsOfExperience || 5),
-          experience: lawyer.yearsOfExperience || 5,
-          practiceAreas: lawyer.specialization || ["General Practice"],
-          education: lawyer.education || "Ghana School of Law",
-          barAssociation: "Ghana Bar Association",
-          profileImage: lawyer.profilePicture || "/default-lawyer.jpg",
-          isConnected: false,
-          isPending: false,
-          connectionCount: Math.floor(Math.random() * 100) + 10,
-          professionalSummary:
-            lawyer.bio ||
-            lawyer.description ||
-            "Experienced legal practitioner committed to providing quality legal services.",
-          publications: [],
-          calendlyLink:
-            lawyer.calendlyLink ||
-            "https://calendly.com/legal-consultation/30min",
-          email: lawyer.email,
-          phone: lawyer.phone || "",
-          website: lawyer.website,
-          detailedBio:
-            lawyer.bio ||
-            lawyer.description ||
-            "Experienced legal practitioner with a strong commitment to justice and client service.",
-          specializations: lawyer.specialization || ["General Practice"],
-          awards: [],
-          languages: ["English", "Twi"],
-        }));
-
-        setLawyers(transformedLawyers);
-        setFilteredLawyers(transformedLawyers);
         setError(null);
-      } catch (err) {
-        console.error("Error fetching lawyers:", err);
-        setError("Failed to load lawyers. Please try again.");
-        // Set empty array as fallback
+        
+        const lawyersData = await fetchLawyers();
+        setLawyers(lawyersData);
+        setFilteredLawyers(lawyersData);
+      } catch (error) {
+        console.error("Error fetching lawyers:", error);
+        setError("Failed to load lawyers. Please try again later.");
         setLawyers([]);
         setFilteredLawyers([]);
       } finally {
@@ -283,7 +209,7 @@ export default function LegalDirectoryPage() {
       }
     };
 
-    fetchLawyers();
+    loadLawyers();
   }, []);
 
   // Navigation function

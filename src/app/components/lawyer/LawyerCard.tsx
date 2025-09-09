@@ -1,9 +1,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-lawyers, Lawyer as MockLawyer
-} from "../../components/mockdata";
+import { Lawyer } from "../../../types/lawyer";
 import LawyerProfileModal from "../lawyer/LawyerProfileModal";
 import BookAppointment from "../BookAppointment";
 
@@ -30,7 +28,7 @@ import {
   Globe,
 } from "lucide-react";
 
-export default function LawyerCard({ lawyer }: { lawyer: MockLawyer }) {
+export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
 
@@ -55,7 +53,7 @@ export default function LawyerCard({ lawyer }: { lawyer: MockLawyer }) {
         <div className="flex items-start gap-3 mb-3 h-[60px]">
           <div className="relative flex-shrink-0">
             <div className="w-12 h-12 bg-gradient-to-br from-[#d4a017] to-[#b8941f] rounded-full flex items-center justify-center text-white font-bold text-sm">
-              {lawyer.name.split(' ').map(n => n[0]).join('')}
+              {lawyer.name.split(' ').map((n: string) => n[0]).join('')}
             </div>
           </div>
           
@@ -86,7 +84,7 @@ export default function LawyerCard({ lawyer }: { lawyer: MockLawyer }) {
         <div className="mb-3 h-[60px]">
           <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Practice Areas</h4>
           <div className="flex flex-wrap gap-1">
-            {lawyer.practiceAreas.slice(0, 2).map((area, idx) => (
+            {lawyer.practiceAreas.slice(0, 2).map((area: string, idx: number) => (
               <span
                 key={idx}
                 className="px-2 py-1 bg-[#d4a017]/10 text-[#d4a017] text-xs rounded-full font-medium truncate max-w-[120px]"
