@@ -137,6 +137,7 @@ export default function IntegratedAppointmentBooking() {
       setLoading(true);
       const appointmentData = {
         lawyerId: selectedLawyer.id,
+        title: `Consultation - ${bookingData.practiceArea}`,
         startTime: `${selectedDate}T${selectedTime}:00`,
         endTime: `${selectedDate}T${addMinutesToTime(selectedTime, parseInt(bookingData.duration))}:00`,
         practiceArea: bookingData.practiceArea,
