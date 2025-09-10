@@ -236,10 +236,6 @@ export default function CreateContent() {
                     Create and manage your legal content
                   </p>
                 </div>
-                <button className="flex items-center gap-2 bg-[#d4a017] text-white px-6 py-3 rounded-xl hover:bg-[#b17d25] transition-colors font-medium">
-                  <Plus className="w-5 h-5" />
-                  New Video
-                </button>
               </div>
 
               {/* Main Content Grid */}
@@ -249,9 +245,9 @@ export default function CreateContent() {
                   {/* Quick Upload Card */}
                   <motion.div
                     whileHover={{ y: -2 }}
-                    className="bg-white p-6 rounded-2xl border-2 border-dashed border-[#d4a017] hover:border-[#b17d25]"
+                    className="bg-white flex flex-col items-center p-6 rounded-2xl border-2 border-dashed border-[#d4a017] hover:border-[#b17d25]"
                   >
-                    <div className="text-center py-6">
+                    <div className="py-6 flex flex-col items-center">
                       <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center mx-auto mb-4">
                         {uploadState.isUploading ? (
                           <Loader className="w-8 h-8 text-[#d4a017] animate-spin" />
@@ -326,14 +322,14 @@ export default function CreateContent() {
                         accept="video/*"
                         ref={fileInputRef}
                         onChange={handleFileChange}
-                        className="hidden-input"
+                        className=""
                         title="Upload Video"
                         placeholder="Select a video file"
                         disabled={uploadState.isUploading}
                       />
 
                       {/* File Requirements */}
-                      <div className="mt-4 text-xs text-[#4a4a4a] space-y-1">
+                      <div className="mt-4 text-xs flex flex-col item-start text-[#4a4a4a] space-y-1">
                         <p>• Supported formats: MP4, AVI, MOV, WebM</p>
                         <p>• Maximum file size: 50MB</p>
                         <p>• Recommended duration: 5-15 minutes</p>
