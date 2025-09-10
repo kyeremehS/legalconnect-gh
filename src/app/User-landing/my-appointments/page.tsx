@@ -161,14 +161,13 @@ export default function ClientAppointmentsDashboard() {
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(
-        `${API_BASE_URL}/api/appointments/${appointmentId}/status`,
+        `${API_BASE_URL}/api/appointments/${appointmentId}/cancel`,
         {
           method: 'PATCH',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ status: 'CANCELLED' })
+          }
         }
       );
 
@@ -177,11 +176,15 @@ export default function ClientAppointmentsDashboard() {
         setMessage({ type: 'success', text: 'Appointment cancelled successfully' });
         setShowAppointmentModal(false);
       } else {
-        throw new Error('Failed to cancel appointment');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to cancel appointment');
       }
     } catch (error) {
       console.error('Error cancelling appointment:', error);
-      setMessage({ type: 'error', text: 'Failed to cancel appointment' });
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : 'Failed to cancel appointment' 
+      });
     }
   };
 
