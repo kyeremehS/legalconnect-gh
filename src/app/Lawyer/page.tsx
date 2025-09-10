@@ -77,7 +77,13 @@ const LawyerDashboard = () => {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-800">
-                Welcome back, {user?.firstName} {user?.lastName}
+                Welcome back, {
+                  user?.firstName && user?.lastName 
+                    ? `${user.firstName} ${user.lastName}`
+                    : user?.fullName 
+                    ? user.fullName
+                    : user?.firstName || 'Lawyer'
+                }
               </h1>
               <p className="text-gray-600">
                 Here's what's happening with your practice today.
