@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Calendar,
   Clock,
@@ -174,7 +175,7 @@ export default function IntegratedAppointmentBooking() {
       if (response.ok) {
         setMessage({ 
           type: 'success', 
-          text: 'Appointment request sent successfully! The lawyer will be notified and respond soon.' 
+          text: 'Appointment request sent successfully! The lawyer will be notified and respond soon. Check "My Appointments" to track the status.' 
         });
         // Reset form
         setBookingStep(1);
@@ -231,6 +232,16 @@ export default function IntegratedAppointmentBooking() {
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="text-center mb-12">
+            <div className="flex justify-between items-center mb-6">
+              <div></div>
+              <Link 
+                href="/User-landing/my-appointments"
+                className="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-all duration-300 font-medium flex items-center space-x-2 shadow-md"
+              >
+                <Calendar className="w-5 h-5" />
+                <span>My Appointments</span>
+              </Link>
+            </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent mb-4">
               Book Legal Consultation
             </h1>
