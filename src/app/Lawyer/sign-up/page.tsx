@@ -188,6 +188,11 @@ export default function LawyerSignUp() {
         throw new Error('Please select at least one practice area');
       }
 
+      // Check if practising certificate is uploaded
+      if (!uploadedFiles.practisingCertificate) {
+        throw new Error('Please upload your practising certificate before submitting');
+      }
+
       // Step 1: Verify certificate if provided
       let certificationResult: VerificationResult | null = null;
       if (formData.certificateNumber && formData.barAdmissionYear) {
@@ -723,7 +728,6 @@ export default function LawyerSignUp() {
                           accept=".pdf,.jpg,.jpeg,.png"
                           onChange={handleFileChange}
                           className="hidden"
-                          required
                         />
                         <p className="text-xs text-gray-500 mt-1">PDF, JPG, PNG up to 10MB</p>
                         {uploadedFiles.practisingCertificate && (

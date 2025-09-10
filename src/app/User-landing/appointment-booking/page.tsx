@@ -26,11 +26,64 @@ interface LawyerCardProps {
     experience: number;
     avatar?: string;
     professionalSummary?: string;
+    availabilitySlots?: any[];
+    bookedAppointments?: any[];
   };
+  selectedDate?: string;
+  selectedTime?: string;
 }
 
-function LawyerCard({ lawyer }: LawyerCardProps) {
+function LawyerCard({ lawyer, selectedDate, selectedTime }: LawyerCardProps) {
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+
+  // Generate available time slots for this lawyer
+  useEffect(() => {
+    if (selectedDate && lawyer.availabilitySlots) {
+      const dayOfWeek = new Date(selectedDate).getDay();
+      const slots: string[] = [];
+      
+      lawyer.availabilitySlots.forEach((slot: any) => {
+        // Check if this slot matches the selected date (either specific date or recurring day)
+        const slotMatches = !slot.date || 
+          (slot.date && new Date(slot.date).toDateString() === new Date(selectedDate).toDateString()) ||
+          (!slot.date && slot.dayOfWeek === dayOfWeek);
+          
+        if (slotMatches && slot.isAvailable) {
+          // Generate time slots from startTime to endTime
+          const startHour = parseInt(slot.startTime.split(':')[0]);
+          const startMin = parseInt(slot.startTime.split(':')[1]);
+          const endHour = parseInt(slot.endTime.split(':')[0]);
+          const endMin = parseInt(slot.endTime.split(':')[1]);
+          
+          let currentTime = startHour * 60 + startMin; // Convert to minutes
+          const endTimeMin = endHour * 60 + endMin;
+          
+          while (currentTime < endTimeMin) {
+            const hours = Math.floor(currentTime / 60);
+            const minutes = currentTime % 60;
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            
+            // Check if this time slot is not already booked
+            const isBooked = lawyer.bookedAppointments?.some((appointment: any) => {
+              const appointmentDate = new Date(appointment.startTime).toDateString();
+              const appointmentTime = new Date(appointment.startTime).toTimeString().substring(0, 5);
+              return appointmentDate === new Date(selectedDate).toDateString() && 
+                     appointmentTime === timeString;
+            });
+            
+            if (!isBooked) {
+              slots.push(timeString);
+            }
+            
+            currentTime += 60; // 1-hour intervals
+          }
+        }
+      });
+      
+      setAvailableTimeSlots(slots);
+    }
+  }, [selectedDate, lawyer.availabilitySlots, lawyer.bookedAppointments]);
 
   const handleBookAppointment = async (appointmentData: any) => {
     try {
@@ -118,6 +171,39 @@ function LawyerCard({ lawyer }: LawyerCardProps) {
             </div>
           )}
 
+          {/* Available Time Slots */}
+          {selectedDate && availableTimeSlots.length > 0 && (
+            <div>
+              <div className="flex items-center mb-2">
+                <Clock className="w-5 h-5 mr-2 text-amber-500" />
+                <span className="font-medium text-gray-700">Available Times</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {availableTimeSlots.slice(0, 4).map((time, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-medium border border-green-200"
+                  >
+                    {time}
+                  </span>
+                ))}
+                {availableTimeSlots.length > 4 && (
+                  <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                    +{availableTimeSlots.length - 4} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* No availability message */}
+          {selectedDate && availableTimeSlots.length === 0 && (
+            <div className="flex items-center text-gray-500">
+              <Clock className="w-5 h-5 mr-2" />
+              <span className="text-sm">No availability on selected date</span>
+            </div>
+          )}
+
           {/* Rating placeholder */}
           <div className="flex items-center">
             <div className="flex items-center">
@@ -136,9 +222,17 @@ function LawyerCard({ lawyer }: LawyerCardProps) {
         <div className="p-6 pt-0">
           <button
             onClick={() => setShowBookingModal(true)}
-            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-amber-600 hover:to-amber-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            disabled={!!selectedDate && availableTimeSlots.length === 0}
+            className={`w-full font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform shadow-lg ${
+              !!selectedDate && availableTimeSlots.length === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 hover:scale-105 hover:shadow-xl'
+            }`}
           >
-            Book Consultation
+            {!!selectedDate && availableTimeSlots.length === 0 
+              ? 'No Availability' 
+              : 'Book Consultation'
+            }
           </button>
         </div>
       </motion.div>
@@ -165,39 +259,66 @@ export default function AppointmentBookingPage() {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPracticeArea, setSelectedPracticeArea] = useState("All Areas");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [showAvailableOnly, setShowAvailableOnly] = useState(false);
 
   useEffect(() => {
     fetchLawyers();
   }, []);
 
   useEffect(() => {
+    // Refetch when switching to/from availability filter
+    if (showAvailableOnly && selectedDate && selectedTime) {
+      fetchLawyers();
+    } else if (!showAvailableOnly) {
+      fetchLawyers();
+    }
+  }, [showAvailableOnly, selectedDate, selectedTime]);
+
+  useEffect(() => {
     filterLawyers();
-  }, [lawyers, searchTerm, selectedPracticeArea]);
+  }, [lawyers, searchTerm, selectedPracticeArea, selectedDate, selectedTime, showAvailableOnly]);
 
   const fetchLawyers = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.getLawyers();
-
-      if (response.success && response.data) {
-        // Transform API data to match our component interface
-        const transformedLawyers = response.data.map((lawyer: any) => ({
-          id: lawyer.userId || lawyer.user?.id, // Use the user ID for appointments
-          name: `${lawyer.user?.firstName || ""} ${
-            lawyer.user?.lastName || ""
-          }`.trim(),
-          firm: lawyer.firm,
-          location: lawyer.location,
-          practiceAreas: lawyer.practiceAreas || [],
-          experience: lawyer.experience,
-          avatar: lawyer.user?.avatar,
-          professionalSummary: lawyer.professionalSummary,
-        }));
-
-        setLawyers(transformedLawyers);
+      let lawyersData = [];
+      
+      // If date and time are selected, fetch available lawyers
+      if (selectedDate && selectedTime && showAvailableOnly) {
+        const availableResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/availability/lawyers/available?date=${selectedDate}&time=${selectedTime}`
+        );
+        if (availableResponse.ok) {
+          const availableData = await availableResponse.json();
+          lawyersData = availableData.data || [];
+        }
       } else {
-        setError("Failed to fetch lawyers");
+        // Otherwise fetch all lawyers
+        const response = await apiClient.getLawyers();
+        if (response.success && response.data) {
+          lawyersData = response.data;
+        }
       }
+
+      // Transform API data to match our component interface
+      const transformedLawyers = lawyersData.map((lawyer: any) => ({
+        id: lawyer.userId || lawyer.user?.id,
+        name: `${lawyer.user?.firstName || ""} ${
+          lawyer.user?.lastName || ""
+        }`.trim(),
+        firm: lawyer.firm,
+        location: lawyer.location,
+        practiceAreas: lawyer.practiceAreas || [],
+        experience: lawyer.experience,
+        avatar: lawyer.user?.avatar,
+        professionalSummary: lawyer.professionalSummary,
+        availabilitySlots: lawyer.availabilitySlots || [],
+        bookedAppointments: lawyer.bookedAppointments || [],
+      }));
+
+      setLawyers(transformedLawyers);
     } catch (error) {
       console.error("Error fetching lawyers:", error);
       setError("Failed to fetch lawyers");
@@ -309,7 +430,7 @@ export default function AppointmentBookingPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="bg-white rounded-xl shadow-lg p-6 mb-8"
           >
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               {/* Search Bar */}
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -320,6 +441,39 @@ export default function AppointmentBookingPage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
                 />
+              </div>
+
+              {/* Date Selection */}
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                />
+              </div>
+
+              {/* Time Selection */}
+              <div className="relative">
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <select
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors bg-white"
+                >
+                  <option value="">Any Time</option>
+                  <option value="09:00">9:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="13:00">1:00 PM</option>
+                  <option value="14:00">2:00 PM</option>
+                  <option value="15:00">3:00 PM</option>
+                  <option value="16:00">4:00 PM</option>
+                  <option value="17:00">5:00 PM</option>
+                </select>
               </div>
 
               {/* Practice Area Filter */}
@@ -339,9 +493,37 @@ export default function AppointmentBookingPage() {
               </div>
             </div>
 
+            {/* Availability Filter Toggle */}
+            <div className="mt-4 flex items-center">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showAvailableOnly}
+                  onChange={(e) => setShowAvailableOnly(e.target.checked)}
+                  className="sr-only"
+                />
+                <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  showAvailableOnly ? 'bg-amber-500' : 'bg-gray-300'
+                }`}>
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    showAvailableOnly ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </div>
+                <span className="ml-3 text-sm font-medium text-gray-700">
+                  Show only lawyers available at selected time
+                </span>
+              </label>
+            </div>
+
             {/* Results Count */}
             <div className="mt-4 text-sm text-gray-600">
               Showing {filteredLawyers.length} of {lawyers.length} lawyers
+              {selectedDate && (
+                <span className="ml-2 text-amber-600">
+                  for {new Date(selectedDate).toLocaleDateString()}
+                  {selectedTime && ` at ${selectedTime}`}
+                </span>
+              )}
             </div>
           </motion.div>
 
@@ -359,6 +541,9 @@ export default function AppointmentBookingPage() {
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedPracticeArea("All Areas");
+                  setSelectedDate("");
+                  setSelectedTime("");
+                  setShowAvailableOnly(false);
                 }}
                 className="mt-4 bg-amber-500 text-white px-6 py-2 rounded-lg hover:bg-amber-600 transition-colors"
               >
@@ -379,7 +564,11 @@ export default function AppointmentBookingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <LawyerCard lawyer={lawyer} />
+                  <LawyerCard 
+                    lawyer={lawyer} 
+                    selectedDate={selectedDate}
+                    selectedTime={selectedTime}
+                  />
                 </motion.div>
               ))}
             </motion.div>
