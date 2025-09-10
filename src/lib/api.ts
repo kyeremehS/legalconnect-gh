@@ -190,9 +190,7 @@ export interface LawyerAvailability {
 
 // Message types
 export interface SendMessageRequest {
-  senderId: string;
   receiverId: string;
-  senderRole: string;
   content: string;
 }
 
