@@ -27,9 +27,7 @@ import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import VerticalVideoInteractions from "../../../components/VerticalVideoInteractions";
 
-import {
-  legalArticles,
-} from "../../../types/lawyer";
+import { legalArticles } from "../../../types/lawyer";
 // TODO: These need to be moved to types or services
 const legalQuizzes: any[] = [];
 const legalTemplates: any[] = [];
@@ -767,26 +765,26 @@ export default function LegalContentHub() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 flex`}>
+    <div className={`min-h-screen flex`}>
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 px-4 py-3">
+        <div className="flex items-center justify-between ">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="transition-colors p-2 bg-black/60 backdrop-blur-sm rounded-full "
             onClick={() => setIsMobileMenuOpen(true)}
           >
-            <Menu className="w-6 h-6 text-gray-600" />
+            <Menu className="w-6 h-6 text-[#d4a017] " />
           </motion.button>
           {/* <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1> */}
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className=" transition-color p-2 bg-black/60 backdrop-blur-sm rounded-full"
             onClick={() => setShowProgress(true)}
           >
-            <User className="w-6 h-6 text-gray-600" />
+            <User className="w-6 h-6 text-[#d4a017] " />
           </motion.button>
         </div>
       </div>
@@ -886,9 +884,7 @@ export default function LegalContentHub() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col pt-16 lg:pt-0">
-        {renderContent()}
-      </div>
+      <div className="flex-1 flex flex-col lg:pt-0">{renderContent()}</div>
 
       {/* User Progress Modal */}
       {showProgress && (
