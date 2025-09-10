@@ -137,6 +137,14 @@ export default function IntegratedAppointmentBooking() {
 
     try {
       setLoading(true);
+      
+      // Validate required fields
+      if (!bookingData.practiceArea.trim()) {
+        setMessage({ type: 'error', text: 'Please select a practice area.' });
+        setLoading(false);
+        return;
+      }
+
       //Build proper ISO strings
       const start = new Date(`${selectedDate}T${selectedTime}:00`);
       const end = new Date(start.getTime() + parseInt(bookingData.duration, 10) * 60000);
@@ -146,10 +154,12 @@ export default function IntegratedAppointmentBooking() {
         startTime: start.toISOString(),
         endTime: end.toISOString(),
         practiceArea: bookingData.practiceArea,
-        description: bookingData.description,
         meetingType: bookingData.meetingType,
-        duration: parseInt(bookingData.duration,10)
+        duration: bookingData.duration,
+        ...(bookingData.description.trim() && { description: bookingData.description })
       };
+
+      console.log('📤 Sending appointment data:', appointmentData);
 
       const token = localStorage.getItem('authToken');
       const response = await fetch(`${API_BASE_URL}/api/appointments`, {
@@ -180,6 +190,7 @@ export default function IntegratedAppointmentBooking() {
         });
       } else {
         const errorData = await response.json();
+        console.log('❌ Backend validation error:', errorData);
         throw new Error(errorData.message || 'Failed to book appointment');
       }
     } catch (error) {
