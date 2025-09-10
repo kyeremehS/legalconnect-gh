@@ -262,9 +262,11 @@ export class ApiClient {
       const response = await fetch(url, config);
       console.log('📡 Response status:', response.status);
       const data = await response.json();
+      console.log('📡 Response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'API request failed');
+        console.error('❌ API error response:', data);
+        throw new Error(data.message || `API request failed with status ${response.status}`);
       }
 
       return data;

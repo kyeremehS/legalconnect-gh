@@ -9,11 +9,17 @@ import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 
 
-import { Bot, Calendar, MessageCircle, Video, User, Bell, BookOpen } from "lucide-react";
+import { Bot, Calendar, MessageCircle, Video, User, Bell, BookOpen, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const features = [
-
+  {
+    name: "Find Lawyers",
+    description: "Discover and connect with legal experts.",
+    href: "/User-landing/network",
+    icon: "/lawyer.png",
+    mobileIcon: Users,
+  },
   {
     name: "Book Appointment",
     description: "Schedule a meeting with a lawyer.",

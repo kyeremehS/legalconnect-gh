@@ -16,19 +16,19 @@ import {
 import { motion } from "framer-motion";
 import { useMessaging } from "../../../hooks/useMessaging";
 import ClientAuthWrapper from "../../components/auth/ClientAuthWrapper";
+import { useAuth } from "../../../contexts/AuthContext";
+import LawyerSelectionModal from "../../components/messaging/LawyerSelectionModal";
 
 export default function ClientMessagesComponent() {
   const searchParams = useSearchParams();
+  const { user } = useAuth(); // Get authenticated user
   
-  // Temporary user ID for testing - in production this would come from your auth system
-  const user = { id: "client-user-id" };
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   
   // Get current user ID from auth system
-  const currentUserId = user?.id;
-  
   const {
+    currentUserId,
     chats,
     selectedChat,
     messages,
@@ -40,23 +40,32 @@ export default function ClientMessagesComponent() {
     formatMessageTime,
     getUnreadCountForChat,
     createChat,
-  } = useMessaging(currentUserId, "CLIENT");
+  } = useMessaging("CLIENT");
 
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLawyerSelection, setShowLawyerSelection] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('ClientMessagesComponent - User state:', { user, currentUserId });
+  }, [user, currentUserId]);
 
   // Handle lawyer pre-selection from URL params
   useEffect(() => {
     const lawyerId = searchParams.get('lawyer');
     const lawyerName = searchParams.get('name');
     
-    if (lawyerId && lawyerName && !selectedChat) {
+    if (lawyerId && lawyerName && !selectedChat && currentUserId) {
       // Create and select chat with the specified lawyer
+      console.log('Creating chat with lawyer:', lawyerId, lawyerName);
       const lawyerChat = createChat(lawyerId, decodeURIComponent(lawyerName));
-      selectChat(lawyerChat);
+      if (lawyerChat) {
+        selectChat(lawyerChat);
+      }
     }
-  }, [searchParams, selectedChat, createChat, selectChat]);
+  }, [searchParams, selectedChat, createChat, selectChat, currentUserId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -82,6 +91,14 @@ export default function ClientMessagesComponent() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const handleSelectLawyer = (lawyerId: string, lawyerName: string) => {
+    const lawyerChat = createChat(lawyerId, lawyerName);
+    if (lawyerChat) {
+      selectChat(lawyerChat);
+      setShowLawyerSelection(false);
     }
   };
 
@@ -145,14 +162,10 @@ export default function ClientMessagesComponent() {
                   />
                 </div>
                 <button
-                  onClick={() => {
-                    // Create a test chat for demonstration
-                    const testChat = createChat("test-lawyer-id", "Test Lawyer");
-                    selectChat(testChat);
-                  }}
+                  onClick={() => setShowLawyerSelection(true)}
                   className="w-full px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8901a] transition-colors text-sm font-medium"
                 >
-                  + Start Test Conversation
+                  + Start New Conversation
                 </button>
               </div>
 
@@ -172,12 +185,18 @@ export default function ClientMessagesComponent() {
                 )}
                 
                 {/* Empty State */}
-                {filteredChats.length === 0 && !isLoading && (
+                {filteredChats.length === 0 && !isLoading && !error && (
                   <div className="flex items-center justify-center p-8">
                     <div className="text-center">
                       <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">No conversations yet</p>
-                      <p className="text-sm text-gray-400 mt-1">Start chatting with your lawyers</p>
+                      <p className="text-gray-500 mb-2">No conversations yet</p>
+                      <p className="text-sm text-gray-400 mb-4">Start chatting with lawyers to get legal help</p>
+                      <button
+                        onClick={() => setShowLawyerSelection(true)}
+                        className="px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8941f] transition-colors text-sm font-medium"
+                      >
+                        Find Lawyers
+                      </button>
                     </div>
                   </div>
                 )}
@@ -317,16 +336,29 @@ export default function ClientMessagesComponent() {
                 <div className="flex-1 flex items-center justify-center">
                   <div className="text-center">
                     <MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Select a conversation</h3>
-                    <p className="text-gray-400">Choose a lawyer from the sidebar to start messaging</p>
+                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to get legal help?</h3>
+                    <p className="text-gray-400 mb-4">Choose a lawyer to start messaging or find new lawyers to connect with</p>
+                    <button
+                      onClick={() => setShowLawyerSelection(true)}
+                      className="px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8941f] transition-colors text-sm font-medium"
+                    >
+                      Find Lawyers to Message
+                    </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
         </div>
+        </div>
       </div>
-      </div>
+
+      {/* Lawyer Selection Modal */}
+      <LawyerSelectionModal
+        isOpen={showLawyerSelection}
+        onClose={() => setShowLawyerSelection(false)}
+        onSelectLawyer={handleSelectLawyer}
+      />
     </ClientAuthWrapper>
   );
 }

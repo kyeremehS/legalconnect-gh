@@ -21,15 +21,11 @@ import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 import { useMessaging } from "../../../hooks/useMessaging";
 
 export default function MessagesAndCalls() {
-  // Temporary user ID for testing - in production this would come from your auth system
-  const user = { id: "lawyer-user-id" };
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   
-  // Get current user ID from auth system
-  const currentUserId = user?.id;
-  
   const {
+    currentUserId,
     chats,
     selectedChat,
     messages,
@@ -41,7 +37,7 @@ export default function MessagesAndCalls() {
     formatMessageTime,
     getUnreadCountForChat,
     createChat,
-  } = useMessaging(currentUserId, "LAWYER");
+  } = useMessaging("LAWYER");
 
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");

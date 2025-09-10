@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiClient, MessageData, SendMessageRequest } from '../src/lib/api';
+import { useAuth } from '../src/contexts/AuthContext';
 
 export interface Chat {
   id: string;
@@ -9,7 +10,26 @@ export interface Chat {
   unreadCount: number;
 }
 
-export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER") => {
+export interface UseMessagingReturn {
+  currentUserId: string | undefined;
+  chats: Chat[];
+  selectedChat: Chat | null;
+  messages: MessageData[];
+  isLoading: boolean;
+  error: string | null;
+  selectChat: (chat: Chat) => Promise<void>;
+  sendTextMessage: (content: string) => Promise<void>;
+  markMessageAsRead: (messageId: string) => Promise<void>;
+  formatMessageTime: (timestamp: string) => string;
+  getUnreadCountForChat: (chat: Chat) => number;
+  createChat: (userId: string, userName: string) => Chat | null;
+  loadConversation: (senderId: string, receiverId: string) => Promise<void>;
+}
+
+export const useMessaging = (userRole: string = "LAWYER"): UseMessagingReturn => {
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+  
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<MessageData[]>([]);
@@ -38,6 +58,13 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
         senderRole: userRole,
         content: content.trim()
       };
+
+      console.log('🔍 Debug - Message data being sent:', {
+        currentUserId,
+        receiverId,
+        userRole,
+        messageData
+      });
 
       const response = await apiClient.sendMessage(messageData);
       
@@ -138,6 +165,7 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
   }, []);
 
   return {
+    currentUserId,
     chats,
     selectedChat,
     messages,
