@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
   DELETE_VIDEO_COMMENT: (commentId: string) => `/api/videos/comment/${commentId}`,
   // Message endpoints
   SEND_MESSAGE: '/api/messages',
+  GET_USER_CONVERSATIONS: '/api/messages/conversations',
   GET_CONVERSATION: (senderId: string, receiverId: string) => `/api/messages/${senderId}/${receiverId}`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
@@ -681,6 +682,11 @@ export class ApiClient {
       method: 'POST',
       body: JSON.stringify(messageData),
     });
+  }
+
+  // Get all conversations for the authenticated user
+  async getUserConversations(): Promise<ApiResponse<any[]>> {
+    return this.request(API_ENDPOINTS.GET_USER_CONVERSATIONS);
   }
 
   // Get conversation between two users
