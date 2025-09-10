@@ -606,7 +606,7 @@ export default function LegalContentHub() {
                               onClick={() => navigateVideo("up")}
                               disabled={activeIdx === 0}
                             >
-                              <ChevronUp className="w-4 h-4" />
+                              <ChevronUp className="w-5 h-5" />
                             </motion.button>
 
                             <motion.button
@@ -616,7 +616,7 @@ export default function LegalContentHub() {
                               onClick={() => navigateVideo("down")}
                               disabled={activeIdx === videos.length - 1}
                             >
-                              <ChevronDown className="w-4 h-4" />
+                              <ChevronDown className="w-5 h-5" />
                             </motion.button>
                           </div>
 
@@ -638,10 +638,10 @@ export default function LegalContentHub() {
 
       case "articles":
         return (
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto mt-10 lg:mt-0">
             <div className="max-w-6xl mx-auto">
               {/* Back Button for Articles - Mobile */}
-              <div className="lg:hidden mb-4">
+              {/* <div className="lg:hidden mb-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -651,7 +651,7 @@ export default function LegalContentHub() {
                   <ArrowLeft className="w-5 h-5" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
-              </div>
+              </div> */}
 
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -684,10 +684,10 @@ export default function LegalContentHub() {
 
       case "quizzes":
         return (
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto mt-10 lg:mt-0">
             <div className="max-w-6xl mx-auto">
               {/* Back Button for Quizzes - Mobile */}
-              <div className="lg:hidden mb-4">
+              {/* <div className="lg:hidden mb-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -697,7 +697,7 @@ export default function LegalContentHub() {
                   <ArrowLeft className="w-4 h-4" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
-              </div>
+              </div> */}
 
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -723,10 +723,10 @@ export default function LegalContentHub() {
 
       case "templates":
         return (
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto mt-10 lg:mt-0">
             <div className="max-w-6xl mx-auto">
               {/* Back Button for Templates - Mobile */}
-              <div className="lg:hidden mb-4">
+              {/* <div className="lg:hidden mb-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -736,7 +736,7 @@ export default function LegalContentHub() {
                   <ArrowLeft className="w-4 h-4" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
-              </div>
+              </div> */}
 
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -768,24 +768,24 @@ export default function LegalContentHub() {
     <div className={`min-h-screen flex`}>
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 px-4 py-3">
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center justify-end ">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="transition-colors p-2 bg-black/60 backdrop-blur-sm rounded-full "
+            className="transition-colors p-2 backdrop-blur-sm rounded-full "
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu className="w-6 h-6 text-[#d4a017] " />
           </motion.button>
           {/* <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1> */}
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className=" transition-color p-2 bg-black/60 backdrop-blur-sm rounded-full"
+            className=" transition-color p-2 backdrop-blur-sm rounded-full"
             onClick={() => setShowProgress(true)}
           >
             <User className="w-6 h-6 text-[#d4a017] " />
-          </motion.button>
+          </motion.button> */}
         </div>
       </div>
 
