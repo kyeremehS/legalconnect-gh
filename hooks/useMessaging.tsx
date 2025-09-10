@@ -39,13 +39,17 @@ export const useMessaging = (userRole: string = "LAWYER"): UseMessagingReturn =>
 
   // Load all conversations for the current user
   const loadUserConversations = useCallback(async () => {
-    if (!currentUserId) return;
+    console.log('🔍 loadUserConversations called - currentUserId:', currentUserId);
+    if (!currentUserId) {
+      console.log('❌ No currentUserId, skipping conversation load');
+      return;
+    }
 
     try {
       setIsLoading(true);
       setError(null);
 
-      console.log('Loading conversations for user:', currentUserId);
+      console.log('📡 Making API call to getUserConversations...');
       const response = await apiClient.getUserConversations();
       
       if (response.success && response.data) {
@@ -78,10 +82,12 @@ export const useMessaging = (userRole: string = "LAWYER"): UseMessagingReturn =>
 
   // Load user conversations when component mounts
   useEffect(() => {
-    console.log('useMessaging: User authentication changed:', { currentUserId, userRole });
+    console.log('🔄 useMessaging: useEffect triggered:', { currentUserId, userRole, user });
     if (currentUserId) {
-      console.log('useMessaging: Loading conversations for user:', currentUserId);
+      console.log('✅ useMessaging: CurrentUserId found, loading conversations for user:', currentUserId);
       loadUserConversations();
+    } else {
+      console.log('❌ useMessaging: No currentUserId, skipping conversation load');
     }
   }, [currentUserId, loadUserConversations]);
 

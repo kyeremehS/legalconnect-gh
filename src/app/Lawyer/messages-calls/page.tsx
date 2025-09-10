@@ -39,6 +39,47 @@ export default function MessagesAndCalls() {
     createChat,
   } = useMessaging("LAWYER");
 
+  const messagingHook = useMessaging("LAWYER");
+
+  // Debug function to manually load conversations
+  const handleDebugLoadConversations = () => {
+    console.log('🐛 Debug: Manually loading conversations for currentUserId:', currentUserId);
+    console.log('🐛 Debug: Current chats state:', chats);
+    console.log('🐛 Debug: isLoading:', isLoading);
+    console.log('🐛 Debug: error:', error);
+    console.log('🐛 Debug: messaging hook:', messagingHook);
+    console.log('🐛 Debug: loadUserConversations type:', typeof (messagingHook as any).loadUserConversations);
+    if ((messagingHook as any).loadUserConversations) {
+      (messagingHook as any).loadUserConversations();
+    } else {
+      console.error('❌ loadUserConversations is not available');
+    }
+  };
+
+  // Debug function to manually set authentication
+  const handleDebugSetAuth = () => {
+    const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZWJxcGJodDAwMDA5NDZrNzIzcGZjdHMiLCJlbWFpbCI6ImFiYXNzQGdtYWlsLmNvbSIsInJvbGUiOiJMQVdZRVIiLCJpYXQiOjE3NTc0OTM0ODgsImV4cCI6MTc2MDA4NTQ4OH0.qqbDBFCjoqGl6wpxYigtAzOBaaoM4MKaS84o5yOVFcI";
+    const testUser = {
+      id: "cmebqpbht0000946k723pfcts",
+      firstName: "Abass Kalimba",
+      lastName: "Amankwaa", 
+      email: "abass@gmail.com",
+      role: "LAWYER"
+    };
+    
+    localStorage.setItem('authToken', testToken);
+    localStorage.setItem('user', JSON.stringify(testUser));
+    window.location.reload();
+  };
+
+  // Add logging to see what's happening with chats
+  useEffect(() => {
+    console.log('📊 Lawyer Messages Page: chats updated:', chats);
+    console.log('📊 Lawyer Messages Page: currentUserId:', currentUserId);
+    console.log('📊 Lawyer Messages Page: isLoading:', isLoading);
+    console.log('📊 Lawyer Messages Page: error:', error);
+  }, [chats, currentUserId, isLoading, error]);
+
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -288,9 +329,23 @@ export default function MessagesAndCalls() {
                     const testChat = createChat("test-client-id", "Test Client");
                     selectChat(testChat);
                   }}
-                  className="w-full px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8901a] transition-colors text-sm font-medium"
+                  className="w-full px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8901a] transition-colors text-sm font-medium mb-2"
                 >
                   + Start Test Conversation
+                </button>
+                
+                <button
+                  onClick={handleDebugLoadConversations}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium mb-2"
+                >
+                  🐛 Debug: Load Conversations
+                </button>
+                
+                <button
+                  onClick={handleDebugSetAuth}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  🔑 Debug: Set Lawyer Auth
                 </button>
               </div>
 

@@ -686,7 +686,10 @@ export class ApiClient {
 
   // Get all conversations for the authenticated user
   async getUserConversations(): Promise<ApiResponse<any[]>> {
-    return this.request(API_ENDPOINTS.GET_USER_CONVERSATIONS);
+    console.log('🌐 API Client: Making getUserConversations request to:', API_ENDPOINTS.GET_USER_CONVERSATIONS);
+    const result = await this.request(API_ENDPOINTS.GET_USER_CONVERSATIONS);
+    console.log('🌐 API Client: getUserConversations response:', result);
+    return result;
   }
 
   // Get conversation between two users
