@@ -1,13 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  BookOpen,
-  Tv,
-  FileText,
-  MessageSquare,
-  X,
-  Brain,
-  House,
-} from "lucide-react";
+import { BookOpen, Tv, FileText, Eye, X, Brain, House } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type ContentType = "videos" | "articles" | "quizzes" | "templates";
@@ -19,11 +11,13 @@ export default function MobileSidebar({
   onClose,
   activeContent,
   setActiveContent,
+  setShowProgress,
 }: {
   isOpen: boolean;
   onClose: () => void;
   activeContent: ContentType;
   setActiveContent: (content: ContentType) => void;
+  setShowProgress: (show: boolean) => void;
 }) {
   const router = useRouter();
 
@@ -127,19 +121,31 @@ export default function MobileSidebar({
 
                 {/* Quick Stats */}
                 <div className="mt-8 bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl p-4">
-                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">
-                    Learning Stats
-                  </h3>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-800 text-sm">
+                      Learning Stats
+                    </h3>
+
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowProgress(true)}
+                      className="p-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                      title="View Detailed Progress"
+                    >
+                      <Eye className="w-4 h-4 text-[#d4a017]" />
+                    </motion.button>
+                  </div>
+                  <div className="space-y-2 text-xs p-1">
+                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Videos Watched</span>
                       <span className="font-medium">23</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Articles Read</span>
                       <span className="font-medium">12</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Quizzes Completed</span>
                       <span className="font-medium">5</span>
                     </div>
