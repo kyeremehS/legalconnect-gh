@@ -178,7 +178,7 @@ export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
               className="w-full bg-[#d4a017] text-white py-2 px-3 rounded-xl text-xs font-medium hover:bg-[#b8941f] transition-colors flex items-center justify-center gap-1"
               onClick={(e) => {
                 e.stopPropagation();
-                handleBookAppointment();
+              handleBookAppointment();
               }}
             >
               <Calendar className="w-3 h-3" />

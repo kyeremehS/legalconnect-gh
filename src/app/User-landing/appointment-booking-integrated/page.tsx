@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import AuthWrapper from "../../components/auth/AuthWrapper";
 
+
+
 interface LawyerWithAvailability {
   id: string;
   user: {
@@ -135,15 +137,18 @@ export default function IntegratedAppointmentBooking() {
 
     try {
       setLoading(true);
+      //Build proper ISO strings
+      const start = new Date(`${selectedDate}T${selectedTime}:00`);
+      const end = new Date(start.getTime() + parseInt(bookingData.duration, 10) * 60000);
       const appointmentData = {
         lawyerId: selectedLawyer.id,
         title: `Consultation - ${bookingData.practiceArea}`,
-        startTime: `${selectedDate}T${selectedTime}:00`,
-        endTime: `${selectedDate}T${addMinutesToTime(selectedTime, parseInt(bookingData.duration))}:00`,
+        startTime: start.toISOString(),
+        endTime: end.toISOString(),
         practiceArea: bookingData.practiceArea,
         description: bookingData.description,
         meetingType: bookingData.meetingType,
-        duration: bookingData.duration,
+        duration: parseInt(bookingData.duration,10)
       };
 
       const token = localStorage.getItem('authToken');
