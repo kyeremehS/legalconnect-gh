@@ -43,9 +43,7 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
       }
 
       const messageData: SendMessageRequest = {
-        senderId: currentUserId,
         receiverId: receiverId,
-        senderRole: userRole,
         content: content.trim()
       };
 

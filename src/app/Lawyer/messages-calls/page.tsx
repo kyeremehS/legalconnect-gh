@@ -25,7 +25,6 @@ export default function MessagesAndCalls() {
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   
   const {
-    currentUserId,
     chats,
     selectedChat,
     messages,
@@ -39,22 +38,19 @@ export default function MessagesAndCalls() {
     createChat,
   } = useMessaging("LAWYER");
 
+  // Get current user ID from localStorage or authentication context
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setCurrentUserId(userData.id);
+    }
+  }, []);
+
   const messagingHook = useMessaging("LAWYER");
 
-  // Debug function to manually load conversations
-  const handleDebugLoadConversations = () => {
-    console.log('🐛 Debug: Manually loading conversations for currentUserId:', currentUserId);
-    console.log('🐛 Debug: Current chats state:', chats);
-    console.log('🐛 Debug: isLoading:', isLoading);
-    console.log('🐛 Debug: error:', error);
-    console.log('🐛 Debug: messaging hook:', messagingHook);
-    console.log('🐛 Debug: loadUserConversations type:', typeof (messagingHook as any).loadUserConversations);
-    if ((messagingHook as any).loadUserConversations) {
-      (messagingHook as any).loadUserConversations();
-    } else {
-      console.error('❌ loadUserConversations is not available');
-    }
-  };
 
   // Debug function to manually set authentication
   const handleDebugSetAuth = () => {
@@ -334,19 +330,8 @@ export default function MessagesAndCalls() {
                   + Start Test Conversation
                 </button>
                 
-                <button
-                  onClick={handleDebugLoadConversations}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium mb-2"
-                >
-                  🐛 Debug: Load Conversations
-                </button>
+             
                 
-                <button
-                  onClick={handleDebugSetAuth}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                >
-                  🔑 Debug: Set Lawyer Auth
-                </button>
               </div>
 
               <div className="overflow-y-auto flex-1">
