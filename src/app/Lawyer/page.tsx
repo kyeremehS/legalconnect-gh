@@ -25,7 +25,7 @@ import AppointmentNotificationPopup from "../components/scheduling/AppointmentNo
 
 const navItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
-  { name: "Appointments", href: "/Lawyer/appointments", icon: Calendar },
+  { name: "Appointments", href: "/Lawyer/appointment-dashboard", icon: Calendar },
   {
     name: "Messages & Calls",
     href: "/Lawyer/messages-calls",

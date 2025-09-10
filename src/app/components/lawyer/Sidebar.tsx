@@ -25,14 +25,14 @@ import { UserMenu } from "../customusermenu";
 
 const lawyerNavItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
-  { name: "Appointments", href: "/Lawyer/availability", icon: Calendar },
+  { name: "Appointments", href: "/Lawyer/appointment-dashboard/", icon: Calendar },
   {
     name: "Messages & Calls",
     href: "/Lawyer/messages-calls",
     icon: MessageSquare,
   },
   { name: "Videos", href: "/Lawyer/create-content", icon: FileText },
-  { name: "Clients", href: "#", icon: Users },
+  // { name: "Clients", href: "#", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
   { name: "Settings", href: "/Lawyer/profile-settings", icon: Settings },
 ];
