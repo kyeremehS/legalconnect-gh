@@ -8,6 +8,10 @@ export interface Chat {
   participantNames: { [key: string]: string };
   lastMessage?: MessageData;
   unreadCount: number;
+  // Additional fields for lawyer message calls
+  hasActiveCallRequest?: boolean;
+  callRequestCount?: number;
+  messageCount?: number;
 }
 
 export interface UseMessagingReturn {
@@ -39,7 +43,7 @@ export const useMessaging = (userRole: string = "LAWYER"): UseMessagingReturn =>
 
   // Load all conversations for the current user
   const loadUserConversations = useCallback(async () => {
-    console.log('🔍 loadUserConversations called - currentUserId:', currentUserId);
+    console.log('🔍 loadUserConversations called - currentUserId:', currentUserId, 'userRole:', userRole);
     if (!currentUserId) {
       console.log('❌ No currentUserId, skipping conversation load');
       return;
@@ -49,27 +53,58 @@ export const useMessaging = (userRole: string = "LAWYER"): UseMessagingReturn =>
       setIsLoading(true);
       setError(null);
 
-      console.log('📡 Making API call to getUserConversations...');
-      const response = await apiClient.getUserConversations();
+      let response;
       
-      if (response.success && response.data) {
-        console.log('Loaded conversations:', response.data);
-        // Transform API response to Chat format
-        const transformedChats: Chat[] = response.data.map((conversation: any) => ({
-          id: `${currentUserId}-${conversation.participantId}`,
-          participants: [currentUserId, conversation.participantId],
-          participantNames: {
-            [currentUserId]: 'You',
-            [conversation.participantId]: `${conversation.participant.firstName} ${conversation.participant.lastName}`
-          },
-          lastMessage: conversation.lastMessage,
-          unreadCount: 0 // Could be calculated from messages
-        }));
+      // Use different API endpoints based on user role
+      if (userRole === "LAWYER") {
+        console.log('📡 Making API call to getLawyerMessageCalls for lawyer...');
+        response = await apiClient.getLawyerMessageCalls();
+        
+        if (response.success && response.data) {
+          console.log('Loaded lawyer message calls:', response.data);
+          // Transform API response for lawyer message calls
+          const transformedChats: Chat[] = response.data.map((item: any) => ({
+            id: `${currentUserId}-${item.clientId}`,
+            participants: [currentUserId, item.clientId],
+            participantNames: {
+              [currentUserId]: 'You',
+              [item.clientId]: `${item.client.firstName} ${item.client.lastName}`
+            },
+            lastMessage: item.latestMessage,
+            unreadCount: 0, // Could be calculated based on message status
+            hasActiveCallRequest: item.hasActiveCallRequest || false,
+            callRequestCount: item.callRequestCount || 0,
+            messageCount: item.messageCount || 0
+          }));
 
-        setChats(transformedChats);
-        console.log('Transformed chats:', transformedChats);
+          setChats(transformedChats);
+          console.log('Transformed lawyer chats:', transformedChats);
+        } else {
+          console.log('No message calls found or API error:', response.message);
+        }
       } else {
-        console.log('No conversations found or API error:', response.message);
+        console.log('📡 Making API call to getUserConversations for regular user...');
+        response = await apiClient.getUserConversations();
+        
+        if (response.success && response.data) {
+          console.log('Loaded conversations:', response.data);
+          // Transform API response to Chat format
+          const transformedChats: Chat[] = response.data.map((conversation: any) => ({
+            id: `${currentUserId}-${conversation.participantId}`,
+            participants: [currentUserId, conversation.participantId],
+            participantNames: {
+              [currentUserId]: 'You',
+              [conversation.participantId]: `${conversation.participant.firstName} ${conversation.participant.lastName}`
+            },
+            lastMessage: conversation.lastMessage,
+            unreadCount: 0 // Could be calculated from messages
+          }));
+
+          setChats(transformedChats);
+          console.log('Transformed chats:', transformedChats);
+        } else {
+          console.log('No conversations found or API error:', response.message);
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load conversations';
@@ -78,7 +113,7 @@ export const useMessaging = (userRole: string = "LAWYER"): UseMessagingReturn =>
     } finally {
       setIsLoading(false);
     }
-  }, [currentUserId]);
+  }, [currentUserId, userRole]);
 
   // Load user conversations when component mounts
   useEffect(() => {

@@ -34,6 +34,8 @@ export const API_ENDPOINTS = {
   // Message endpoints
   SEND_MESSAGE: '/api/messages',
   GET_USER_CONVERSATIONS: '/api/messages/conversations',
+  GET_LAWYER_MESSAGE_CALLS: '/api/messages/lawyer/calls',
+  SEND_CALL_REQUEST: '/api/messages/call-request',
   GET_CONVERSATION: (senderId: string, receiverId: string) => `/api/messages/${senderId}/${receiverId}`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
@@ -690,6 +692,23 @@ export class ApiClient {
     const result = await this.request(API_ENDPOINTS.GET_USER_CONVERSATIONS);
     console.log('🌐 API Client: getUserConversations response:', result);
     return result;
+  }
+
+  // Get lawyer message calls (clients who have sent messages to lawyers)
+  async getLawyerMessageCalls(): Promise<ApiResponse<any[]>> {
+    console.log('🌐 API Client: Making getLawyerMessageCalls request to:', API_ENDPOINTS.GET_LAWYER_MESSAGE_CALLS);
+    const result = await this.request(API_ENDPOINTS.GET_LAWYER_MESSAGE_CALLS);
+    console.log('🌐 API Client: getLawyerMessageCalls response:', result);
+    return result;
+  }
+
+  // Send a call request to a lawyer
+  async sendCallRequest(callRequestData: { lawyerId: string; content?: string; requestType?: string }): Promise<ApiResponse<MessageData>> {
+    console.log('🌐 API Client: Sending call request:', callRequestData);
+    return this.request(API_ENDPOINTS.SEND_CALL_REQUEST, {
+      method: 'POST',
+      body: JSON.stringify(callRequestData),
+    });
   }
 
   // Get conversation between two users
