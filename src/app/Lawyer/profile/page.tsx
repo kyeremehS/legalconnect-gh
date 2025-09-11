@@ -46,6 +46,9 @@ export default function Profile() {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<'profile' | 'documents'>('profile');
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState<string | null>(null);
 
   // Ref for hidden file input
   const profilePicInputRef = useRef<HTMLInputElement>(null);
@@ -112,6 +115,72 @@ export default function Profile() {
     setEditProfile({ ...editProfile, [e.target.name]: e.target.value });
   };
 
+  // Handle saving individual fields
+  const handleFieldSave = async (fieldName: string) => {
+    try {
+      setIsSubmitting(true);
+      
+      // Convert frontend profile format to API format for the specific field
+      const apiProfileData: Partial<any> = {};
+      
+      switch (fieldName) {
+        case 'phone':
+          apiProfileData.phone = editProfile.phone;
+          break;
+        case 'location':
+          apiProfileData.location = editProfile.location;
+          break;
+        case 'bio':
+          apiProfileData.professionalSummary = editProfile.bio;
+          break;
+        case 'experience':
+          apiProfileData.experience = editProfile.experience;
+          break;
+        case 'expertise':
+          apiProfileData.practiceAreas = editProfile.expertise;
+          break;
+        case 'education':
+          apiProfileData.education = editProfile.education.join(', ');
+          break;
+        case 'languages':
+          apiProfileData.languages = editProfile.languages;
+          break;
+        default:
+          break;
+      }
+
+      if (apiProfile) {
+        await updateProfile(apiProfileData);
+      } else {
+        await createProfile({
+          firm: editProfile.location,
+          location: editProfile.location,
+          practiceAreas: editProfile.expertise,
+          experience: editProfile.experience,
+          professionalSummary: editProfile.bio,
+          education: editProfile.education.join(', '),
+          barAssociation: "Ghana Bar Association",
+          phone: editProfile.phone,
+          languages: editProfile.languages,
+        });
+      }
+
+      // Update the main profile state
+      setProfile(editProfile);
+      setEditingField(null);
+      setSuccessMessage(`${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} updated successfully!`);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
+      
+    } catch (err) {
+      console.error('Error saving field:', err);
+      setFieldError(`Failed to update ${fieldName}. Please try again.`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSave = async () => {
     try {
       setIsSubmitting(true);
@@ -137,6 +206,10 @@ export default function Profile() {
 
       setProfile(editProfile);
       setEditMode(false);
+      setSuccessMessage('Profile updated successfully!');
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
       console.error('Error saving profile:', err);
       // Handle error - you might want to show a toast notification here
@@ -148,6 +221,16 @@ export default function Profile() {
   const handleCancel = () => {
     setEditProfile(profile);
     setEditMode(false);
+    setEditingField(null);
+  };
+
+  const handleFieldCancel = (fieldName: string) => {
+    // Reset the specific field to original value
+    setEditProfile(prev => ({
+      ...prev,
+      [fieldName]: profile[fieldName as keyof LawyerProfile]
+    }));
+    setEditingField(null);
   };
 
   return (
@@ -173,6 +256,44 @@ export default function Profile() {
               Manage your professional information
             </p>
           </div>
+
+          {/* Success Message */}
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2"
+            >
+              <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                <Save className="w-3 h-3 text-white" />
+              </div>
+              <p className="text-green-800">{successMessage}</p>
+              <button
+                onClick={() => setSuccessMessage(null)}
+                className="ml-auto text-green-600 hover:text-green-800"
+              >
+                ×
+              </button>
+            </motion.div>
+          )}
+
+          {/* Field Error Message */}
+          {fieldError && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2"
+            >
+              <X className="w-5 h-5 text-red-500" />
+              <p className="text-red-800">{fieldError}</p>
+              <button
+                onClick={() => setFieldError(null)}
+                className="ml-auto text-red-600 hover:text-red-800"
+              >
+                ×
+              </button>
+            </motion.div>
+          )}
 
           {/* Error Display */}
           {error && (
@@ -293,23 +414,77 @@ export default function Profile() {
                         </div>
                         <div className="flex items-center gap-2 text-gray-700">
                           <Phone className="w-4 h-4" />
-                          <input
-                            name="phone"
-                            value={editProfile.phone}
-                            onChange={handleEditChange}
-                            className="border border-[#F9A825]/40 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
-                            placeholder="Phone"
-                          />
+                          {editingField === 'phone' ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                name="phone"
+                                value={editProfile.phone}
+                                onChange={handleEditChange}
+                                className="border border-[#F9A825]/40 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
+                                placeholder="Phone"
+                              />
+                              <button
+                                onClick={() => handleFieldSave('phone')}
+                                disabled={isSubmitting}
+                                className="p-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                              >
+                                <Save className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => handleFieldCancel('phone')}
+                                className="p-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 group">
+                              <span>{profile.phone}</span>
+                              <button
+                                onClick={() => setEditingField('phone')}
+                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-[#d4a017] transition-all"
+                              >
+                                <Edit className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 text-gray-700">
                           <MapPin className="w-4 h-4" />
-                          <input
-                            name="location"
-                            value={editProfile.location}
-                            onChange={handleEditChange}
-                            className="border border-[#F9A825]/40 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
-                            placeholder="Location"
-                          />
+                          {editingField === 'location' ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                name="location"
+                                value={editProfile.location}
+                                onChange={handleEditChange}
+                                className="border border-[#F9A825]/40 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
+                                placeholder="Location"
+                              />
+                              <button
+                                onClick={() => handleFieldSave('location')}
+                                disabled={isSubmitting}
+                                className="p-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                              >
+                                <Save className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => handleFieldCancel('location')}
+                                className="p-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 group">
+                              <span>{profile.location}</span>
+                              <button
+                                onClick={() => setEditingField('location')}
+                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-[#d4a017] transition-all"
+                              >
+                                <Edit className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -377,41 +552,93 @@ export default function Profile() {
 
               {/* Bio & Experience */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200">
-                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
-                  About Me
-                </h3>
-                {editMode ? (
-                  <textarea
-                    name="bio"
-                    value={editProfile.bio}
-                    onChange={handleEditChange}
-                    className="w-full border border-[#F9A825]/40 rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
-                    placeholder="Short bio"
-                    rows={3}
-                  />
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-[#1a1a1a]">
+                    About Me
+                  </h3>
+                  {!editingField && !editMode && (
+                    <button
+                      onClick={() => setEditingField('bio')}
+                      className="p-2 text-gray-400 hover:text-[#d4a017] hover:bg-amber-50 rounded-lg transition-all"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {editingField === 'bio' ? (
+                  <div className="mb-6">
+                    <textarea
+                      name="bio"
+                      value={editProfile.bio}
+                      onChange={handleEditChange}
+                      className="w-full border border-[#F9A825]/40 rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
+                      placeholder="Tell clients about your legal background and experience..."
+                      rows={4}
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleFieldSave('bio')}
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {isSubmitting ? 'Saving...' : 'Save'}
+                      </button>
+                      <button
+                        onClick={() => handleFieldCancel('bio')}
+                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 flex items-center gap-2"
+                      >
+                        <X className="w-4 h-4" />
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 ) : (
-                  <p className="text-[#4a4a4a] mb-6">{profile.bio}</p>
+                  <p className="text-[#4a4a4a] mb-6">{profile.bio || 'No bio added yet. Click edit to add your professional summary.'}</p>
                 )}
                 <div className="grid grid-cols-2 gap-6">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-[#fff8eb] flex items-center justify-center">
                       <Book className="w-6 h-6 text-[#d4a017]" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm text-[#4a4a4a]">Experience</p>
-                      {editMode ? (
-                        <input
-                          name="experience"
-                          type="number"
-                          value={editProfile.experience}
-                          onChange={handleEditChange}
-                          className="border border-[#F9A825]/40 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] w-20 text-gray-700"
-                          placeholder="Years"
-                        />
+                      {editingField === 'experience' ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            name="experience"
+                            type="number"
+                            value={editProfile.experience}
+                            onChange={handleEditChange}
+                            className="border border-[#F9A825]/40 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] w-20 text-gray-700"
+                            placeholder="Years"
+                          />
+                          <button
+                            onClick={() => handleFieldSave('experience')}
+                            disabled={isSubmitting}
+                            className="p-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                          >
+                            <Save className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => handleFieldCancel('experience')}
+                            className="p-1 bg-gray-400 text-white rounded hover:bg-gray-500"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
                       ) : (
-                        <p className="font-semibold text-[#1a1a1a]">
-                          {profile.experience} Years
-                        </p>
+                        <div className="flex items-center gap-2 group">
+                          <p className="font-semibold text-[#1a1a1a]">
+                            {profile.experience} Years
+                          </p>
+                          <button
+                            onClick={() => setEditingField('experience')}
+                            className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-[#d4a017] transition-all"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -446,145 +673,277 @@ export default function Profile() {
             <div className="col-span-12 lg:col-span-4 space-y-6">
               {/* Education */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200">
-                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
-                  Education
-                </h3>
-                {editMode ? (
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-[#1a1a1a]">
+                    Education
+                  </h3>
+                  {!editingField && !editMode && (
+                    <button
+                      onClick={() => setEditingField('education')}
+                      className="p-2 text-gray-400 hover:text-[#d4a017] hover:bg-amber-50 rounded-lg transition-all"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {editingField === 'education' ? (
                   <div className="space-y-2 text-gray-700">
                     {editProfile.education.map((edu, idx) => (
-                      <input
-                        key={idx}
-                        value={edu}
-                        onChange={(e) => {
-                          const newEdu = [...editProfile.education];
-                          newEdu[idx] = e.target.value;
-                          setEditProfile({ ...editProfile, education: newEdu });
-                        }}
-                        className="w-full border border-[#F9A825]/40 rounded-lg px-3 py-2 mb-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
-                        placeholder={`Education ${idx + 1}`}
-                      />
+                      <div key={idx} className="flex items-center gap-2">
+                        <input
+                          value={edu}
+                          onChange={(e) => {
+                            const newEdu = [...editProfile.education];
+                            newEdu[idx] = e.target.value;
+                            setEditProfile({ ...editProfile, education: newEdu });
+                          }}
+                          className="flex-1 border border-[#F9A825]/40 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
+                          placeholder={`Education ${idx + 1}`}
+                        />
+                        <button
+                          onClick={() => {
+                            const newEdu = editProfile.education.filter((_, i) => i !== idx);
+                            setEditProfile({ ...editProfile, education: newEdu });
+                          }}
+                          className="p-2 text-red-400 hover:text-red-600"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
                     ))}
-                    <button
-                      type="button"
-                      className="px-3 py-1 bg-[#d4a017] text-white rounded hover:bg-[#b17d25] transition-colors"
-                      onClick={() =>
-                        setEditProfile({
-                          ...editProfile,
-                          education: [...editProfile.education, ""],
-                        })
-                      }
-                    >
-                      + Add Education
-                    </button>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        type="button"
+                        className="px-3 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b17d25] transition-colors flex items-center gap-2"
+                        onClick={() =>
+                          setEditProfile({
+                            ...editProfile,
+                            education: [...editProfile.education, ""],
+                          })
+                        }
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Education
+                      </button>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => handleFieldSave('education')}
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {isSubmitting ? 'Saving...' : 'Save'}
+                      </button>
+                      <button
+                        onClick={() => handleFieldCancel('education')}
+                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 flex items-center gap-2"
+                      >
+                        <X className="w-4 h-4" />
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <ul className="space-y-3">
-                    {profile.education.map((edu, index) => (
-                      <li key={index} className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-[#d4a017]" />
-                        <span className="text-[#4a4a4a]">{edu}</span>
-                      </li>
-                    ))}
+                    {profile.education.length > 0 ? (
+                      profile.education.map((edu, index) => (
+                        <li key={index} className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-[#d4a017]" />
+                          <span className="text-[#4a4a4a]">{edu}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="text-gray-400 italic">No education added yet. Click edit to add your qualifications.</li>
+                    )}
                   </ul>
                 )}
               </div>
 
               {/* Areas of Expertise */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200">
-                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
-                  Areas of Expertise
-                </h3>
-                {editMode ? (
-                  <div className="flex flex-wrap gap-2 text-gray-700">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-[#1a1a1a]">
+                    Areas of Expertise
+                  </h3>
+                  {!editingField && !editMode && (
+                    <button
+                      onClick={() => setEditingField('expertise')}
+                      className="p-2 text-gray-400 hover:text-[#d4a017] hover:bg-amber-50 rounded-lg transition-all"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {editingField === 'expertise' ? (
+                  <div className="space-y-2 text-gray-700">
                     {editProfile.expertise.map((expert, idx) => (
-                      <input
-                        key={idx}
-                        value={expert}
-                        onChange={(e) => {
-                          const newExpert = [...editProfile.expertise];
-                          newExpert[idx] = e.target.value;
+                      <div key={idx} className="flex items-center gap-2">
+                        <input
+                          value={expert}
+                          onChange={(e) => {
+                            const newExpert = [...editProfile.expertise];
+                            newExpert[idx] = e.target.value;
+                            setEditProfile({
+                              ...editProfile,
+                              expertise: newExpert,
+                            });
+                          }}
+                          className="flex-1 border border-[#F9A825]/40 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
+                          placeholder={`Expertise ${idx + 1}`}
+                        />
+                        <button
+                          onClick={() => {
+                            const newExpert = editProfile.expertise.filter((_, i) => i !== idx);
+                            setEditProfile({ ...editProfile, expertise: newExpert });
+                          }}
+                          className="p-2 text-red-400 hover:text-red-600"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        type="button"
+                        className="px-3 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b17d25] transition-colors flex items-center gap-2"
+                        onClick={() =>
                           setEditProfile({
                             ...editProfile,
-                            expertise: newExpert,
-                          });
-                        }}
-                        className="border border-[#F9A825]/40 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
-                        placeholder={`Expertise ${idx + 1}`}
-                      />
-                    ))}
-                    <button
-                      type="button"
-                      className="px-3 py-1 bg-[#d4a017] text-white rounded hover:bg-[#b17d25] transition-colors"
-                      onClick={() =>
-                        setEditProfile({
-                          ...editProfile,
-                          expertise: [...editProfile.expertise, ""],
-                        })
-                      }
-                    >
-                      + Add Expertise
-                    </button>
+                            expertise: [...editProfile.expertise, ""],
+                          })
+                        }
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Expertise
+                      </button>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => handleFieldSave('expertise')}
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {isSubmitting ? 'Saving...' : 'Save'}
+                      </button>
+                      <button
+                        onClick={() => handleFieldCancel('expertise')}
+                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 flex items-center gap-2"
+                      >
+                        <X className="w-4 h-4" />
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {profile.expertise.map((expert, index) => (
-                      <span
-                        key={index}
-                        className="bg-[#f9a825]/20 text-[#1a237e] px-3 py-1 rounded"
-                      >
-                        {expert}
-                      </span>
-                    ))}
+                    {profile.expertise.length > 0 ? (
+                      profile.expertise.map((expert, index) => (
+                        <span
+                          key={index}
+                          className="bg-[#f9a825]/20 text-[#1a237e] px-3 py-1 rounded"
+                        >
+                          {expert}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-400 italic">No expertise areas added yet. Click edit to add your specializations.</span>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Languages */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200">
-                <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
-                  Languages
-                </h3>
-                {editMode ? (
-                  <div className="flex flex-wrap gap-2 text-gray-700">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-[#1a1a1a]">
+                    Languages
+                  </h3>
+                  {!editingField && !editMode && (
+                    <button
+                      onClick={() => setEditingField('languages')}
+                      className="p-2 text-gray-400 hover:text-[#d4a017] hover:bg-amber-50 rounded-lg transition-all"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {editingField === 'languages' ? (
+                  <div className="space-y-2 text-gray-700">
                     {editProfile.languages.map((lang, idx) => (
-                      <input
-                        key={idx}
-                        value={lang}
-                        onChange={(e) => {
-                          const newLang = [...editProfile.languages];
-                          newLang[idx] = e.target.value;
+                      <div key={idx} className="flex items-center gap-2">
+                        <input
+                          value={lang}
+                          onChange={(e) => {
+                            const newLang = [...editProfile.languages];
+                            newLang[idx] = e.target.value;
+                            setEditProfile({
+                              ...editProfile,
+                              languages: newLang,
+                            });
+                          }}
+                          className="flex-1 border border-[#F9A825]/40 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
+                          placeholder={`Language ${idx + 1}`}
+                        />
+                        <button
+                          onClick={() => {
+                            const newLang = editProfile.languages.filter((_, i) => i !== idx);
+                            setEditProfile({ ...editProfile, languages: newLang });
+                          }}
+                          className="p-2 text-red-400 hover:text-red-600"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        type="button"
+                        className="px-3 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b17d25] transition-colors flex items-center gap-2"
+                        onClick={() =>
                           setEditProfile({
                             ...editProfile,
-                            languages: newLang,
-                          });
-                        }}
-                        className="border border-[#F9A825]/40 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[#F9A825] text-gray-700"
-                        placeholder={`Language ${idx + 1}`}
-                      />
-                    ))}
-                    <button
-                      type="button"
-                      className="px-3 py-1 bg-[#d4a017] text-white rounded hover:bg-[#b17d25] transition-colors"
-                      onClick={() =>
-                        setEditProfile({
-                          ...editProfile,
-                          languages: [...editProfile.languages, ""],
-                        })
-                      }
-                    >
-                      + Add Language
-                    </button>
+                            languages: [...editProfile.languages, ""],
+                          })
+                        }
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Language
+                      </button>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => handleFieldSave('languages')}
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {isSubmitting ? 'Saving...' : 'Save'}
+                      </button>
+                      <button
+                        onClick={() => handleFieldCancel('languages')}
+                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 flex items-center gap-2"
+                      >
+                        <X className="w-4 h-4" />
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {profile.languages.map((lang, index) => (
-                      <span
-                        key={index}
-                        className="bg-[#f9a825]/20 text-[#1a237e] px-3 py-1 rounded"
-                      >
-                        {lang}
-                      </span>
-                    ))}
+                    {profile.languages.length > 0 ? (
+                      profile.languages.map((lang, index) => (
+                        <span
+                          key={index}
+                          className="bg-[#f9a825]/20 text-[#1a237e] px-3 py-1 rounded"
+                        >
+                          {lang}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-400 italic">No languages added yet. Click edit to add languages you speak.</span>
+                    )}
                   </div>
                 )}
               </div>
