@@ -36,6 +36,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+console.log('🔧 API_BASE_URL configured as:', API_BASE_URL);
 
 // Interfaces for dynamic content
 interface UpcomingAppointment {
@@ -152,14 +153,43 @@ export default function Home() {
   // Function to fetch public data
   const fetchPublicData = async () => {
     try {
+      console.log('🔄 Fetching public data from:', API_BASE_URL);
+      
+      // First, test if the API server is reachable
+      try {
+        const healthCheck = await fetch(`${API_BASE_URL}/`, { 
+          method: 'GET',
+          mode: 'cors' // Explicitly set CORS mode
+        });
+        console.log('🏥 Health check response:', healthCheck.status);
+        if (!healthCheck.ok) {
+          console.warn('⚠️ Health check returned non-OK status, but continuing...');
+        }
+      } catch (healthError) {
+        console.error('🚨 Health check failed:', healthError);
+        console.log('🔄 Continuing with API calls anyway...');
+        // Don't throw here, just log and continue
+      }
+      
       // Fetch platform statistics with cache busting
       const timestamp = Date.now();
-      const statsResponse = await fetch(`${API_BASE_URL}/api/public/platform-stats?t=${timestamp}`, {
+      const statsUrl = `${API_BASE_URL}/api/public/platform-stats?t=${timestamp}`;
+      console.log('📊 Fetching platform stats from:', statsUrl);
+      
+      const statsResponse = await fetch(statsUrl, {
         method: 'GET',
+        mode: 'cors', // Explicitly set CORS mode
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
         }
+      });
+      
+      console.log('📊 Stats response received:', {
+        status: statsResponse.status,
+        statusText: statsResponse.statusText,
+        ok: statsResponse.ok,
+        headers: Object.fromEntries(statsResponse.headers.entries())
       });
       
       if (statsResponse.ok) {
@@ -169,25 +199,65 @@ export default function Home() {
         setPlatformStats(statsData.data);
         console.log('✅ setPlatformStats called');
       } else {
-        console.error('❌ Stats fetch failed:', statsResponse.status);
+        console.error('❌ Stats fetch failed:', {
+          status: statsResponse.status,
+          statusText: statsResponse.statusText,
+          url: statsUrl
+        });
+        // Try to read the error response
+        try {
+          const errorText = await statsResponse.text();
+          console.error('❌ Error response body:', errorText);
+        } catch (e) {
+          console.error('❌ Could not read error response body');
+        }
       }
 
       // Fetch new videos with cache busting
-      const videosResponse = await fetch(`${API_BASE_URL}/api/public/videos/latest?t=${timestamp}`, {
+      const videosUrl = `${API_BASE_URL}/api/public/videos/latest?t=${timestamp}`;
+      console.log('🎥 Fetching videos from:', videosUrl);
+      
+      const videosResponse = await fetch(videosUrl, {
         method: 'GET',
+        mode: 'cors', // Explicitly set CORS mode
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
         }
       });
       
+      console.log('🎥 Videos response received:', {
+        status: videosResponse.status,
+        statusText: videosResponse.statusText,
+        ok: videosResponse.ok
+      });
+      
       if (videosResponse.ok) {
         const videosData = await videosResponse.json();
+        console.log('✅ Videos data received:', videosData);
         setNewVideos(videosData.data?.slice(0, 3) || []);
+      } else {
+        console.error('❌ Videos fetch failed:', {
+          status: videosResponse.status,
+          statusText: videosResponse.statusText,
+          url: videosUrl
+        });
       }
 
     } catch (error) {
-      console.error('Error fetching public data:', error);
+      console.error('❌ Error fetching public data:', error);
+      console.error('❌ API_BASE_URL:', API_BASE_URL);
+      
+      // Check if it's a network error
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('❌ Network error: Unable to connect to the API server');
+        console.error('❌ Please check if the API server is running on:', API_BASE_URL);
+        console.error('❌ Common causes:');
+        console.error('   - API server is not running');
+        console.error('   - Firewall blocking the connection');
+        console.error('   - CORS configuration issues');
+        console.error('   - Wrong API URL');
+      }
     }
   };
 
