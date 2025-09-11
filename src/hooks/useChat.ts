@@ -11,12 +11,12 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // ✅ Connect socket on mount
+    // Connect socket on mount
     useEffect(() => {
         if (!currentUserId) return;
 
         if (!socket) {
-            socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", {
+            socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000", {
                 query: { userId: currentUserId, role: userRole }
             });
         }
@@ -38,7 +38,7 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
         };
     }, [currentUserId, userRole]);
 
-    // ✅ Send a message
+    // Send a message
     const sendMessage = useCallback(
         async (content: string, type: "message" | "call-request" = "message") => {
             if (!selectedChat || !currentUserId || !content.trim()) return;
@@ -75,7 +75,7 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
         [selectedChat, currentUserId]
     );
 
-    // ✅ Load conversation
+    // Load conversation
     const loadConversation = useCallback(async (senderId: string, receiverId: string) => {
         try {
             setIsLoading(true);
@@ -96,7 +96,7 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
         }
     }, []);
 
-    // ✅ Select a chat
+    // Select a chat
     const selectChat = useCallback(
         async (chat: any) => {
             setSelectedChat(chat);
@@ -110,7 +110,7 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
         [currentUserId, loadConversation]
     );
 
-    // ✅ Create a new chat
+    // Create a new chat
     const createChat = useCallback(
         (userId: string, userName: string) => {
             if (!currentUserId) throw new Error("Current user ID is required");
@@ -134,7 +134,7 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
         messages,
         isLoading,
         error,
-        sendMessage,       // ✅ use sendMessage(content, "message")
+        sendMessage,
         sendCallRequest: (lawyerId: string) => sendMessage("Requesting a call", "call-request"),
         selectChat,
         createChat,
