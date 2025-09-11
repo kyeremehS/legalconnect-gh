@@ -113,26 +113,26 @@ export default function LawyerAppointmentDashboard() {
         return;
       }
 
-      console.log('🔍 Fetching appointments with token:', token ? 'Token exists' : 'No token');
-      console.log('📅 Selected date value:', selectedDate);
+      console.log('Fetching appointments with token:', token ? 'Token exists' : 'No token');
+      console.log('Selected date value:', selectedDate);
 
       // Validate date format before sending
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (selectedDate && !dateRegex.test(selectedDate)) {
-        console.error('❌ Invalid date format:', selectedDate);
+        console.error(' Invalid date format:', selectedDate);
         setMessage({ type: 'error', text: 'Invalid date format detected' });
         return;
       }
 
       const params = new URLSearchParams();
       if (selectedDate) {
-        console.log('📤 Adding date parameter:', selectedDate);
+        console.log('Adding date parameter:', selectedDate);
         params.append('date', selectedDate);
       }
       if (selectedStatus !== 'ALL') params.append('status', selectedStatus);
 
       const url = `${API_BASE_URL}/api/appointments/lawyer?${params}`;
-      console.log('📞 Making request to:', url);
+      console.log('Making request to:', url);
 
       const response = await fetch(url, {
         headers: {
@@ -141,11 +141,11 @@ export default function LawyerAppointmentDashboard() {
         }
       });
 
-      console.log('📊 Response status:', response.status);
+      console.log(' Response status:', response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('✅ Appointments data received:', data);
+        console.log('Appointments data received:', data);
         setAppointments(data.data || []);
       } else if (response.status === 404) {
         // If endpoint doesn't exist yet, show empty state
@@ -153,7 +153,7 @@ export default function LawyerAppointmentDashboard() {
         setAppointments([]);
       } else {
         const errorData = await response.text();
-        console.error('❌ API Error:', response.status, errorData);
+        console.error('API Error:', response.status, errorData);
         throw new Error(`Failed to fetch appointments: ${response.status}`);
       }
     } catch (error) {
