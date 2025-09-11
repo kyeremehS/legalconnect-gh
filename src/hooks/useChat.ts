@@ -1,40 +1,60 @@
 import { useState, useEffect, useCallback } from "react";
-import { io, Socket } from "socket.io-client";
+// Only import socket.io-client on client side
+let io: any = null;
+if (typeof window !== "undefined") {
+  io = require("socket.io-client");
+}
 import { apiClient, MessageData, SendMessageRequest } from "../lib/api";
 
-let socket: Socket | null = null;
+// Define a chat type
+interface Chat {
+    id: string;
+    participants: string[];
+    participantNames: Record<string, string>;
+    lastMessage?: MessageData;
+    unreadCount: number;
+}
 
-export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = "CLIENT") => {
-    const [chats, setChats] = useState<any[]>([]);
-    const [selectedChat, setSelectedChat] = useState<any | null>(null);
+let socket: any = null;
+
+export const useChat = (
+    currentUserId?: string,
+    userRole: "CLIENT" | "LAWYER" = "CLIENT"
+) => {
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
     const [messages, setMessages] = useState<MessageData[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // Connect socket on mount
     useEffect(() => {
-        if (!currentUserId) return;
+        if (!currentUserId || typeof window === "undefined" || !io) return;
 
-        if (!socket) {
-            socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000", {
-                query: { userId: currentUserId, role: userRole }
+        // Always create a new socket for each user
+        socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000", {
+            query: { userId: currentUserId, role: userRole }
+        });
+
+        if (socket) {
+            socket.on("newMessage", (message: MessageData) => {
+                setMessages((prev) => [...prev, message]);
+                setChats((prev) =>
+                    prev.map((chat) =>
+                        chat.id === `${message.senderId}-${message.receiverId}`
+                            ? { ...chat, lastMessage: message }
+                            : chat
+                    )
+                );
             });
         }
 
-        // Listen for new messages
-        socket.on("newMessage", (message: MessageData) => {
-            setMessages((prev) => [...prev, message]);
-            setChats((prev) =>
-                prev.map((chat) =>
-                    chat.id === `${message.senderId}-${message.receiverId}`
-                        ? { ...chat, lastMessage: message }
-                        : chat
-                )
-            );
-        });
-
         return () => {
-            socket?.off("newMessage");
+            if (socket) {
+                socket.off("newMessage");
+                socket.disconnect();
+                socket = null;
+            }
         };
     }, [currentUserId, userRole]);
 
@@ -47,21 +67,22 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
                 setIsLoading(true);
                 setError(null);
 
-                const receiverId = selectedChat.participants.find((p: string) => p !== currentUserId);
+                const receiverId = selectedChat.participants.find((p) => p !== currentUserId);
                 if (!receiverId) throw new Error("No recipient found");
 
+                // If SendMessageRequest does not have 'type', remove it from here
                 const messageData: SendMessageRequest = {
                     receiverId,
                     content: content.trim(),
-                    messageType: type
+                    // type // Remove this line if not in SendMessageRequest
                 };
 
                 const response = await apiClient.sendMessage(messageData);
 
                 if (response.success && response.data) {
-                    setMessages((prev) => [...prev, response.data!]);
+                    setMessages((prev) => [...prev, response.data as MessageData]);
                     setSelectedChat((prev) =>
-                        prev ? { ...prev, lastMessage: response.data! } : null
+                        prev ? { ...prev, lastMessage: response.data as MessageData } : null
                     );
                 } else {
                     throw new Error(response.message || "Failed to send message");
@@ -98,10 +119,10 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
 
     // Select a chat
     const selectChat = useCallback(
-        async (chat: any) => {
+        async (chat: Chat) => {
             setSelectedChat(chat);
             if (currentUserId) {
-                const otherParticipant = chat.participants.find((p: string) => p !== currentUserId);
+                const otherParticipant = chat.participants.find((p) => p !== currentUserId);
                 if (otherParticipant) {
                     await loadConversation(currentUserId, otherParticipant);
                 }
@@ -112,7 +133,7 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
 
     // Create a new chat
     const createChat = useCallback(
-        (userId: string, userName: string) => {
+        (userId: string, userName: string): Chat => {
             if (!currentUserId) throw new Error("Current user ID is required");
 
             return {
