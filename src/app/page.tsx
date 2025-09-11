@@ -234,14 +234,7 @@ export default function Home() {
       
       if (videosResponse.ok) {
         const videosData = await videosResponse.json();
-        console.log('✅ Videos data received:', videosData);
         setNewVideos(videosData.data?.slice(0, 3) || []);
-      } else {
-        console.error('❌ Videos fetch failed:', {
-          status: videosResponse.status,
-          statusText: videosResponse.statusText,
-          url: videosUrl
-        });
       }
 
     } catch (error) {
