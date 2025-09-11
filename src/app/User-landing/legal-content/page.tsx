@@ -149,7 +149,7 @@ export default function LegalContentHub() {
       // Only record views for real videos (not mock videos)
       if (video.lawyerId && !video.lawyerId.startsWith("mock_")) {
         console.log("Recording view for video:", video.title);
-        await apiClient.recordVideoView(video.lawyerId, video.url);
+        await apiClient.recordVideoView(video.lawyerId, video.id);
       } else {
         console.log("Skipping view recording for mock video:", video.title);
       }
@@ -530,6 +530,21 @@ export default function LegalContentHub() {
                                 {video.language}
                               </div>
                             </div>
+                            
+                            {/* Tags Display */}
+                            {video.tags && video.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {video.tags.map((tag, tagIndex) => (
+                                  <span 
+                                    key={tagIndex}
+                                    className="inline-block px-2 py-1 bg-gray-600/30 text-gray-200 text-xs rounded-md"
+                                  >
+                                    #{tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            
                             <p className="text-white/80 text-sm mt-2 line-clamp-2">
                               {video.description}
                             </p>
@@ -624,7 +639,7 @@ export default function LegalContentHub() {
                           {/* Action Buttons - Replace with VideoInteractions */}
                           <VerticalVideoInteractions
                             lawyerId={video.lawyerId}
-                            videoUrl={video.url}
+                            videoId={video.id}
                             className=""
                           />
                         </div>

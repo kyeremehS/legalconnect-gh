@@ -45,10 +45,10 @@ export class VideoService {
           likes: video.likes, // Include real like count from API
           comments: video.comments, // Include real comment count from API
           duration: video.duration,
-          language: "English", // Default language
+          language: video.language || "English", // Use actual language from video
           thumbnail: `/thumbnails/default${(index % 4) + 1}.jpg`, // Default thumbnails
           description: video.description || `Educational video by ${video.lawyer.name} from ${video.lawyer.firm}`,
-          tags: video.lawyer.practiceAreas
+          tags: video.tags || [], // Include tags from video
         }));
       }
       

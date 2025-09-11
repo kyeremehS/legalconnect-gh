@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface VerticalVideoInteractionsProps {
   lawyerId: string;
-  videoUrl: string;
+  videoId: string;
   className?: string;
 }
 
@@ -19,7 +19,7 @@ interface VideoStats {
 
 export default function VerticalVideoInteractions({ 
   lawyerId, 
-  videoUrl, 
+  videoId, 
   className = '' 
 }: VerticalVideoInteractionsProps) {
   const { user } = useAuth();
@@ -29,18 +29,18 @@ export default function VerticalVideoInteractions({
   // Load video stats on component mount
   useEffect(() => {
     loadVideoStats();
-  }, [lawyerId, videoUrl]);
+  }, [lawyerId, videoId]);
 
   const loadVideoStats = async () => {
     try {
-      if (!user || !lawyerId || !videoUrl) {
-        console.log('Skipping video stats load:', { user: !!user, lawyerId, videoUrl });
+      if (!user || !lawyerId || !videoId) {
+        console.log('Skipping video stats load:', { user: !!user, lawyerId, videoId });
         setStats({ likeCount: 0, commentCount: 0, userLiked: false });
         return;
       }
       
-      console.log('Loading video stats for:', { lawyerId, videoUrl });
-      const statsData = await apiClient.getVideoStats(lawyerId, videoUrl);
+      console.log('Loading video stats for:', { lawyerId, videoId });
+      const statsData = await apiClient.getVideoStats(videoId);
       setStats(statsData);
     } catch (error) {
       console.error('Error loading video stats:', error);
@@ -56,15 +56,15 @@ export default function VerticalVideoInteractions({
         return;
       }
 
-      if (!lawyerId || !videoUrl) {
-        console.error('Missing required parameters:', { lawyerId, videoUrl });
+      if (!lawyerId || !videoId) {
+        console.error('Missing required parameters:', { lawyerId, videoId });
         alert('Error: Missing video information');
         return;
       }
 
       setLoading(true);
-      console.log('Toggling like for video:', { lawyerId, videoUrl, user: user?.id });
-      const response = await apiClient.toggleVideoLike(lawyerId, videoUrl);
+      console.log('Toggling like for video:', { lawyerId, videoId, user: user?.id });
+      const response = await apiClient.toggleVideoLike(lawyerId, videoId);
       setStats(prev => ({
         ...prev,
         likeCount: response.likeCount,

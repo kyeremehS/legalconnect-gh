@@ -132,6 +132,8 @@ export interface LawyerVideoData {
   title?: string;
   description?: string;
   category?: string;
+  language?: string;
+  tags?: string[];
 }
 
 // Appointment types
@@ -516,9 +518,9 @@ export class ApiClient {
   }
 
   // Video interaction methods
-  async toggleVideoLike(lawyerId: string, videoUrl: string): Promise<{ liked: boolean; likeCount: number }> {
+  async toggleVideoLike(lawyerId: string, videoId: string): Promise<{ liked: boolean; likeCount: number }> {
     try {
-      console.log('Toggling like for:', { lawyerId, videoUrl });
+      console.log('Toggling like for:', { lawyerId, videoId });
       
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.TOGGLE_VIDEO_LIKE}`, {
         method: 'POST',
@@ -528,7 +530,7 @@ export class ApiClient {
         },
         body: JSON.stringify({
           lawyerId,
-          videoUrl
+          videoId
         }),
       });
 
@@ -549,7 +551,7 @@ export class ApiClient {
     }
   }
 
-  async addVideoComment(lawyerId: string, videoUrl: string, content: string): Promise<any> {
+  async addVideoComment(lawyerId: string, videoId: string, content: string): Promise<any> {
     try {
       const response = await fetch(API_ENDPOINTS.ADD_VIDEO_COMMENT, {
         method: 'POST',
@@ -559,7 +561,7 @@ export class ApiClient {
         },
         body: JSON.stringify({
           lawyerId,
-          videoUrl,
+          videoId,
           content
         }),
       });
@@ -576,9 +578,9 @@ export class ApiClient {
     }
   }
 
-  async getVideoComments(lawyerId: string, videoUrl: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
+  async getVideoComments(videoId: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
     try {
-      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS}?lawyerId=${encodeURIComponent(lawyerId)}&videoUrl=${encodeURIComponent(videoUrl)}&page=${page}&limit=${limit}`;
+      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS}?videoId=${encodeURIComponent(videoId)}&page=${page}&limit=${limit}`;
       const response = await fetch(url, {
         headers: this.getAuthHeaders(),
       });
@@ -595,10 +597,10 @@ export class ApiClient {
     }
   }
 
-  async getVideoStats(lawyerId: string, videoUrl: string): Promise<{ likeCount: number; commentCount: number; userLiked: boolean }> {
+  async getVideoStats(videoId: string): Promise<{ likeCount: number; commentCount: number; userLiked: boolean }> {
     try {
       // Use GET with query parameters for the test endpoint
-      const url = `${this.baseUrl}${API_ENDPOINTS.GET_VIDEO_STATS}?lawyerId=${encodeURIComponent(lawyerId)}&videoUrl=${encodeURIComponent(videoUrl)}`;
+      const url = `${this.baseUrl}${API_ENDPOINTS.GET_VIDEO_STATS}?videoId=${encodeURIComponent(videoId)}`;
       console.log('Fetching stats from:', url);
       
       const response = await fetch(url, {
@@ -640,9 +642,9 @@ export class ApiClient {
     }
   }
 
-  async recordVideoView(lawyerId: string, videoUrl: string, duration?: number): Promise<any> {
+  async recordVideoView(lawyerId: string, videoId: string, duration?: number): Promise<any> {
     try {
-      console.log('Recording video view:', { lawyerId, videoUrl, duration });
+      console.log('Recording video view:', { lawyerId, videoId, duration });
       
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.RECORD_VIDEO_VIEW}`, {
         method: 'POST',
@@ -652,7 +654,7 @@ export class ApiClient {
         },
         body: JSON.stringify({
           lawyerId,
-          videoUrl,
+          videoId,
           duration
         }),
       });

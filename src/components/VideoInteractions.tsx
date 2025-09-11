@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface VideoInteractionsProps {
   lawyerId: string;
-  videoUrl: string;
+  videoId: string;
   className?: string;
 }
 
@@ -24,7 +24,7 @@ interface VideoStats {
   userLiked: boolean;
 }
 
-export default function VideoInteractions({ lawyerId, videoUrl, className = '' }: VideoInteractionsProps) {
+export default function VideoInteractions({ lawyerId, videoId, className = '' }: VideoInteractionsProps) {
   const { user } = useAuth();
   const [stats, setStats] = useState<VideoStats>({ likeCount: 0, commentCount: 0, userLiked: false });
   const [comments, setComments] = useState<Comment[]>([]);
@@ -38,7 +38,7 @@ export default function VideoInteractions({ lawyerId, videoUrl, className = '' }
   // Load video stats on component mount
   useEffect(() => {
     loadVideoStats();
-  }, [lawyerId, videoUrl]);
+  }, [lawyerId, videoId]);
 
   // Load comments when comments section is opened
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function VideoInteractions({ lawyerId, videoUrl, className = '' }
   const loadVideoStats = async () => {
     try {
       if (!user) return;
-      const statsData = await apiClient.getVideoStats(lawyerId, videoUrl);
+      const statsData = await apiClient.getVideoStats(videoId);
       setStats(statsData);
     } catch (error) {
       console.error('Error loading video stats:', error);
@@ -64,7 +64,7 @@ export default function VideoInteractions({ lawyerId, videoUrl, className = '' }
       setLoading(true);
       if (!user) return;
       
-      const response = await apiClient.getVideoComments(lawyerId, videoUrl, currentPage, 10);
+      const response = await apiClient.getVideoComments(videoId, currentPage, 10);
       setComments(response.comments || []);
       setTotalPages(response.totalPages || 1);
     } catch (error) {
@@ -82,7 +82,7 @@ export default function VideoInteractions({ lawyerId, videoUrl, className = '' }
         return;
       }
 
-      const response = await apiClient.toggleVideoLike(lawyerId, videoUrl);
+      const response = await apiClient.toggleVideoLike(lawyerId, videoId);
       setStats(prev => ({
         ...prev,
         likeCount: response.likeCount,
@@ -106,7 +106,7 @@ export default function VideoInteractions({ lawyerId, videoUrl, className = '' }
       }
 
       setSubmitting(true);
-      const comment = await apiClient.addVideoComment(lawyerId, videoUrl, newComment.trim());
+      const comment = await apiClient.addVideoComment(lawyerId, videoId, newComment.trim());
       
       // Add the new comment to the list
       setComments(prev => [comment, ...prev]);
