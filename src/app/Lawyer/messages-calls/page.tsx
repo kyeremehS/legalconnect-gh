@@ -32,11 +32,20 @@ export default function LawyerMessages() {
     isLoading,
     error,
     selectChat,
-    sendTextMessage,
-    formatMessageTime,
-    getUnreadCountForChat,
+    sendMessage,
+    // getUnreadCountForChat, // Removed because not provided by useChat
     markMessageAsRead,
   } = useChat(currentUserId, "LAWYER");
+
+  // Helper function to format message time
+  const formatMessageTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    return isToday
+      ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      : date.toLocaleDateString();
+  };
 
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,7 +67,7 @@ export default function LawyerMessages() {
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    await sendTextMessage(newMessage);
+    await sendMessage(newMessage);
     setNewMessage("");
   };
 
@@ -138,11 +147,7 @@ export default function LawyerMessages() {
                 <p className="text-sm text-gray-500 truncate">
                   {getLastMessagePreview(chat)}
                 </p>
-                {getUnreadCountForChat(chat) > 0 && (
-                  <span className="ml-2 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {getUnreadCountForChat(chat)}
-                  </span>
-                )}
+                {/* Unread count badge removed because getUnreadCountForChat is not available */}
               </div>
             ))}
           </div>
