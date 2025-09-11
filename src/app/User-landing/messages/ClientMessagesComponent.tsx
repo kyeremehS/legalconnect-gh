@@ -13,7 +13,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useChat } from "../../../hooks/useChat"; // unified hook
+import { useMessaging } from "../../../hooks/useMessaging"; // unified hook
 import ClientAuthWrapper from "../../components/auth/ClientAuthWrapper";
 import { useAuth } from "../../../contexts/AuthContext";
 import LawyerSelectionModal from "../../components/messaging/LawyerSelectionModal";
@@ -33,13 +33,13 @@ export default function ClientMessagesComponent() {
     isLoading,
     error,
     selectChat,
-    sendMessage,
+    sendTextMessage,
     markMessageAsRead,
     formatMessageTime,
     getUnreadCountForChat,
     createChat,
     loadConversation,
-  } = useChat(user?.id, "CLIENT");
+  } = useMessaging(user?.id, "CLIENT");
 
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -76,7 +76,7 @@ export default function ClientMessagesComponent() {
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    await sendMessage(newMessage);
+    await sendTextMessage(newMessage);
     setNewMessage("");
   };
 
