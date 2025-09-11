@@ -28,7 +28,6 @@ export default function ClientMessagesComponent() {
   
   // Get current user ID from auth system
   const {
-    currentUserId,
     chats,
     selectedChat,
     messages,
@@ -40,7 +39,8 @@ export default function ClientMessagesComponent() {
     formatMessageTime,
     getUnreadCountForChat,
     createChat,
-  } = useMessaging("CLIENT");
+    loadConversation
+  } = useMessaging(user?.id, "CLIENT");
 
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,15 +49,15 @@ export default function ClientMessagesComponent() {
 
   // Debug logging
   useEffect(() => {
-    console.log('ClientMessagesComponent - User state:', { user, currentUserId });
-  }, [user, currentUserId]);
+    console.log('ClientMessagesComponent - User state:', { user, userId: user?.id });
+  }, [user, user?.id]);
 
   // Handle lawyer pre-selection from URL params
   useEffect(() => {
     const lawyerId = searchParams.get('lawyer');
     const lawyerName = searchParams.get('name');
     
-    if (lawyerId && lawyerName && !selectedChat && currentUserId) {
+    if (lawyerId && lawyerName && !selectedChat && user?.id) {
       // Create and select chat with the specified lawyer
       console.log('Creating chat with lawyer:', lawyerId, lawyerName);
       const lawyerChat = createChat(lawyerId, decodeURIComponent(lawyerName));
@@ -65,7 +65,7 @@ export default function ClientMessagesComponent() {
         selectChat(lawyerChat);
       }
     }
-  }, [searchParams, selectedChat, createChat, selectChat, currentUserId]);
+  }, [searchParams, selectedChat, createChat, selectChat, user?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -74,12 +74,12 @@ export default function ClientMessagesComponent() {
   useEffect(() => {
     if (selectedChat && messages.length > 0) {
       messages.forEach((message: any) => {
-        if (!message.readAt && message.senderId !== currentUserId) {
+        if (!message.readAt && message.senderId !== user?.id) {
           markMessageAsRead(message.id);
         }
       });
     }
-  }, [selectedChat, messages, currentUserId, markMessageAsRead]);
+  }, [selectedChat, messages, user?.id, markMessageAsRead]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -103,7 +103,7 @@ export default function ClientMessagesComponent() {
   };
 
   const getOtherParticipantName = (chat: any) => {
-    const otherParticipant = chat.participants.find((p: string) => p !== currentUserId);
+    const otherParticipant = chat.participants.find((p: string) => p !== user?.id);
     return otherParticipant ? chat.participantNames[otherParticipant] : "Unknown";
   };
 
@@ -281,19 +281,19 @@ export default function ClientMessagesComponent() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className={`flex ${
-                          message.senderId === currentUserId ? 'justify-end' : 'justify-start'
+                          message.senderId === user?.id ? 'justify-end' : 'justify-start'
                         }`}
                       >
                         <div
                           className={`max-w-[70%] p-3 rounded-lg ${
-                            message.senderId === currentUserId
+                            message.senderId === user?.id
                               ? 'bg-[#d4a017] text-white'
                               : 'bg-white text-[#1a1a1a] shadow-sm border border-gray-200'
                           }`}
                         >
                           <p className="text-sm">{message.content}</p>
                           <p className={`text-xs mt-1 ${
-                            message.senderId === currentUserId ? 'text-yellow-100' : 'text-[#4a4a4a]'
+                            message.senderId === user?.id ? 'text-yellow-100' : 'text-[#4a4a4a]'
                           }`}>
                             {formatMessageTime(message.createdAt)}
                           </p>

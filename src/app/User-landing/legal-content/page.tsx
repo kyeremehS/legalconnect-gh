@@ -18,6 +18,12 @@ import {
   ArrowLeft,
   House,
   Eye,
+  Building2,
+  Briefcase,
+  Users2,
+  Heart,
+  Shield,
+  Lightbulb,
 } from "lucide-react";
 import UserProgressModal from "../../components/UserProgressModal";
 import TemplateDownloader from "../../components/TemplateDownloader";
@@ -34,6 +40,7 @@ import { legalArticles } from "../../../types/lawyer";
 const legalQuizzes = [
   {
     id: "1",
+    icon: <Building2 className="w-6 h-6" />,
     title: "Ghana Property Law Quiz",
     description: "Test your knowledge of property laws, tenant rights, and landlord obligations in Ghana.",
     questions: 15,
@@ -46,6 +53,7 @@ const legalQuizzes = [
   },
   {
     id: "2",
+    icon: <Briefcase className="w-6 h-6" />,
     title: "Corporate Law Fundamentals",
     description: "Quiz on business registration, corporate governance, and compliance in Ghana.",
     questions: 20,
@@ -58,6 +66,7 @@ const legalQuizzes = [
   },
   {
     id: "3",
+    icon: <Users2 className="w-6 h-6" />,
     title: "Employment Rights and Responsibilities",
     description: "Assess your understanding of Ghana's Labour Act and employment regulations.",
     questions: 12,
@@ -70,6 +79,7 @@ const legalQuizzes = [
   },
   {
     id: "4",
+    icon: <Heart className="w-6 h-6" />,
     title: "Family Law and Marriage",
     description: "Test your knowledge of marriage types, divorce procedures, and child custody in Ghana.",
     questions: 18,
@@ -82,6 +92,7 @@ const legalQuizzes = [
   },
   {
     id: "5",
+    icon: <Shield className="w-6 h-6" />,
     title: "Criminal Law Procedures",
     description: "Quiz on arrest procedures, constitutional rights, and criminal justice processes.",
     questions: 16,
@@ -94,6 +105,7 @@ const legalQuizzes = [
   },
   {
     id: "6",
+    icon: <Lightbulb className="w-6 h-6" />,
     title: "Intellectual Property Basics",
     description: "Test your understanding of IP protection, trademarks, and copyrights in Ghana.",
     questions: 14,
@@ -114,12 +126,9 @@ const legalTemplates = [
     description: "Standard rental agreement template compliant with Ghana's Rent Act 1963.",
     category: "Property Law",
     format: "PDF",
-    pages: 8,
-    downloads: 2341,
-    rating: 4.8,
-    price: "Free",
-    imageUrl: "/templates/rental-agreement.jpg",
-    downloadUrl: "/downloads/rental-agreement-template.pdf"
+    downloads: "2.3K",
+    fileSize: "245 KB",
+    featured: true
   },
   {
     id: "2",
@@ -127,12 +136,9 @@ const legalTemplates = [
     description: "Comprehensive employment contract template based on Ghana's Labour Act 2003.",
     category: "Employment Law",
     format: "Word Document",
-    pages: 12,
-    downloads: 1876,
-    rating: 4.7,
-    price: "Free",
-    imageUrl: "/templates/employment-contract.jpg",
-    downloadUrl: "/downloads/employment-contract-template.docx"
+    downloads: "1.9K",
+    fileSize: "178 KB",
+    featured: true
   },
   {
     id: "3",
@@ -140,12 +146,9 @@ const legalTemplates = [
     description: "General and specific power of attorney templates for various legal purposes.",
     category: "General Law",
     format: "PDF",
-    pages: 6,
-    downloads: 1523,
-    rating: 4.6,
-    price: "Free",
-    imageUrl: "/templates/power-of-attorney.jpg",
-    downloadUrl: "/downloads/power-of-attorney-template.pdf"
+    downloads: "1.5K",
+    fileSize: "156 KB",
+    featured: false
   },
   {
     id: "4",
@@ -153,12 +156,9 @@ const legalTemplates = [
     description: "Simple will template compliant with Ghana's Wills Act for estate planning.",
     category: "Family Law",
     format: "PDF",
-    pages: 10,
-    downloads: 987,
-    rating: 4.9,
-    price: "Free",
-    imageUrl: "/templates/will-testament.jpg",
-    downloadUrl: "/downloads/will-testament-template.pdf"
+    downloads: "987",
+    fileSize: "234 KB",
+    featured: true
   },
   {
     id: "5",
@@ -166,12 +166,9 @@ const legalTemplates = [
     description: "Partnership agreement template for business partnerships in Ghana.",
     category: "Corporate Law",
     format: "Word Document",
-    pages: 15,
-    downloads: 1234,
-    rating: 4.5,
-    price: "Free",
-    imageUrl: "/templates/partnership-agreement.jpg",
-    downloadUrl: "/downloads/partnership-agreement-template.docx"
+    downloads: "1.2K",
+    fileSize: "298 KB",
+    featured: false
   },
   {
     id: "6",
@@ -179,12 +176,9 @@ const legalTemplates = [
     description: "Standard NDA template for protecting confidential business information.",
     category: "Corporate Law",
     format: "PDF",
-    pages: 5,
-    downloads: 1654,
-    rating: 4.4,
-    price: "Free",
-    imageUrl: "/templates/nda-template.jpg",
-    downloadUrl: "/downloads/nda-template.pdf"
+    downloads: "1.7K",
+    fileSize: "123 KB",
+    featured: false
   },
   {
     id: "7",
@@ -192,12 +186,9 @@ const legalTemplates = [
     description: "Professional debt recovery letter templates for various debt scenarios.",
     category: "General Law",
     format: "Word Document",
-    pages: 4,
-    downloads: 876,
-    rating: 4.2,
-    price: "Free",
-    imageUrl: "/templates/debt-recovery.jpg",
-    downloadUrl: "/downloads/debt-recovery-template.docx"
+    downloads: "876",
+    fileSize: "89 KB",
+    featured: false
   },
   {
     id: "8",
@@ -205,12 +196,9 @@ const legalTemplates = [
     description: "Template for sale of goods agreements compliant with Ghana's Sale of Goods Act.",
     category: "Commercial Law",
     format: "PDF",
-    pages: 7,
-    downloads: 1098,
-    rating: 4.6,
-    price: "Free",
-    imageUrl: "/templates/sale-of-goods.jpg",
-    downloadUrl: "/downloads/sale-of-goods-template.pdf"
+    downloads: "1.1K",
+    fileSize: "189 KB",
+    featured: false
   }
 ];
 
