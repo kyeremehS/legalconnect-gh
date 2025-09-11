@@ -10,6 +10,15 @@ export interface UploadResult {
   error?: string;
 }
 
+export interface VideoMetadata {
+  title: string;
+  description: string;
+  category: string;
+  language: string;
+  tags: string[];
+  duration?: string;
+}
+
 export interface DocumentUploadResult {
   uploadedFiles: string[];
   urls: { [key: string]: string };
@@ -127,6 +136,51 @@ export class UploadService {
       return result;
     } catch (error) {
       console.error('Video upload error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Upload a video with metadata (title, description, tags, etc.)
+   */
+  static async uploadVideoWithMetadata(
+    lawyerId: string, 
+    videoFile: File, 
+    metadata: VideoMetadata
+  ): Promise<UploadResult> {
+    try {
+      const formData = new FormData();
+      formData.append('video', videoFile);
+      formData.append('title', metadata.title);
+      formData.append('description', metadata.description);
+      formData.append('category', metadata.category);
+      formData.append('language', metadata.language);
+      formData.append('tags', JSON.stringify(metadata.tags));
+
+      const url = `${API_BASE_URL}/api/uploads/lawyer/${lawyerId}/video-with-metadata`;
+      console.log('Upload URL:', url);
+      console.log('Lawyer ID:', lawyerId);
+      console.log('Video file:', videoFile.name, videoFile.size);
+      console.log('Video metadata:', metadata);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response statusText:', response.statusText);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('Error response:', errorText);
+        throw new Error(`Video upload failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Video upload with metadata error:', error);
       throw error;
     }
   }

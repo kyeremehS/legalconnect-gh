@@ -32,6 +32,7 @@ export default function BookAppointmentModal({
     e.preventDefault();
     
     const appointmentData = {
+      clientId: localStorage.getItem('userId'), // Assuming user ID is stored in localStorage after login
       lawyerId: lawyer.id,
       title: `Consultation - ${practiceArea || 'Legal Matter'}`,
       startTime: new Date(`${selectedDate} ${selectedTime}`).toISOString(),

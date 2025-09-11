@@ -25,7 +25,7 @@ import AppointmentNotificationPopup from "../components/scheduling/AppointmentNo
 
 const navItems = [
   { name: "Dashboard", href: "/Lawyer", icon: Activity },
-  { name: "Appointments", href: "/Lawyer/appointments", icon: Calendar },
+  { name: "Appointments", href: "/Lawyer/appointment-dashboard", icon: Calendar },
   {
     name: "Messages & Calls",
     href: "/Lawyer/messages-calls",
@@ -38,36 +38,145 @@ const navItems = [
 
 ];
 
-const statistics = [
-  { label: "Active Cases", value: "24", change: "+2" },
-  { label: "Pending Reviews", value: "12", change: "-3" },
-  { label: "Revenue", value: "$15,234", change: "+12%" },
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-const recentActivities = [
-  { id: 1, title: "New case assigned", time: "2 hours ago", type: "case" },
-  {
-    id: 2,
-    title: "Client meeting scheduled",
-    time: "4 hours ago",
-    type: "meeting",
-  },
-  {
-    id: 3,
-    title: "Document review completed",
-    time: "Yesterday",
-    type: "document",
-  },
-];
+interface Statistic {
+  label: string;
+  value: string;
+  change: string;
+}
+
+interface RecentActivity {
+  id: number;
+  title: string;
+  time: string;
+  type: string;
+}
 
 const LawyerDashboard = () => {
   const { user } = useAuth();
+  const [statistics, setStatistics] = useState<Statistic[]>([
+    { label: "Total Appointments", value: "0", change: "+0" },
+    { label: "Pending Appointments", value: "0", change: "+0" },
+    { label: "Completed Appointments", value: "0", change: "+0" },
+  ]);
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const {
     notifications,
     confirmAppointment,
     rejectAppointment,
     dismissNotification
   } = useAppointmentNotifications();
+
+  // Fetch dashboard statistics
+  const fetchStatistics = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/api/appointments/lawyer/stats`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const data = result.data;
+        setStatistics([
+          { label: "Total Appointments", value: data.total?.toString() || "0", change: data.totalChange || "+0" },
+          { label: "Pending Appointments", value: data.pending?.toString() || "0", change: data.pendingChange || "+0" },
+          { label: "Completed Appointments", value: data.completed?.toString() || "0", change: data.completedChange || "+0" },
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch statistics:', error);
+    }
+  };
+
+  // Fetch recent activities
+  const fetchRecentActivities = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/api/appointments/lawyer/recent-activities`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Transform appointment data into recent activities
+        const activities: RecentActivity[] = [];
+        
+        // Add recent appointments
+        data.data.recentAppointments?.forEach((apt: any) => {
+          const timeAgo = getTimeAgo(apt.createdAt);
+          activities.push({
+            id: activities.length + 1,
+            title: `New appointment booked by ${apt.client?.firstName || 'Client'}`,
+            time: timeAgo,
+            type: "appointment"
+          });
+        });
+
+        // Add completed appointments
+        data.data.completedAppointments?.forEach((apt: any) => {
+          const timeAgo = getTimeAgo(apt.updatedAt);
+          activities.push({
+            id: activities.length + 1,
+            title: `Consultation with ${apt.client?.firstName || 'Client'} completed`,
+            time: timeAgo,
+            type: "completed"
+          });
+        });
+
+        // Sort by most recent and limit to 5
+        setRecentActivities(activities.slice(0, 5));
+      }
+    } catch (error) {
+      console.error('Failed to fetch recent activities:', error);
+      // Fallback to static data
+      setRecentActivities([
+        { id: 1, title: "New appointment booked", time: "2 hours ago", type: "appointment" },
+        { id: 2, title: "Consultation completed", time: "4 hours ago", type: "completed" },
+        { id: 3, title: "New client message", time: "2 days ago", type: "message" },
+      ]);
+    }
+  };
+
+  // Helper function to calculate time ago
+  const getTimeAgo = (dateString: string): string => {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffMs = now.getTime() - past.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffHours < 1) return "Just now";
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays === 1) return "Yesterday";
+    return `${diffDays} days ago`;
+  };
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      setLoading(true);
+      await Promise.all([fetchStatistics(), fetchRecentActivities()]);
+      setLoading(false);
+    };
+
+    if (user) {
+      loadDashboardData();
+    }
+  }, [user]);
 
   return (
     <LawyerAuthWrapper>
@@ -77,7 +186,13 @@ const LawyerDashboard = () => {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-800">
-                Welcome back, {user?.firstName} {user?.lastName}
+                Welcome back, {
+                  user?.firstName && user?.lastName 
+                    ? `${user.firstName} ${user.lastName}`
+                    : user?.fullName 
+                    ? user.fullName
+                    : user?.firstName || 'Lawyer'
+                }
               </h1>
               <p className="text-gray-600">
                 Here's what's happening with your practice today.
@@ -116,8 +231,19 @@ const LawyerDashboard = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Recent Activity
             </h2>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d4a017]"></div>
+                <span className="ml-2 text-gray-600">Loading activities...</span>
+              </div>
+            ) : recentActivities.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <Activity className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                <p>No recent activities</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {recentActivities.map((activity, index) => (
                 <motion.div
                   key={activity.id}
                   initial={{ opacity: 0 }}
@@ -127,53 +253,23 @@ const LawyerDashboard = () => {
                 >
                   <div className="flex-shrink-0">
                     {/* Icon based on activity type */}
+                    {activity.type === "appointment" && (
+                      <Calendar className="w-6 h-6 text-blue-500" />
+                    )}
+                    {activity.type === "completed" && (
+                      <Activity className="w-6 h-6 text-green-500" />
+                    )}
+                    {activity.type === "message" && (
+                      <MessageSquare className="w-6 h-6 text-purple-500" />
+                    )}
                     {activity.type === "case" && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 text-blue-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 3h18M3 12h18M3 21h18"
-                        />
-                      </svg>
+                      <FileText className="w-6 h-6 text-orange-500" />
                     )}
                     {activity.type === "meeting" && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 text-green-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v8m4-4H8"
-                        />
-                      </svg>
+                      <Users className="w-6 h-6 text-indigo-500" />
                     )}
                     {activity.type === "document" && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 text-red-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 8v8m4-4H8"
-                        />
-                      </svg>
+                      <FileText className="w-6 h-6 text-red-500" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -184,7 +280,8 @@ const LawyerDashboard = () => {
                   </div>
                 </motion.div>
               ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

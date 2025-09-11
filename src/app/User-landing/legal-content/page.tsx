@@ -17,6 +17,13 @@ import {
   Languages,
   ArrowLeft,
   House,
+  Eye,
+  Building2,
+  Briefcase,
+  Users2,
+  Heart,
+  Shield,
+  Lightbulb,
 } from "lucide-react";
 import UserProgressModal from "../../components/UserProgressModal";
 import TemplateDownloader from "../../components/TemplateDownloader";
@@ -27,12 +34,175 @@ import QuizCard from "../../components/QuizCard";
 import MobileSidebar from "../../components/mobilesidebar";
 import VerticalVideoInteractions from "../../../components/VerticalVideoInteractions";
 
-import {
-  legalArticles,
-} from "../../../types/lawyer";
+import { legalArticles } from "../../../types/lawyer";
+
+// Legal Quizzes Mock Data
+const legalQuizzes = [
+  {
+    id: "1",
+    icon: <Building2 className="w-6 h-6" />,
+    title: "Ghana Property Law Quiz",
+    description: "Test your knowledge of property laws, tenant rights, and landlord obligations in Ghana.",
+    questions: 15,
+    duration: "20 mins",
+    difficulty: "Intermediate",
+    category: "Property Law",
+    completions: 1247,
+    rating: 4.6,
+    imageUrl: "/quizzes/property-law-quiz.jpg"
+  },
+  {
+    id: "2",
+    icon: <Briefcase className="w-6 h-6" />,
+    title: "Corporate Law Fundamentals",
+    description: "Quiz on business registration, corporate governance, and compliance in Ghana.",
+    questions: 20,
+    duration: "25 mins",
+    difficulty: "Advanced",
+    category: "Corporate Law",
+    completions: 892,
+    rating: 4.8,
+    imageUrl: "/quizzes/corporate-law-quiz.jpg"
+  },
+  {
+    id: "3",
+    icon: <Users2 className="w-6 h-6" />,
+    title: "Employment Rights and Responsibilities",
+    description: "Assess your understanding of Ghana's Labour Act and employment regulations.",
+    questions: 12,
+    duration: "15 mins",
+    difficulty: "Beginner",
+    category: "Employment Law",
+    completions: 1534,
+    rating: 4.4,
+    imageUrl: "/quizzes/employment-law-quiz.jpg"
+  },
+  {
+    id: "4",
+    icon: <Heart className="w-6 h-6" />,
+    title: "Family Law and Marriage",
+    description: "Test your knowledge of marriage types, divorce procedures, and child custody in Ghana.",
+    questions: 18,
+    duration: "22 mins",
+    difficulty: "Intermediate",
+    category: "Family Law",
+    completions: 756,
+    rating: 4.5,
+    imageUrl: "/quizzes/family-law-quiz.jpg"
+  },
+  {
+    id: "5",
+    icon: <Shield className="w-6 h-6" />,
+    title: "Criminal Law Procedures",
+    description: "Quiz on arrest procedures, constitutional rights, and criminal justice processes.",
+    questions: 16,
+    duration: "18 mins",
+    difficulty: "Advanced",
+    category: "Criminal Law",
+    completions: 623,
+    rating: 4.7,
+    imageUrl: "/quizzes/criminal-law-quiz.jpg"
+  },
+  {
+    id: "6",
+    icon: <Lightbulb className="w-6 h-6" />,
+    title: "Intellectual Property Basics",
+    description: "Test your understanding of IP protection, trademarks, and copyrights in Ghana.",
+    questions: 14,
+    duration: "17 mins",
+    difficulty: "Intermediate",
+    category: "Intellectual Property",
+    completions: 445,
+    rating: 4.3,
+    imageUrl: "/quizzes/ip-law-quiz.jpg"
+  }
+];
+
+// Legal Templates Mock Data
+const legalTemplates = [
+  {
+    id: "1",
+    title: "Rental Agreement Template",
+    description: "Standard rental agreement template compliant with Ghana's Rent Act 1963.",
+    category: "Property Law",
+    format: "PDF",
+    downloads: "2.3K",
+    fileSize: "245 KB",
+    featured: true
+  },
+  {
+    id: "2",
+    title: "Employment Contract Template",
+    description: "Comprehensive employment contract template based on Ghana's Labour Act 2003.",
+    category: "Employment Law",
+    format: "Word Document",
+    downloads: "1.9K",
+    fileSize: "178 KB",
+    featured: true
+  },
+  {
+    id: "3",
+    title: "Power of Attorney Form",
+    description: "General and specific power of attorney templates for various legal purposes.",
+    category: "General Law",
+    format: "PDF",
+    downloads: "1.5K",
+    fileSize: "156 KB",
+    featured: false
+  },
+  {
+    id: "4",
+    title: "Will and Testament Template",
+    description: "Simple will template compliant with Ghana's Wills Act for estate planning.",
+    category: "Family Law",
+    format: "PDF",
+    downloads: "987",
+    fileSize: "234 KB",
+    featured: true
+  },
+  {
+    id: "5",
+    title: "Business Partnership Agreement",
+    description: "Partnership agreement template for business partnerships in Ghana.",
+    category: "Corporate Law",
+    format: "Word Document",
+    downloads: "1.2K",
+    fileSize: "298 KB",
+    featured: false
+  },
+  {
+    id: "6",
+    title: "Non-Disclosure Agreement (NDA)",
+    description: "Standard NDA template for protecting confidential business information.",
+    category: "Corporate Law",
+    format: "PDF",
+    downloads: "1.7K",
+    fileSize: "123 KB",
+    featured: false
+  },
+  {
+    id: "7",
+    title: "Debt Recovery Letter Template",
+    description: "Professional debt recovery letter templates for various debt scenarios.",
+    category: "General Law",
+    format: "Word Document",
+    downloads: "876",
+    fileSize: "89 KB",
+    featured: false
+  },
+  {
+    id: "8",
+    title: "Sale of Goods Agreement",
+    description: "Template for sale of goods agreements compliant with Ghana's Sale of Goods Act.",
+    category: "Commercial Law",
+    format: "PDF",
+    downloads: "1.1K",
+    fileSize: "189 KB",
+    featured: false
+  }
+];
+
 // TODO: These need to be moved to types or services
-const legalQuizzes: any[] = [];
-const legalTemplates: any[] = [];
 const videoCategories: any[] = [];
 import {
   VideoService,
@@ -150,7 +320,7 @@ export default function LegalContentHub() {
       // Only record views for real videos (not mock videos)
       if (video.lawyerId && !video.lawyerId.startsWith("mock_")) {
         console.log("Recording view for video:", video.title);
-        await apiClient.recordVideoView(video.lawyerId, video.url);
+        await apiClient.recordVideoView(video.lawyerId, video.id);
       } else {
         console.log("Skipping view recording for mock video:", video.title);
       }
@@ -531,6 +701,21 @@ export default function LegalContentHub() {
                                 {video.language}
                               </div>
                             </div>
+                            
+                            {/* Tags Display */}
+                            {video.tags && video.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {video.tags.map((tag, tagIndex) => (
+                                  <span 
+                                    key={tagIndex}
+                                    className="inline-block px-2 py-1 bg-gray-600/30 text-gray-200 text-xs rounded-md"
+                                  >
+                                    #{tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            
                             <p className="text-white/80 text-sm mt-2 line-clamp-2">
                               {video.description}
                             </p>
@@ -608,7 +793,7 @@ export default function LegalContentHub() {
                               onClick={() => navigateVideo("up")}
                               disabled={activeIdx === 0}
                             >
-                              <ChevronUp className="w-4 h-4" />
+                              <ChevronUp className="w-5 h-5" />
                             </motion.button>
 
                             <motion.button
@@ -618,14 +803,14 @@ export default function LegalContentHub() {
                               onClick={() => navigateVideo("down")}
                               disabled={activeIdx === videos.length - 1}
                             >
-                              <ChevronDown className="w-4 h-4" />
+                              <ChevronDown className="w-5 h-5" />
                             </motion.button>
                           </div>
 
                           {/* Action Buttons - Replace with VideoInteractions */}
                           <VerticalVideoInteractions
                             lawyerId={video.lawyerId}
-                            videoUrl={video.url}
+                            videoId={video.id}
                             className=""
                           />
                         </div>
@@ -640,10 +825,10 @@ export default function LegalContentHub() {
 
       case "articles":
         return (
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto mt-10 lg:mt-0">
             <div className="max-w-6xl mx-auto">
               {/* Back Button for Articles - Mobile */}
-              <div className="lg:hidden mb-4">
+              {/* <div className="lg:hidden mb-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -653,7 +838,7 @@ export default function LegalContentHub() {
                   <ArrowLeft className="w-5 h-5" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
-              </div>
+              </div> */}
 
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -686,10 +871,10 @@ export default function LegalContentHub() {
 
       case "quizzes":
         return (
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto mt-10 lg:mt-0">
             <div className="max-w-6xl mx-auto">
               {/* Back Button for Quizzes - Mobile */}
-              <div className="lg:hidden mb-4">
+              {/* <div className="lg:hidden mb-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -699,7 +884,7 @@ export default function LegalContentHub() {
                   <ArrowLeft className="w-4 h-4" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
-              </div>
+              </div> */}
 
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -725,10 +910,10 @@ export default function LegalContentHub() {
 
       case "templates":
         return (
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto mt-10 lg:mt-0">
             <div className="max-w-6xl mx-auto">
               {/* Back Button for Templates - Mobile */}
-              <div className="lg:hidden mb-4">
+              {/* <div className="lg:hidden mb-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -738,7 +923,7 @@ export default function LegalContentHub() {
                   <ArrowLeft className="w-4 h-4" />
                   <span className="text-sm">Back to Dashboard</span>
                 </motion.button>
-              </div>
+              </div> */}
 
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -767,27 +952,27 @@ export default function LegalContentHub() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 flex`}>
+    <div className={`min-h-screen flex`}>
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 px-4 py-3">
+        <div className="flex items-center justify-end ">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="transition-colors p-2 backdrop-blur-sm rounded-full "
             onClick={() => setIsMobileMenuOpen(true)}
           >
-            <Menu className="w-6 h-6 text-gray-600" />
+            <Menu className="w-6 h-6 text-[#d4a017] " />
           </motion.button>
           {/* <h1 className="font-bold text-lg text-gray-800">Legal Hub</h1> */}
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className=" transition-color p-2 backdrop-blur-sm rounded-full"
             onClick={() => setShowProgress(true)}
           >
-            <User className="w-6 h-6 text-gray-600" />
-          </motion.button>
+            <User className="w-6 h-6 text-[#d4a017] " />
+          </motion.button> */}
         </div>
       </div>
 
@@ -797,6 +982,7 @@ export default function LegalContentHub() {
         onClose={() => setIsMobileMenuOpen(false)}
         activeContent={activeContent}
         setActiveContent={(content) => setActiveContent(content)}
+        setShowProgress={setShowProgress}
       />
 
       {/* Desktop Sidebar */}
@@ -863,19 +1049,31 @@ export default function LegalContentHub() {
 
             {/* Quick Stats */}
             <div className="mt-8 bg-gradient-to-r from-[#d4a017]/10 to-[#b8941f]/10 rounded-xl p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 text-sm">
-                Learning Stats
-              </h3>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-800 text-sm">
+                  Learning Stats
+                </h3>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowProgress(true)}
+                  className="p-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  title="View Detailed Progress"
+                >
+                  <Eye className="w-4 h-4 text-[#d4a017]" />
+                </motion.button>
+              </div>
+              <div className="space-y-2 text-xs p-1">
+                <div className="flex justify-between items-center">
                   <span className="text-gray-600">Videos Watched</span>
                   <span className="font-medium">23</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-gray-600">Articles Read</span>
                   <span className="font-medium">12</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-gray-600">Quizzes Completed</span>
                   <span className="font-medium">5</span>
                 </div>
@@ -886,9 +1084,7 @@ export default function LegalContentHub() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col pt-16 lg:pt-0">
-        {renderContent()}
-      </div>
+      <div className="flex-1 flex flex-col lg:pt-0">{renderContent()}</div>
 
       {/* User Progress Modal */}
       {showProgress && (

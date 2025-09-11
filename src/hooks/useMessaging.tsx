@@ -16,9 +16,19 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Early return if no user is authenticated
+  useEffect(() => {
+    if (!currentUserId) {
+      setError("Please log in to access messaging");
+      return;
+    }
+    setError(null);
+  }, [currentUserId]);
+
   // Send a text message
   const sendTextMessage = useCallback(async (content: string) => {
     if (!selectedChat || !currentUserId || !content.trim()) {
+      setError("Unable to send message. Please ensure you're logged in and have selected a chat.");
       return;
     }
 
@@ -33,30 +43,53 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
       }
 
       const messageData: SendMessageRequest = {
-        senderId: currentUserId,
         receiverId: receiverId,
-        senderRole: userRole,
         content: content.trim()
       };
 
+      console.log('Sending message with data:', messageData);
       const response = await apiClient.sendMessage(messageData);
+      console.log('Send message response:', response);
       
+      // Check if response has success field OR if it looks like a message object directly
       if (response.success && response.data) {
+        // Standard wrapped response format
+        const messageObject = response.data;
+        
         // Add the new message to the current conversation
-        setMessages(prev => [...prev, response.data!]);
+        setMessages(prev => [...prev, messageObject]);
         
         // Update the chat's last message
         setSelectedChat(prev => prev ? {
           ...prev,
-          lastMessage: response.data!
+          lastMessage: messageObject
         } : null);
+        
+        console.log('✅ Message sent successfully');
+      } else if ((response as any).id && (response as any).content) {
+        // Direct message object response (fallback)
+        const messageObject = response as any as MessageData;
+        
+        // Add the new message to the current conversation
+        setMessages(prev => [...prev, messageObject]);
+        
+        // Update the chat's last message
+        setSelectedChat(prev => prev ? {
+          ...prev,
+          lastMessage: messageObject
+        } : null);
+        
+        console.log('✅ Message sent successfully (direct format)');
       } else {
+        console.error('API returned unsuccessful response:', response);
         throw new Error(response.message || 'Failed to send message');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
       setError(errorMessage);
       console.error('Error sending message:', err);
+      console.error('Current user ID:', currentUserId);
+      console.error('Selected chat:', selectedChat);
     } finally {
       setIsLoading(false);
     }
@@ -68,12 +101,23 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
       setIsLoading(true);
       setError(null);
 
+      // Validate that we have valid user IDs
+      if (!senderId || !receiverId) {
+        console.warn('Invalid user IDs for conversation:', { senderId, receiverId });
+        setMessages([]);
+        return;
+      }
+
+      console.log('Loading conversation between:', senderId, 'and', receiverId);
       const response = await apiClient.getConversation(senderId, receiverId);
       
       if (response.success && response.data) {
         setMessages(response.data);
+        console.log('Loaded messages:', response.data.length);
       } else {
-        throw new Error(response.message || 'Failed to load conversation');
+        console.warn('No conversation found or API error:', response.message);
+        // Don't throw error for empty conversations, just set empty messages
+        setMessages([]);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load conversation';
@@ -89,18 +133,26 @@ export const useMessaging = (currentUserId?: string, userRole: string = "LAWYER"
   const selectChat = useCallback(async (chat: Chat) => {
     setSelectedChat(chat);
     
-    if (currentUserId) {
-      const otherParticipant = chat.participants.find(p => p !== currentUserId);
-      if (otherParticipant) {
-        await loadConversation(currentUserId, otherParticipant);
-      }
+    if (!currentUserId) {
+      console.warn('No current user ID available');
+      setError('User not authenticated');
+      return;
+    }
+    
+    const otherParticipant = chat.participants.find(p => p !== currentUserId);
+    if (otherParticipant) {
+      console.log('Selecting chat with:', otherParticipant);
+      await loadConversation(currentUserId, otherParticipant);
+    } else {
+      console.warn('No other participant found in chat');
     }
   }, [currentUserId, loadConversation]);
 
   // Create a new chat with a user
-  const createChat = useCallback((userId: string, userName: string): Chat => {
+  const createChat = useCallback((userId: string, userName: string): Chat | null => {
     if (!currentUserId) {
-      throw new Error('Current user ID is required');
+      console.warn('Cannot create chat: Current user ID is required');
+      return null;
     }
 
     return {

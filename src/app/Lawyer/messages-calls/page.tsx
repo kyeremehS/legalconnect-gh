@@ -18,52 +18,182 @@ import {
 import { motion } from "framer-motion";
 import { div } from "framer-motion/client";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
-import { useMessaging } from "../../../hooks/useMessaging";
 
-export default function MessagesAndCalls() {
-  // Temporary user ID for testing - in production this would come from your auth system
-  const user = { id: "lawyer-user-id" };
-  const [menuOpen, setMenuOpen] = useState(false);
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
-  
-  // Get current user ID from auth system
-  const currentUserId = user?.id;
-  
-  const {
-    chats,
-    selectedChat,
+// Custom hook specifically for lawyer message calls
+const useLawyerMessageCalls = () => {
+  const [clientMessages, setClientMessages] = useState<any[]>([]);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchLawyerMessageCalls = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const token = localStorage.getItem('authToken');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      if (!token || !user.id) {
+        setError('Authentication required');
+        return;
+      }
+
+      console.log('🔍 Fetching lawyer message calls for:', user.id);
+      
+      const response = await fetch(`http://localhost:4000/api/messages/lawyer/calls`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('📨 Lawyer message calls response:', data);
+      
+      if (data.success) {
+        setClientMessages(data.data || []);
+      } else {
+        setError(data.message || 'Failed to fetch message calls');
+      }
+    } catch (err: any) {
+      console.error('❌ Error fetching lawyer message calls:', err);
+      setError(err.message || 'Failed to fetch message calls');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchConversationWith = async (clientId: string) => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('authToken');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      const response = await fetch(`http://localhost:4000/api/messages/${user.id}/${clientId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setMessages(data.data || []);
+        }
+      }
+    } catch (err: any) {
+      console.error('❌ Error fetching conversation:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const sendMessage = async (content: string) => {
+    if (!selectedClient || !content.trim()) return;
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      const response = await fetch('http://localhost:4000/api/messages', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          receiverId: selectedClient.clientId,
+          content,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          // Refresh the conversation
+          await fetchConversationWith(selectedClient.clientId);
+          // Refresh the client list
+          await fetchLawyerMessageCalls();
+        }
+      }
+    } catch (err: any) {
+      console.error('❌ Error sending message:', err);
+    }
+  };
+
+  const selectClient = (clientData: any) => {
+    setSelectedClient(clientData);
+    if (clientData?.clientId) {
+      fetchConversationWith(clientData.clientId);
+    }
+  };
+
+  const formatMessageTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  useEffect(() => {
+    fetchLawyerMessageCalls();
+  }, []);
+
+  return {
+    clientMessages,
+    selectedClient,
     messages,
     isLoading,
     error,
-    selectChat,
-    sendTextMessage,
-    markMessageAsRead,
+    selectClient,
+    sendMessage,
     formatMessageTime,
-    getUnreadCountForChat,
-    createChat,
-  } = useMessaging(currentUserId, "LAWYER");
+    refreshData: fetchLawyerMessageCalls,
+  };
+};
 
+export default function MessagesAndCalls() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  
+  // Use the specialized lawyer message calls hook
+  const {
+    clientMessages,
+    selectedClient,
+    messages,
+    isLoading,
+    error,
+    selectClient,
+    sendMessage,
+    formatMessageTime,
+    refreshData,
+  } = useLawyerMessageCalls();
+
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setCurrentUserId(userData.id);
+    }
+  }, []);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    if (selectedChat && messages.length > 0) {
-      messages.forEach((message: any) => {
-        if (!message.readAt && message.senderId !== currentUserId) {
-          markMessageAsRead(message.id);
-        }
-      });
-    }
-  }, [selectedChat, messages, currentUserId, markMessageAsRead]);
-
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    await sendTextMessage(newMessage);
+    await sendMessage(newMessage);
     setNewMessage("");
   };
 
@@ -74,22 +204,36 @@ export default function MessagesAndCalls() {
     }
   };
 
-  const getOtherParticipantName = (chat: any) => {
-    const otherParticipant = chat.participants.find((p: string) => p !== currentUserId);
-    return otherParticipant ? chat.participantNames[otherParticipant] : "Unknown";
+  const getClientName = (client: any) => {
+    if (client?.fullName) return client.fullName;
+    if (client?.firstName && client?.lastName) {
+      return `${client.firstName} ${client.lastName}`;
+    }
+    return client?.email || "Unknown Client";
   };
 
-  const getLastMessagePreview = (chat: any) => {
-    if (!chat.lastMessage) return "No messages yet";
-    return chat.lastMessage.content.length > 50
-      ? chat.lastMessage.content.substring(0, 50) + "..."
-      : chat.lastMessage.content;
+  const getLastMessagePreview = (latestMessage: any) => {
+    if (!latestMessage?.content) return "No messages yet";
+    return latestMessage.content.length > 50
+      ? latestMessage.content.substring(0, 50) + "..."
+      : latestMessage.content;
   };
 
-  const filteredChats = chats.filter((chat: any) => {
-    const participantName = getOtherParticipantName(chat);
-    return participantName.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredClients = clientMessages.filter((clientData: any) => {
+    const clientName = getClientName(clientData.client);
+    return clientName.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  // Debug logging
+  useEffect(() => {
+    console.log('📊 Lawyer Messages Page State:', {
+      clientMessages,
+      selectedClient,
+      currentUserId,
+      isLoading,
+      error
+    });
+  }, [clientMessages, selectedClient, currentUserId, isLoading, error]);
 
   // const [newMessage, setNewMessage] = useState("");
   // const [searchQuery, setSearchQuery] = useState("");
@@ -264,9 +408,17 @@ export default function MessagesAndCalls() {
               Messages & Calls
             </h1>
           </div>
-          <Link href="/Lawyer" className="text-blue-500 hover:underline">
-            Back to Dashboard
-          </Link>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={refreshData}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Refresh
+            </button>
+            <Link href="/Lawyer" className="text-blue-500 hover:underline">
+              Back to Dashboard
+            </Link>
+          </div>
         </header>
 
         {/* Main Chat Interface */}
@@ -279,7 +431,7 @@ export default function MessagesAndCalls() {
                   <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
                   <input
                     type="text"
-                    placeholder="Search chats"
+                    placeholder="Search clients"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-lg border border-gray-200 
@@ -287,19 +439,15 @@ export default function MessagesAndCalls() {
                   />
                 </div>
                 <button
-                  onClick={() => {
-                    // Create a test chat for demonstration
-                    const testChat = createChat("test-client-id", "Test Client");
-                    selectChat(testChat);
-                  }}
-                  className="w-full px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8901a] transition-colors text-sm font-medium"
+                  onClick={refreshData}
+                  className="w-full px-4 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b8901a] transition-colors text-sm font-medium mb-2"
                 >
-                  + Start Test Conversation
+                  Refresh Messages
                 </button>
               </div>
 
               <div className="overflow-y-auto flex-1">
-                {/* Chat list items */}
+                {/* Client list items */}
                 {isLoading && (
                   <div className="flex items-center justify-center p-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d4a017]"></div>
@@ -312,50 +460,63 @@ export default function MessagesAndCalls() {
                   </div>
                 )}
                 
-                {filteredChats.length === 0 && !isLoading && (
+                {filteredClients.length === 0 && !isLoading && !error && (
                   <div className="flex items-center justify-center p-8">
                     <div className="text-center">
                       <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">No conversations yet</p>
-                      <p className="text-sm text-gray-400 mt-1">Start chatting with your clients</p>
+                      <p className="text-gray-500">No client messages yet</p>
+                      <p className="text-sm text-gray-400 mt-1">Clients will appear here when they send messages</p>
                     </div>
                   </div>
                 )}
                 
-                {filteredChats.map((chat: any) => (
+                {filteredClients.map((clientData: any) => (
                   <div
-                    key={chat.id}
-                    onClick={() => selectChat(chat)}
+                    key={clientData.clientId}
+                    onClick={() => selectClient(clientData)}
                     className={`flex items-center gap-3 p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
-                      selectedChat?.id === chat.id ? 'bg-blue-50' : ''
+                      selectedClient?.clientId === clientData.clientId ? 'bg-blue-50' : ''
                     }`}
                   >
-                    <div className="w-12 h-12 rounded-full bg-[#d4a017] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-[#d4a017] flex items-center justify-center relative">
                       <span className="text-white font-semibold text-lg">
-                        {getOtherParticipantName(chat).charAt(0).toUpperCase()}
+                        {getClientName(clientData.client).charAt(0).toUpperCase()}
                       </span>
+                      {/* Call request indicator */}
+                      {clientData.statistics?.callRequestCount > 0 && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                          <Phone className="w-2 h-2 text-white" />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-1">
                         <h3 className="font-semibold text-[#1a1a1a] truncate">
-                          {getOtherParticipantName(chat)}
+                          {getClientName(clientData.client)}
                         </h3>
-                        {chat.lastMessage && (
+                        {clientData.latestMessage && (
                           <span className="text-xs font-medium text-[#4a4a4a]">
-                            {formatMessageTime(chat.lastMessage.createdAt)}
+                            {formatMessageTime(clientData.latestMessage.createdAt)}
                           </span>
                         )}
                       </div>
                       <p className="text-sm text-[#4a4a4a] truncate">
-                        {getLastMessagePreview(chat)}
+                        {getLastMessagePreview(clientData.latestMessage)}
                       </p>
+                      {/* Message statistics for lawyers */}
+                      <div className="flex gap-2 mt-1">
+                        {clientData.statistics?.callRequestCount > 0 && (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                            {clientData.statistics.callRequestCount} call{clientData.statistics.callRequestCount !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                        {clientData.statistics?.regularMessageCount > 0 && (
+                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                            {clientData.statistics.regularMessageCount} message{clientData.statistics.regularMessageCount !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    {getUnreadCountForChat(chat) > 0 && (
-                      <span className="bg-[#d4a017] text-white text-xs font-bold rounded-full 
-                        w-5 h-5 flex items-center justify-center">
-                        {getUnreadCountForChat(chat)}
-                      </span>
-                    )}
                   </div>
                 ))}
               </div>
@@ -363,18 +524,21 @@ export default function MessagesAndCalls() {
 
             {/* Chat Area */}
             <div className="flex-1 flex flex-col bg-[#fafafa]">
-              {selectedChat ? (
+              {selectedClient ? (
                 <>
                   <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-[#d4a017] flex items-center justify-center">
                         <span className="text-white font-semibold">
-                          {getOtherParticipantName(selectedChat).charAt(0).toUpperCase()}
+                          {getClientName(selectedClient.client).charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <h2 className="font-semibold text-[#1a1a1a]">
-                        {getOtherParticipantName(selectedChat)}
-                      </h2>
+                      <div>
+                        <h2 className="font-semibold text-[#1a1a1a]">
+                          {getClientName(selectedClient.client)}
+                        </h2>
+                        <p className="text-sm text-gray-500">{selectedClient.client?.email}</p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
@@ -427,6 +591,12 @@ export default function MessagesAndCalls() {
                               <p className={message.senderId === currentUserId ? 'text-white' : ''}>
                                 {message.content}
                               </p>
+                              {message.messageType === 'call-request' && (
+                                <div className="flex items-center gap-1 mt-1">
+                                  <Phone className="w-3 h-3" />
+                                  <span className="text-xs">Call Request</span>
+                                </div>
+                              )}
                               <span className={`text-xs block text-right mt-1 ${
                                 message.senderId === currentUserId 
                                   ? 'text-white/80' 
@@ -475,8 +645,8 @@ export default function MessagesAndCalls() {
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
                     <MessageSquare className="w-20 h-20 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-500 mb-2">Select a conversation</h3>
-                    <p className="text-gray-400">Choose a chat from the sidebar to start messaging</p>
+                    <h3 className="text-xl font-semibold text-gray-500 mb-2">Select a client</h3>
+                    <p className="text-gray-400">Choose a client from the sidebar to view messages</p>
                   </div>
                 </div>
               )}

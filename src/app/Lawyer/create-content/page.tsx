@@ -19,7 +19,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 import Link from "next/link";
 import styles from "./page.module.css";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
-import { UploadService } from "../../../services/uploadService";
+import { UploadService, VideoMetadata } from "../../../services/uploadService";
 import { useAuth } from "../../../contexts/AuthContext";
 
 type VideoContent = {
@@ -47,6 +47,23 @@ const categories = [
   "Criminal Law",
   "Family Law",
   "Property Law",
+  "Constitutional Law",
+  "Tax Law",
+  "Employment Law",
+  "Immigration Law",
+];
+
+const languages = [
+  "English",
+  "French", 
+  "Spanish",
+  "Portuguese",
+  "Arabic",
+  "Swahili",
+  "Yoruba",
+  "Hausa",
+  "Twi",
+  "Other"
 ];
 
 export default function CreateContent() {
@@ -74,6 +91,18 @@ export default function CreateContent() {
     success: false,
   });
 
+  // Add video metadata state
+  const [videoMetadata, setVideoMetadata] = useState<VideoMetadata>({
+    title: "",
+    description: "",
+    category: categories[0],
+    language: "English",
+    tags: [],
+  });
+
+  // Add current tag input state
+  const [currentTag, setCurrentTag] = useState("");
+
   // Add a ref for the hidden file input
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -84,12 +113,71 @@ export default function CreateContent() {
     }
   };
 
+  // Handler for adding tags
+  const handleAddTag = () => {
+    if (currentTag.trim() && !videoMetadata.tags.includes(currentTag.trim())) {
+      setVideoMetadata(prev => ({
+        ...prev,
+        tags: [...prev.tags, currentTag.trim()]
+      }));
+      setCurrentTag("");
+    }
+  };
+
+  // Handler for removing tags
+  const handleRemoveTag = (tagToRemove: string) => {
+    setVideoMetadata(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }));
+  };
+
+  // Handler for tag input key press
+  const handleTagKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTag();
+    }
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setVideoMetadata({
+      title: "",
+      description: "",
+      category: categories[0],
+      language: "English",
+      tags: [],
+    });
+    setCurrentTag("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   // Enhanced file change handler with real upload
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Validate required metadata
+    if (!videoMetadata.title.trim()) {
+      setUploadState({
+        ...uploadState,
+        error: "Please enter a video title",
+      });
+      return;
+    }
+
+    if (!videoMetadata.description.trim()) {
+      setUploadState({
+        ...uploadState,
+        error: "Please enter a video description",
+      });
+      return;
+    }
 
     // Validate file type
     if (!file.type.startsWith("video/")) {
@@ -120,8 +208,7 @@ export default function CreateContent() {
 
     console.log('🔍 Upload Debug Info:');
     console.log('User object:', user);
-    console.log('User ID:', user.id);
-    console.log('User role:', user.role);
+    console.log('Video metadata:', videoMetadata);
 
     try {
       // Reset state and start upload
@@ -165,7 +252,8 @@ export default function CreateContent() {
       const lawyerId = lawyerData.data.id;
       console.log('Lawyer ID:', lawyerId);
 
-      const result = await UploadService.uploadVideo(lawyerId, file);
+      // Enhanced upload with metadata
+      const result = await UploadService.uploadVideoWithMetadata(lawyerId, file, videoMetadata);
 
       // Clear progress interval
       clearInterval(progressInterval);
@@ -186,10 +274,7 @@ export default function CreateContent() {
             error: null,
             success: false,
           });
-          // Clear the file input
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
+          resetForm();
         }, 3000);
       } else {
         setUploadState({
@@ -236,22 +321,146 @@ export default function CreateContent() {
                     Create and manage your legal content
                   </p>
                 </div>
-                <button className="flex items-center gap-2 bg-[#d4a017] text-white px-6 py-3 rounded-xl hover:bg-[#b17d25] transition-colors font-medium">
-                  <Plus className="w-5 h-5" />
-                  New Video
-                </button>
               </div>
 
               {/* Main Content Grid */}
               <div className="grid grid-cols-12 gap-6">
                 {/* Left Column - Upload & Guidelines */}
                 <div className="col-span-12 lg:col-span-4 space-y-6">
+                  {/* Video Metadata Form */}
+                  <motion.div
+                    whileHover={{ y: -2 }}
+                    className="bg-white p-6 rounded-2xl border border-gray-200"
+                  >
+                    <h3 className="text-xl font-semibold text-[#1a1a1a] mb-4">
+                      Video Details
+                    </h3>
+                    
+                    <div className="space-y-4">
+                      {/* Title */}
+                      <div>
+                        <label className="block text-sm font-medium text-[#4a4a4a] mb-2">
+                          Video Title *
+                        </label>
+                        <input
+                          type="text"
+                          value={videoMetadata.title}
+                          onChange={(e) => setVideoMetadata(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="e.g., Understanding Business Contracts"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d4a017] focus:border-transparent"
+                          disabled={uploadState.isUploading}
+                        />
+                      </div>
+
+                      {/* Description */}
+                      <div>
+                        <label className="block text-sm font-medium text-[#4a4a4a] mb-2">
+                          Description *
+                        </label>
+                        <textarea
+                          value={videoMetadata.description}
+                          onChange={(e) => setVideoMetadata(prev => ({ ...prev, description: e.target.value }))}
+                          placeholder="Provide a detailed description of your video content..."
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d4a017] focus:border-transparent resize-none"
+                          disabled={uploadState.isUploading}
+                        />
+                      </div>
+
+                      {/* Category */}
+                      <div>
+                        <label className="block text-sm font-medium text-[#4a4a4a] mb-2">
+                          Category
+                        </label>
+                        <select
+                          value={videoMetadata.category}
+                          onChange={(e) => setVideoMetadata(prev => ({ ...prev, category: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d4a017] focus:border-transparent"
+                          disabled={uploadState.isUploading}
+                        >
+                          {categories.map((category) => (
+                            <option key={category} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Language */}
+                      <div>
+                        <label className="block text-sm font-medium text-[#4a4a4a] mb-2">
+                          Language
+                        </label>
+                        <select
+                          value={videoMetadata.language}
+                          onChange={(e) => setVideoMetadata(prev => ({ ...prev, language: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d4a017] focus:border-transparent"
+                          disabled={uploadState.isUploading}
+                        >
+                          {languages.map((language) => (
+                            <option key={language} value={language}>
+                              {language}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Tags */}
+                      <div>
+                        <label className="block text-sm font-medium text-[#4a4a4a] mb-2">
+                          Tags
+                        </label>
+                        <div className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={currentTag}
+                            onChange={(e) => setCurrentTag(e.target.value)}
+                            onKeyPress={handleTagKeyPress}
+                            placeholder="Add a tag..."
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d4a017] focus:border-transparent"
+                            disabled={uploadState.isUploading}
+                          />
+                          <button
+                            type="button"
+                            onClick={handleAddTag}
+                            disabled={!currentTag.trim() || uploadState.isUploading}
+                            className="px-3 py-2 bg-[#d4a017] text-white rounded-lg hover:bg-[#b17d25] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                        
+                        {/* Display tags */}
+                        {videoMetadata.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {videoMetadata.tags.map((tag, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-[#fff8eb] text-[#d4a017] text-sm rounded-full"
+                              >
+                                #{tag}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveTag(tag)}
+                                  className="hover:text-[#b17d25] transition-colors"
+                                  disabled={uploadState.isUploading}
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+
                   {/* Quick Upload Card */}
                   <motion.div
                     whileHover={{ y: -2 }}
-                    className="bg-white p-6 rounded-2xl border-2 border-dashed border-[#d4a017] hover:border-[#b17d25]"
+                    className="bg-white flex flex-col items-center p-6 rounded-2xl border-2 border-dashed border-[#d4a017] hover:border-[#b17d25]"
                   >
-                    <div className="text-center py-6">
+                    <div className="py-6 flex flex-col items-center">
                       <div className="w-16 h-16 rounded-full bg-[#fff8eb] flex items-center justify-center mx-auto mb-4">
                         {uploadState.isUploading ? (
                           <Loader className="w-8 h-8 text-[#d4a017] animate-spin" />
@@ -271,17 +480,17 @@ export default function CreateContent() {
                             ? "Upload Successful!"
                             : uploadState.error
                               ? "Upload Failed"
-                              : "Quick Upload"}
+                              : "Ready to Upload"}
                       </h3>
 
-                      <p className="text-[#4a4a4a] mb-4">
+                      <p className="text-[#4a4a4a] mb-4 text-center">
                         {uploadState.isUploading
                           ? `${uploadState.progress}% complete`
                           : uploadState.success
                             ? "Your video has been uploaded successfully"
                             : uploadState.error
                               ? uploadState.error
-                              : "Drag and drop or browse files"}
+                              : "Select your video file to upload"}
                       </p>
 
                       {/* Progress Bar */}
@@ -326,14 +535,14 @@ export default function CreateContent() {
                         accept="video/*"
                         ref={fileInputRef}
                         onChange={handleFileChange}
-                        className="hidden-input"
+                        className="hidden"
                         title="Upload Video"
                         placeholder="Select a video file"
                         disabled={uploadState.isUploading}
                       />
 
                       {/* File Requirements */}
-                      <div className="mt-4 text-xs text-[#4a4a4a] space-y-1">
+                      <div className="mt-4 text-xs text-[#4a4a4a] space-y-1 text-center">
                         <p>• Supported formats: MP4, AVI, MOV, WebM</p>
                         <p>• Maximum file size: 50MB</p>
                         <p>• Recommended duration: 5-15 minutes</p>

@@ -100,7 +100,19 @@ export default function DocumentManager({ lawyerId }: DocumentManagerProps) {
     try {
       setLoading(true);
       const docs = await UploadService.getLawyerDocuments(lawyerId);
-      setDocuments(docs);
+      
+      // Ensure we have a valid documents object with all required keys
+      const safeDocuments = {
+        practicingCertificateUrl: docs?.practicingCertificateUrl || [],
+        barCertificateUrl: docs?.barCertificateUrl || [],
+        idDocumentUrl: docs?.idDocumentUrl || [],
+        cvResumeUrl: docs?.cvResumeUrl || [],
+        lawDegreeUrl: docs?.lawDegreeUrl || [],
+        otherDocumentUrl: docs?.otherDocumentUrl || [],
+        videoUrl: docs?.videoUrl || []
+      };
+      
+      setDocuments(safeDocuments);
     } catch (error) {
       console.error('Failed to load documents:', error);
       setError('Failed to load documents');
@@ -125,7 +137,7 @@ export default function DocumentManager({ lawyerId }: DocumentManagerProps) {
       if (result.success) {
         setDocuments(prev => ({
           ...prev,
-          [category]: prev[category].filter(docUrl => docUrl !== url)
+          [category]: (prev[category] || []).filter(docUrl => docUrl !== url)
         }));
       } else {
         setError(result.error || 'Failed to delete document');
@@ -142,9 +154,11 @@ export default function DocumentManager({ lawyerId }: DocumentManagerProps) {
   };
 
   const getCompletionPercentage = (): number => {
+    if (!documentCategories || !documents) return 0;
+    
     const totalCategories = documentCategories.length;
     const completedCategories = documentCategories.filter(cat => 
-      documents[cat.key] && documents[cat.key].length > 0
+      cat && cat.key && documents[cat.key] && documents[cat.key].length > 0
     ).length;
     return Math.round((completedCategories / totalCategories) * 100);
   };
@@ -202,8 +216,10 @@ export default function DocumentManager({ lawyerId }: DocumentManagerProps) {
 
       {/* Document Categories */}
       <div className="space-y-4">
-        {documentCategories.map((category) => {
-          const categoryDocs = documents[category.key] || [];
+        {documentCategories && documentCategories.map((category) => {
+          if (!category || !category.key) return null;
+          
+          const categoryDocs = documents && documents[category.key] ? documents[category.key] : [];
           const isExpanded = expandedCategory === category.key;
           
           return (

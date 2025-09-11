@@ -33,6 +33,9 @@ export const API_ENDPOINTS = {
   DELETE_VIDEO_COMMENT: (commentId: string) => `/api/videos/comment/${commentId}`,
   // Message endpoints
   SEND_MESSAGE: '/api/messages',
+  GET_USER_CONVERSATIONS: '/api/messages/conversations',
+  GET_LAWYER_MESSAGE_CALLS: '/api/messages/lawyer/calls',
+  SEND_CALL_REQUEST: '/api/messages/call-request',
   GET_CONVERSATION: (senderId: string, receiverId: string) => `/api/messages/${senderId}/${receiverId}`,
   // Appointment endpoints
   CREATE_APPOINTMENT: '/api/appointments',
@@ -45,6 +48,8 @@ export const API_ENDPOINTS = {
   GET_APPOINTMENT_NOTIFICATIONS: '/api/appointments/notifications',
   GET_USER_NOTIFICATIONS: '/api/appointments/user/notifications',
   MARK_NOTIFICATION_READ: (id: string) => `/api/appointments/notifications/${id}/read`,
+  // Dashboard endpoints
+  GET_USER_DASHBOARD: (userId: string) => `/api/dashboard/user/${userId}`,
 };
 
 // Types for API requests/responses
@@ -129,6 +134,8 @@ export interface LawyerVideoData {
   title?: string;
   description?: string;
   category?: string;
+  language?: string;
+  tags?: string[];
 }
 
 // Appointment types
@@ -190,9 +197,7 @@ export interface LawyerAvailability {
 
 // Message types
 export interface SendMessageRequest {
-  senderId: string;
   receiverId: string;
-  senderRole: string;
   content: string;
 }
 
@@ -262,9 +267,11 @@ export class ApiClient {
       const response = await fetch(url, config);
       console.log('📡 Response status:', response.status);
       const data = await response.json();
+      console.log('📡 Response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'API request failed');
+        console.error('❌ API error response:', data);
+        throw new Error(data.message || `API request failed with status ${response.status}`);
       }
 
       return data;
@@ -513,9 +520,9 @@ export class ApiClient {
   }
 
   // Video interaction methods
-  async toggleVideoLike(lawyerId: string, videoUrl: string): Promise<{ liked: boolean; likeCount: number }> {
+  async toggleVideoLike(lawyerId: string, videoId: string): Promise<{ liked: boolean; likeCount: number }> {
     try {
-      console.log('Toggling like for:', { lawyerId, videoUrl });
+      console.log('Toggling like for:', { lawyerId, videoId });
       
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.TOGGLE_VIDEO_LIKE}`, {
         method: 'POST',
@@ -525,7 +532,7 @@ export class ApiClient {
         },
         body: JSON.stringify({
           lawyerId,
-          videoUrl
+          videoId
         }),
       });
 
@@ -546,7 +553,7 @@ export class ApiClient {
     }
   }
 
-  async addVideoComment(lawyerId: string, videoUrl: string, content: string): Promise<any> {
+  async addVideoComment(lawyerId: string, videoId: string, content: string): Promise<any> {
     try {
       const response = await fetch(API_ENDPOINTS.ADD_VIDEO_COMMENT, {
         method: 'POST',
@@ -556,7 +563,7 @@ export class ApiClient {
         },
         body: JSON.stringify({
           lawyerId,
-          videoUrl,
+          videoId,
           content
         }),
       });
@@ -573,9 +580,9 @@ export class ApiClient {
     }
   }
 
-  async getVideoComments(lawyerId: string, videoUrl: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
+  async getVideoComments(videoId: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
     try {
-      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS}?lawyerId=${encodeURIComponent(lawyerId)}&videoUrl=${encodeURIComponent(videoUrl)}&page=${page}&limit=${limit}`;
+      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS}?videoId=${encodeURIComponent(videoId)}&page=${page}&limit=${limit}`;
       const response = await fetch(url, {
         headers: this.getAuthHeaders(),
       });
@@ -592,10 +599,10 @@ export class ApiClient {
     }
   }
 
-  async getVideoStats(lawyerId: string, videoUrl: string): Promise<{ likeCount: number; commentCount: number; userLiked: boolean }> {
+  async getVideoStats(videoId: string): Promise<{ likeCount: number; commentCount: number; userLiked: boolean }> {
     try {
       // Use GET with query parameters for the test endpoint
-      const url = `${this.baseUrl}${API_ENDPOINTS.GET_VIDEO_STATS}?lawyerId=${encodeURIComponent(lawyerId)}&videoUrl=${encodeURIComponent(videoUrl)}`;
+      const url = `${this.baseUrl}${API_ENDPOINTS.GET_VIDEO_STATS}?videoId=${encodeURIComponent(videoId)}`;
       console.log('Fetching stats from:', url);
       
       const response = await fetch(url, {
@@ -637,9 +644,9 @@ export class ApiClient {
     }
   }
 
-  async recordVideoView(lawyerId: string, videoUrl: string, duration?: number): Promise<any> {
+  async recordVideoView(lawyerId: string, videoId: string, duration?: number): Promise<any> {
     try {
-      console.log('Recording video view:', { lawyerId, videoUrl, duration });
+      console.log('Recording video view:', { lawyerId, videoId, duration });
       
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.RECORD_VIDEO_VIEW}`, {
         method: 'POST',
@@ -649,7 +656,7 @@ export class ApiClient {
         },
         body: JSON.stringify({
           lawyerId,
-          videoUrl,
+          videoId,
           duration
         }),
       });
@@ -683,9 +690,46 @@ export class ApiClient {
     });
   }
 
+  // Get all conversations for the authenticated user
+  async getUserConversations(): Promise<ApiResponse<any[]>> {
+    console.log('🌐 API Client: Making getUserConversations request to:', API_ENDPOINTS.GET_USER_CONVERSATIONS);
+    const result = await this.request(API_ENDPOINTS.GET_USER_CONVERSATIONS);
+    console.log('🌐 API Client: getUserConversations response:', result);
+    return result;
+  }
+
+  // Get lawyer message calls (clients who have sent messages to lawyers)
+  async getLawyerMessageCalls(): Promise<ApiResponse<any[]>> {
+    console.log('🌐 API Client: Making getLawyerMessageCalls request to:', API_ENDPOINTS.GET_LAWYER_MESSAGE_CALLS);
+    const result = await this.request(API_ENDPOINTS.GET_LAWYER_MESSAGE_CALLS);
+    console.log('🌐 API Client: getLawyerMessageCalls response:', result);
+    return result;
+  }
+
+  // Send a call request to a lawyer
+  async sendCallRequest(callRequestData: { lawyerId: string; content?: string; requestType?: string }): Promise<ApiResponse<MessageData>> {
+    console.log('🌐 API Client: Sending call request:', callRequestData);
+    return this.request(API_ENDPOINTS.SEND_CALL_REQUEST, {
+      method: 'POST',
+      body: JSON.stringify(callRequestData),
+    });
+  }
+
   // Get conversation between two users
   async getConversation(senderId: string, receiverId: string): Promise<ApiResponse<MessageData[]>> {
     return this.request(API_ENDPOINTS.GET_CONVERSATION(senderId, receiverId));
+  }
+
+  // ========================
+  // DASHBOARD API METHODS
+  // ========================
+
+  // Get user dashboard data
+  async getUserDashboard(userId: string): Promise<ApiResponse<any>> {
+    console.log('🌐 API Client: Making getUserDashboard request for userId:', userId);
+    const result = await this.request(API_ENDPOINTS.GET_USER_DASHBOARD(userId));
+    console.log('🌐 API Client: getUserDashboard response:', result);
+    return result;
   }
 }
 
