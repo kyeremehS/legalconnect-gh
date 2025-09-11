@@ -56,10 +56,10 @@ const userNavItems = [
   },
   {
     name: "Booking Appointments",
-    href: "/User-landing/appointment-booking",
+    href: "/User-landing/appointment-booking-integrated",
     icon: Calendar,
   },
-  { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
+  // { name: "Notifications", href: "/User-landing/notifications", icon: Bell },
   { name: "Settings", href: "/User-landing/profile-settings", icon: Settings },
 ];
 
