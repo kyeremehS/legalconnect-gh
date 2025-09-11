@@ -29,9 +29,192 @@ import MobileSidebar from "../../components/mobilesidebar";
 import VerticalVideoInteractions from "../../../components/VerticalVideoInteractions";
 
 import { legalArticles } from "../../../types/lawyer";
+
+// Legal Quizzes Mock Data
+const legalQuizzes = [
+  {
+    id: "1",
+    title: "Ghana Property Law Quiz",
+    description: "Test your knowledge of property laws, tenant rights, and landlord obligations in Ghana.",
+    questions: 15,
+    duration: "20 mins",
+    difficulty: "Intermediate",
+    category: "Property Law",
+    completions: 1247,
+    rating: 4.6,
+    imageUrl: "/quizzes/property-law-quiz.jpg"
+  },
+  {
+    id: "2",
+    title: "Corporate Law Fundamentals",
+    description: "Quiz on business registration, corporate governance, and compliance in Ghana.",
+    questions: 20,
+    duration: "25 mins",
+    difficulty: "Advanced",
+    category: "Corporate Law",
+    completions: 892,
+    rating: 4.8,
+    imageUrl: "/quizzes/corporate-law-quiz.jpg"
+  },
+  {
+    id: "3",
+    title: "Employment Rights and Responsibilities",
+    description: "Assess your understanding of Ghana's Labour Act and employment regulations.",
+    questions: 12,
+    duration: "15 mins",
+    difficulty: "Beginner",
+    category: "Employment Law",
+    completions: 1534,
+    rating: 4.4,
+    imageUrl: "/quizzes/employment-law-quiz.jpg"
+  },
+  {
+    id: "4",
+    title: "Family Law and Marriage",
+    description: "Test your knowledge of marriage types, divorce procedures, and child custody in Ghana.",
+    questions: 18,
+    duration: "22 mins",
+    difficulty: "Intermediate",
+    category: "Family Law",
+    completions: 756,
+    rating: 4.5,
+    imageUrl: "/quizzes/family-law-quiz.jpg"
+  },
+  {
+    id: "5",
+    title: "Criminal Law Procedures",
+    description: "Quiz on arrest procedures, constitutional rights, and criminal justice processes.",
+    questions: 16,
+    duration: "18 mins",
+    difficulty: "Advanced",
+    category: "Criminal Law",
+    completions: 623,
+    rating: 4.7,
+    imageUrl: "/quizzes/criminal-law-quiz.jpg"
+  },
+  {
+    id: "6",
+    title: "Intellectual Property Basics",
+    description: "Test your understanding of IP protection, trademarks, and copyrights in Ghana.",
+    questions: 14,
+    duration: "17 mins",
+    difficulty: "Intermediate",
+    category: "Intellectual Property",
+    completions: 445,
+    rating: 4.3,
+    imageUrl: "/quizzes/ip-law-quiz.jpg"
+  }
+];
+
+// Legal Templates Mock Data
+const legalTemplates = [
+  {
+    id: "1",
+    title: "Rental Agreement Template",
+    description: "Standard rental agreement template compliant with Ghana's Rent Act 1963.",
+    category: "Property Law",
+    format: "PDF",
+    pages: 8,
+    downloads: 2341,
+    rating: 4.8,
+    price: "Free",
+    imageUrl: "/templates/rental-agreement.jpg",
+    downloadUrl: "/downloads/rental-agreement-template.pdf"
+  },
+  {
+    id: "2",
+    title: "Employment Contract Template",
+    description: "Comprehensive employment contract template based on Ghana's Labour Act 2003.",
+    category: "Employment Law",
+    format: "Word Document",
+    pages: 12,
+    downloads: 1876,
+    rating: 4.7,
+    price: "Free",
+    imageUrl: "/templates/employment-contract.jpg",
+    downloadUrl: "/downloads/employment-contract-template.docx"
+  },
+  {
+    id: "3",
+    title: "Power of Attorney Form",
+    description: "General and specific power of attorney templates for various legal purposes.",
+    category: "General Law",
+    format: "PDF",
+    pages: 6,
+    downloads: 1523,
+    rating: 4.6,
+    price: "Free",
+    imageUrl: "/templates/power-of-attorney.jpg",
+    downloadUrl: "/downloads/power-of-attorney-template.pdf"
+  },
+  {
+    id: "4",
+    title: "Will and Testament Template",
+    description: "Simple will template compliant with Ghana's Wills Act for estate planning.",
+    category: "Family Law",
+    format: "PDF",
+    pages: 10,
+    downloads: 987,
+    rating: 4.9,
+    price: "Free",
+    imageUrl: "/templates/will-testament.jpg",
+    downloadUrl: "/downloads/will-testament-template.pdf"
+  },
+  {
+    id: "5",
+    title: "Business Partnership Agreement",
+    description: "Partnership agreement template for business partnerships in Ghana.",
+    category: "Corporate Law",
+    format: "Word Document",
+    pages: 15,
+    downloads: 1234,
+    rating: 4.5,
+    price: "Free",
+    imageUrl: "/templates/partnership-agreement.jpg",
+    downloadUrl: "/downloads/partnership-agreement-template.docx"
+  },
+  {
+    id: "6",
+    title: "Non-Disclosure Agreement (NDA)",
+    description: "Standard NDA template for protecting confidential business information.",
+    category: "Corporate Law",
+    format: "PDF",
+    pages: 5,
+    downloads: 1654,
+    rating: 4.4,
+    price: "Free",
+    imageUrl: "/templates/nda-template.jpg",
+    downloadUrl: "/downloads/nda-template.pdf"
+  },
+  {
+    id: "7",
+    title: "Debt Recovery Letter Template",
+    description: "Professional debt recovery letter templates for various debt scenarios.",
+    category: "General Law",
+    format: "Word Document",
+    pages: 4,
+    downloads: 876,
+    rating: 4.2,
+    price: "Free",
+    imageUrl: "/templates/debt-recovery.jpg",
+    downloadUrl: "/downloads/debt-recovery-template.docx"
+  },
+  {
+    id: "8",
+    title: "Sale of Goods Agreement",
+    description: "Template for sale of goods agreements compliant with Ghana's Sale of Goods Act.",
+    category: "Commercial Law",
+    format: "PDF",
+    pages: 7,
+    downloads: 1098,
+    rating: 4.6,
+    price: "Free",
+    imageUrl: "/templates/sale-of-goods.jpg",
+    downloadUrl: "/downloads/sale-of-goods-template.pdf"
+  }
+];
+
 // TODO: These need to be moved to types or services
-const legalQuizzes: any[] = [];
-const legalTemplates: any[] = [];
 const videoCategories: any[] = [];
 import {
   VideoService,

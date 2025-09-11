@@ -5,6 +5,81 @@ export interface ApiResponse<T> {
   data: T;
   count?: number;
 }
+// Legal Articles Mock Data
+export const legalArticles = [
+  {
+    id: "1",
+    title: "Understanding Landlord-Tenant Rights in Ghana",
+    description: "A comprehensive guide to rental laws, tenant rights, and landlord obligations under Ghanaian law.",
+    content: "Learn about the Rent Act 1963, security deposits, eviction procedures, and tenant protections in Ghana.",
+    author: "Aaron Arnold Anim",
+    category: "Property Law",
+    readTime: "8 min read",
+    publishedAt: "2024-01-15",
+    imageUrl: "/legal-articles/property-law.jpg",
+    tags: ["Property Law", "Tenant Rights", "Rental Law"]
+  },
+  {
+    id: "2",
+    title: "Corporate Registration Process in Ghana",
+    description: "Step-by-step guide to registering a business in Ghana, including requirements and procedures.",
+    content: "Understand the Companies Act 2019, registration procedures at the Registrar General's Department, and compliance requirements.",
+    author: "Sarah Mensah",
+    category: "Corporate Law",
+    readTime: "12 min read",
+    publishedAt: "2024-01-10",
+    imageUrl: "/legal-articles/corporate-law.jpg",
+    tags: ["Corporate Law", "Business Registration", "Compliance"]
+  },
+  {
+    id: "3",
+    title: "Employment Law Basics for Ghanaian Workers",
+    description: "Know your rights as an employee in Ghana, including working hours, leave entitlements, and termination procedures.",
+    content: "Overview of the Labour Act 2003, employee rights, employer obligations, and dispute resolution mechanisms.",
+    author: "Kwame Asante",
+    category: "Employment Law",
+    readTime: "10 min read",
+    publishedAt: "2024-01-05",
+    imageUrl: "/legal-articles/employment-law.jpg",
+    tags: ["Employment Law", "Worker Rights", "Labour Act"]
+  },
+  {
+    id: "4",
+    title: "Family Law and Marriage in Ghana",
+    description: "Understanding marriage laws, divorce proceedings, and child custody arrangements under Ghanaian law.",
+    content: "Learn about customary marriage, ordinance marriage, Islamic marriage, and family dispute resolution.",
+    author: "Akosua Osei",
+    category: "Family Law",
+    readTime: "15 min read",
+    publishedAt: "2023-12-28",
+    imageUrl: "/legal-articles/family-law.jpg",
+    tags: ["Family Law", "Marriage", "Divorce", "Child Custody"]
+  },
+  {
+    id: "5",
+    title: "Intellectual Property Protection in Ghana",
+    description: "Guide to protecting trademarks, copyrights, and patents in Ghana's growing digital economy.",
+    content: "Understanding IP registration processes, enforcement mechanisms, and protection strategies for businesses.",
+    author: "Dr. Emmanuel Kusi",
+    category: "Intellectual Property",
+    readTime: "11 min read",
+    publishedAt: "2023-12-20",
+    imageUrl: "/legal-articles/ip-law.jpg",
+    tags: ["Intellectual Property", "Trademarks", "Copyright", "Patents"]
+  },
+  {
+    id: "6",
+    title: "Criminal Law Procedures in Ghana",
+    description: "Understanding your rights during arrest, police procedures, and the criminal justice process.",
+    content: "Know your constitutional rights, police powers, court procedures, and legal representation options.",
+    author: "Justice Adjei",
+    category: "Criminal Law",
+    readTime: "9 min read",
+    publishedAt: "2023-12-15",
+    imageUrl: "/legal-articles/criminal-law.jpg",
+    tags: ["Criminal Law", "Constitutional Rights", "Police Procedures"]
+  }
+];
 
 // User interface from backend
 export interface User {
@@ -141,7 +216,6 @@ export async function fetchLawyers(): Promise<Lawyer[]> {
 
 // Legacy mock data export for compatibility (need to be imported from existing mockdata)
 // These will need to be updated based on your existing mockdata structure
-export const legalArticles: any[] = [];
 export const videoFeeds: any[] = [];
 export const courseData: any[] = [];
 export const lawyerVideos: any[] = [];
