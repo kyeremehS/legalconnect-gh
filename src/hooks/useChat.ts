@@ -52,15 +52,14 @@ export const useChat = (currentUserId?: string, userRole: "CLIENT" | "LAWYER" = 
 
                 const messageData: SendMessageRequest = {
                     receiverId,
-                    content: content.trim(),
-                    messageType: type
+                    content: content.trim()
                 };
 
                 const response = await apiClient.sendMessage(messageData);
 
                 if (response.success && response.data) {
                     setMessages((prev) => [...prev, response.data!]);
-                    setSelectedChat((prev) =>
+                    setSelectedChat((prev: any) =>
                         prev ? { ...prev, lastMessage: response.data! } : null
                     );
                 } else {

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
-import { useChat } from "../../../hooks/useChat";
+import { useMessaging } from "../../../hooks/useMessaging";
 
 export default function LawyerMessages() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,7 +36,7 @@ export default function LawyerMessages() {
     formatMessageTime,
     getUnreadCountForChat,
     markMessageAsRead,
-  } = useChat(currentUserId, "LAWYER");
+  } = useMessaging(currentUserId || undefined, "LAWYER");
 
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -229,93 +229,3 @@ export default function LawyerMessages() {
     </LawyerAuthWrapper>
   );
 }
-
-
-
-// const [newMessage, setNewMessage] = useState("");
-// const [searchQuery, setSearchQuery] = useState("");
-// const [isMuted, setIsMuted] = useState(false);
-// const [isVideoOff, setIsVideoOff] = useState(false);
-// const messagesEndRef = useRef<HTMLDivElement>(null);
-
-// useEffect(() => {
-//   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-// }, [messages]);
-
-// useEffect(() => {
-//   if (selectedChat && messages.length > 0) {
-//     messages.forEach((message) => {
-//       if (!message.read && message.senderId !== user?.id) {
-//         markMessageAsRead(message.id);
-//       }
-//     });
-//   }
-// }, [selectedChat, messages, user?.id, markMessageAsRead]);
-
-// const handleSendMessage = async () => {
-//   if (!newMessage.trim()) return;
-//   await sendTextMessage(newMessage);
-//   setNewMessage("");
-// };
-
-// const handleKeyPress = (e: React.KeyboardEvent) => {
-//   if (e.key === "Enter" && !e.shiftKey) {
-//     e.preventDefault();
-//     handleSendMessage();
-//   }
-// };
-
-// const handleStartVoiceCall = async () => {
-//   if (!selectedChat) return;
-//   const otherParticipant = selectedChat.participants.find(p => p !== user?.id);
-//   const otherParticipantName = otherParticipant ? selectedChat.participantNames[otherParticipant] : "Unknown";
-//   if (otherParticipant) {
-//     await startVoiceCall(selectedChat.id, otherParticipant, otherParticipantName);
-//   }
-// };
-
-// const handleStartVideoCall = async () => {
-//   if (!selectedChat) return;
-//   const otherParticipant = selectedChat.participants.find(p => p !== user?.id);
-//   const otherParticipantName = otherParticipant ? selectedChat.participantNames[otherParticipant] : "Unknown";
-//   if (otherParticipant) {
-//     await startVideoCall(selectedChat.id, otherParticipant, otherParticipantName);
-//   }
-// };
-
-// const handleToggleMute = async () => {
-//   const muted = await toggleMute();
-//   setIsMuted(muted);
-// };
-
-// const handleToggleVideo = async () => {
-//   const videoOff = await toggleVideo();
-//   setIsVideoOff(videoOff);
-// };
-
-// const getOtherParticipantName = (chat: Chat) => {
-//   const otherParticipant = chat.participants.find(p => p !== user?.id);
-//   return otherParticipant ? chat.participantNames[otherParticipant] : "Unknown";
-// };
-
-// const getLastMessagePreview = (chat: Chat) => {
-//   if (!chat.lastMessage) return "No messages yet";
-//   return chat.lastMessage.content.length > 50
-//     ? chat.lastMessage.content.substring(0, 50) + "..."
-//     : chat.lastMessage.content;
-// };
-
-// const filteredChats = chats.filter(chat => {
-//   const participantName = getOtherParticipantName(chat);
-//   return participantName.toLowerCase().includes(searchQuery.toLowerCase());
-// });
-
-// if (!user) {
-//   return (
-//     <div className="min-h-screen bg-white flex items-center justify-center">
-//       <div className="text-center">
-//         <h2 className="text-2xl font-semibold text-[#1a1a1a] mb-4">Please sign in to access messaging</h2>
-//       </div>
-//     </div>
-//   );
-// }
