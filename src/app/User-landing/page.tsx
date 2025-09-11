@@ -54,8 +54,8 @@ const features = [
 export default function UserDashboard() {
   const [showChatModal, setShowChatModal] = useState(false);
   const [userStats, setUserStats] = useState([
-    { label: "Loading...", value: "...", change: "..." },
-    { label: "Loading...", value: "...", change: "..." },
+    // { label: "Loading...", value: "...", change: "..." },
+    // { label: "Loading...", value: "...", change: "..." },
     { label: "Loading...", value: "...", change: "..." },
   ]);
   const [recentActivities, setRecentActivities] = useState([
@@ -187,7 +187,7 @@ export default function UserDashboard() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {features.map((feature, index) => (
                 <motion.div
-                  key={feature.name}
+                  key={`feature-${feature.name}-${index}`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -224,7 +224,7 @@ export default function UserDashboard() {
           >
             {userStats.map((stat, index) => (
               <motion.div
-                key={stat.label}
+                key={`${stat.label}-${index}`}
                 whileHover={{ y: -5 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -250,19 +250,7 @@ export default function UserDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             className="bg-white p-6 rounded-2xl border border-gray-100"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Recent Activity
-              </h2>
-              <Link 
-                href="/User-landing/activity-history" 
-                className="text-[#d4a017] text-sm hover:text-[#b8941f] transition-colors"
-              >
-                View All
-              </Link>
-            </div>
-            
+          >    
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d4a017]"></div>
@@ -277,7 +265,7 @@ export default function UserDashboard() {
               <div className="space-y-4">
                 {recentActivities.map((activity, index) => (
                   <motion.div
-                    key={activity.id}
+                    key={`activity-${activity.id || index}-${index}`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
