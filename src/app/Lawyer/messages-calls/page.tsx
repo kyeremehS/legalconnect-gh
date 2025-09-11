@@ -62,7 +62,7 @@ const useLawyerMessageCalls = () => {
         setError(data.message || 'Failed to fetch message calls');
       }
     } catch (err: any) {
-      console.error('❌ Error fetching lawyer message calls:', err);
+      console.error('Error fetching lawyer message calls:', err);
       setError(err.message || 'Failed to fetch message calls');
     } finally {
       setIsLoading(false);
@@ -359,7 +359,7 @@ export default function MessagesAndCalls() {
             onClick={toggleMenu}
             className="block p-2 bg-blue-700 rounded"
           >
-            Messages & Calls
+            Messages
           </Link>
           <Link
             href="/Lawyer/videos"
@@ -405,7 +405,7 @@ export default function MessagesAndCalls() {
               ☰
             </button>
             <h1 className="text-2xl font-bold text-blue-800">
-              Messages & Calls
+              Messages
             </h1>
           </div>
           <div className="flex items-center gap-4">
