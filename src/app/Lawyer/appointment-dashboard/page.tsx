@@ -10,17 +10,12 @@ import {
   AlertCircle,
   Phone,
   Video,
-  MessageSquare,
   Eye,
-  Edit3,
-  Trash2,
   Plus,
-  Filter,
   Search,
-  Download,
-  Bell,
-  Settings,
+  ArrowLeft
 } from "lucide-react";
+import Link from "next/link";
 import LawyerAuthWrapper from "../../components/auth/LawyerAuthWrapper";
 
 interface Appointment {
@@ -322,7 +317,20 @@ export default function LawyerAppointmentDashboard() {
                 <p className="text-gray-600">Manage your appointments and availability</p>
               </div>
             </div>
-          </div>
+          </div> {/* Navigation Header */}
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <Link
+                    href="/Lawyer"
+                    className="inline-flex items-center gap-2 text-[#d4a017] hover:text-[#b17d25] mb-2 group transition-colors"
+                  >
+                    <ArrowLeft className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" />
+                    <span className="font-medium">Back to Dashboard</span>
+                  </Link>
+                </div>
+              </div>
+
+
 
           {/* Message Display */}
           {message.text && (
