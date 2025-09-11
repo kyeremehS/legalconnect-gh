@@ -87,25 +87,7 @@ export default function LawyerAppointmentDashboard() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [backendStatus, setBackendStatus] = useState<'unknown' | 'connected' | 'disconnected'>('unknown');
-
-  // Test backend connection
-  const testBackendConnection = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/health`);
-      if (response.ok) {
-        setBackendStatus('connected');
-        setMessage({ type: 'success', text: 'Backend connection successful!' });
-      } else {
-        setBackendStatus('disconnected');
-        setMessage({ type: 'error', text: 'Backend server responded with error' });
-      }
-    } catch (error) {
-      setBackendStatus('disconnected');
-      setMessage({ type: 'error', text: 'Cannot connect to backend server. Please ensure it\'s running on port 4000.' });
-    }
-  };
-
+ 
   // New availability form
   const [newAvailability, setNewAvailability] = useState({
     date: '',
@@ -338,24 +320,6 @@ export default function LawyerAppointmentDashboard() {
                   Appointment Dashboard
                 </h1>
                 <p className="text-gray-600">Manage your appointments and availability</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${
-                    backendStatus === 'connected' ? 'bg-green-500' : 
-                    backendStatus === 'disconnected' ? 'bg-red-500' : 'bg-gray-400'
-                  }`}></div>
-                  <span className="text-sm text-gray-600">
-                    {backendStatus === 'connected' ? 'Backend Connected' : 
-                     backendStatus === 'disconnected' ? 'Backend Disconnected' : 'Backend Status Unknown'}
-                  </span>
-                </div>
-                <button
-                  onClick={testBackendConnection}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium text-sm"
-                >
-                  Test Connection
-                </button>
               </div>
             </div>
           </div>

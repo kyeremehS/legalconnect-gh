@@ -34,7 +34,7 @@ const lawyerNavItems = [
   { name: "Videos", href: "/Lawyer/create-content", icon: FileText },
   // { name: "Clients", href: "#", icon: Users },
   { name: "Profile", href: "/Lawyer/profile", icon: Users },
-  { name: "Settings", href: "/Lawyer/profile-settings", icon: Settings },
+  { name: "Settings", href: "/Lawyer/settings", icon: Settings },
 ];
 
 const userNavItems = [

@@ -412,7 +412,7 @@ export default function Profile() {
                             placeholder="Email"
                           />
                         </div>
-                        <div className="flex items-center gap-2 text-gray-700">
+                        {/* <div className="flex items-center gap-2 text-gray-700">
                           <Phone className="w-4 h-4" />
                           {editingField === 'phone' ? (
                             <div className="flex items-center gap-2">
@@ -448,7 +448,7 @@ export default function Profile() {
                               </button>
                             </div>
                           )}
-                        </div>
+                        </div> */}
                         <div className="flex items-center gap-2 text-gray-700">
                           <MapPin className="w-4 h-4" />
                           {editingField === 'location' ? (
@@ -497,10 +497,10 @@ export default function Profile() {
                             <Mail className="w-4 h-4" />
                             <span>{profile.email}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-[#4a4a4a]">
+                          {/* <div className="flex items-center gap-2 text-[#4a4a4a]">
                             <Phone className="w-4 h-4" />
                             <span>{profile.phone}</span>
-                          </div>
+                          </div> */}
                           <div className="flex items-center gap-2 text-[#4a4a4a]">
                             <MapPin className="w-4 h-4" />
                             <span>{profile.location}</span>
