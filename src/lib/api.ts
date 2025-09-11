@@ -48,6 +48,8 @@ export const API_ENDPOINTS = {
   GET_APPOINTMENT_NOTIFICATIONS: '/api/appointments/notifications',
   GET_USER_NOTIFICATIONS: '/api/appointments/user/notifications',
   MARK_NOTIFICATION_READ: (id: string) => `/api/appointments/notifications/${id}/read`,
+  // Dashboard endpoints
+  GET_USER_DASHBOARD: (userId: string) => `/api/dashboard/user/${userId}`,
 };
 
 // Types for API requests/responses
@@ -716,6 +718,18 @@ export class ApiClient {
   // Get conversation between two users
   async getConversation(senderId: string, receiverId: string): Promise<ApiResponse<MessageData[]>> {
     return this.request(API_ENDPOINTS.GET_CONVERSATION(senderId, receiverId));
+  }
+
+  // ========================
+  // DASHBOARD API METHODS
+  // ========================
+
+  // Get user dashboard data
+  async getUserDashboard(userId: string): Promise<ApiResponse<any>> {
+    console.log('🌐 API Client: Making getUserDashboard request for userId:', userId);
+    const result = await this.request(API_ENDPOINTS.GET_USER_DASHBOARD(userId));
+    console.log('🌐 API Client: getUserDashboard response:', result);
+    return result;
   }
 }
 

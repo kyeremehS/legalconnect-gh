@@ -18,37 +18,20 @@ type Appointment = {
   notes: string;
 };
 
+// Example appointments - in production, these would be fetched from an API
 const exampleAppointments: Appointment[] = [
-  {
-    id: 1,
-    client: "Ama Mensah",
-    date: "2025-06-15",
-    time: "10:00",
-    type: "Video",
-    subject: "Land Dispute Consultation",
-    status: "confirmed",
-    notes: "Bring all relevant documents",
-  },
-  {
-    id: 2,
-    client: "Kwesi Boateng",
-    date: "2025-06-16",
-    time: "14:30",
-    type: "In-person",
-    subject: "Contract Review",
-    status: "pending",
-    notes: "Discuss contract details and fees",
-  },
-  {
-    id: 3,
-    client: "Akosua Asante",
-    date: "2025-06-17",
-    time: "09:00",
-    type: "Phone",
-    subject: "Employment Law Query",
-    status: "completed",
-    notes: "Follow-up required",
-  },
+  // Empty array initially - appointments will be populated when user books consultations
+  // Example structure for when appointments exist:
+  // {
+  //   id: 1,
+  //   client: "Your Name",
+  //   date: "2025-09-15",
+  //   time: "10:00",
+  //   type: "Video",
+  //   subject: "Legal Consultation",
+  //   status: "confirmed",
+  //   notes: "Initial consultation about your legal matter",
+  // }
 ];
 
 // Replace this with real data from DB or API
