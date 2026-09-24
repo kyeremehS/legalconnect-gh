@@ -41,8 +41,8 @@ export const API_ENDPOINTS = {
   CREATE_APPOINTMENT: '/api/appointments',
   GET_APPOINTMENT: (id: string) => `/api/appointments/${id}`,
   UPDATE_APPOINTMENT_STATUS: (id: string) => `/api/appointments/${id}/status`,
-  GET_LAWYER_APPOINTMENTS: '/api/appointments/lawyer/my-appointments',
-  GET_CLIENT_APPOINTMENTS: '/api/appointments/client/my-appointments',
+  GET_LAWYER_APPOINTMENTS: '/api/appointments/lawyer',
+  GET_CLIENT_APPOINTMENTS: '/api/appointments/client',
   GET_LAWYER_AVAILABILITY: (lawyerId: string) => `/api/appointments/lawyer/${lawyerId}/availability`,
   SET_LAWYER_AVAILABILITY: '/api/appointments/lawyer/availability',
   GET_APPOINTMENT_NOTIFICATIONS: '/api/appointments/notifications',
@@ -555,7 +555,7 @@ export class ApiClient {
 
   async addVideoComment(lawyerId: string, videoId: string, content: string): Promise<any> {
     try {
-      const response = await fetch(API_ENDPOINTS.ADD_VIDEO_COMMENT, {
+      const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.ADD_VIDEO_COMMENT}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -582,7 +582,7 @@ export class ApiClient {
 
   async getVideoComments(videoId: string, page = 1, limit = 10): Promise<{ comments: any[]; totalPages: number; currentPage: number }> {
     try {
-      const url = `${API_ENDPOINTS.GET_VIDEO_COMMENTS}?videoId=${encodeURIComponent(videoId)}&page=${page}&limit=${limit}`;
+      const url = `${this.baseUrl}${API_ENDPOINTS.GET_VIDEO_COMMENTS}?videoId=${encodeURIComponent(videoId)}&page=${page}&limit=${limit}`;
       const response = await fetch(url, {
         headers: this.getAuthHeaders(),
       });
@@ -630,7 +630,7 @@ export class ApiClient {
 
   async deleteVideoComment(commentId: string): Promise<void> {
     try {
-      const response = await fetch(API_ENDPOINTS.DELETE_VIDEO_COMMENT(commentId), {
+      const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.DELETE_VIDEO_COMMENT(commentId)}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders(),
       });

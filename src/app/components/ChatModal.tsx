@@ -54,7 +54,8 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       const formData = new FormData();
       formData.append("msg", userMessage.content);
 
-      const response = await fetch("http://localhost:8080/get", {
+      const chatbotUrl = process.env.NEXT_PUBLIC_CHATBOT_URL || 'http://localhost:8080';
+      const response = await fetch(`${chatbotUrl}/get`, {
         method: "POST",
         body: formData,
       });

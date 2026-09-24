@@ -65,7 +65,7 @@ export default function LawyerAvailabilityPage() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/availability/lawyer/${id}/availability`,
         {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
         }
       );
@@ -93,7 +93,7 @@ export default function LawyerAvailabilityPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           },
           body: JSON.stringify(newSlot)
         }
@@ -129,7 +129,7 @@ export default function LawyerAvailabilityPage() {
         {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
         }
       );
@@ -161,7 +161,7 @@ export default function LawyerAvailabilityPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           },
           body: JSON.stringify({ schedule })
         }

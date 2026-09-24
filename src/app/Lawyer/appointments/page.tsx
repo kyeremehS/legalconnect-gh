@@ -49,14 +49,14 @@ export default function LawyerAppointments() {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       
       if (!token) {
         setError('No authentication token found');
         return;
       }
 
-      const response = await fetch('http://localhost:4000/api/appointments/lawyer/my-appointments', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/appointments/lawyer`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -82,14 +82,14 @@ export default function LawyerAppointments() {
   // Handler for updating appointment status (accept/reject)
   const updateAppointmentStatus = async (appointmentId: string, status: Appointment["status"], notes?: string) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       
       if (!token) {
         alert('No authentication token found');
         return;
       }
 
-      const response = await fetch(`http://localhost:4000/api/appointments/${appointmentId}/status`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/appointments/${appointmentId}/status`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
