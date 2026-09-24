@@ -37,7 +37,6 @@ interface LawyerApplication {
   email: string;
   firm: string;
   location: string;
-  certificateNumber: string;
   barAdmissionYear: string;
   experience: string;
   education: string;
@@ -58,7 +57,6 @@ interface LawyerApplication {
     status: 'verified' | 'not_found' | 'error';
     message: string;
     confidence: number;
-    matchedLawyer?: any;
   };
   adminNotes?: string;
   lastUpdated: string;
@@ -91,7 +89,6 @@ const AdminLawyerVerificationPage = () => {
             email: app.user.email,
             firm: app.firm,
             location: app.location,
-            certificateNumber: app.certificateNumber || '',
             barAdmissionYear: app.barAdmissionYear || '',
             experience: app.experience?.toString() || '0',
             education: app.education || '',
@@ -111,15 +108,9 @@ const AdminLawyerVerificationPage = () => {
               cvResume: app.cvResumeUrl
             },
             verificationResults: app.verification ? {
-              status: app.verification.certificateVerified ? 'verified' : 'not_found',
-              message: app.verification.certificateVerified ? 'Certificate verified successfully' : 'Certificate verification pending',
-              confidence: app.verification.certificateMatchScore || 0,
-              matchedLawyer: app.verification.certificateVerified ? {
-                name: app.verification.certificateName,
-                certificate: app.certificateNumber,
-                admissionYear: app.barAdmissionYear,
-                status: 'Active'
-              } : undefined
+              status: 'pending',
+              message: 'Document review pending (certificate checks removed)',
+              confidence: 0
             } : {
               status: 'pending',
               message: 'Verification pending',
@@ -153,10 +144,9 @@ const AdminLawyerVerificationPage = () => {
     let filtered = applications;
 
     if (searchTerm) {
-      filtered = filtered.filter(app => 
+      filtered = filtered.filter(app =>
         app.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.certificateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
         app.firm.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -366,7 +356,7 @@ const AdminLawyerVerificationPage = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search by name, email, certificate number, or firm..."
+                    placeholder="Search by name, email, or firm..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -435,10 +425,6 @@ const AdminLawyerVerificationPage = () => {
                           <div className="flex items-center gap-2">
                             <MapPin className="w-4 h-4" />
                             <span>{application.location}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Award className="w-4 h-4" />
-                            <span>{application.certificateNumber}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
@@ -614,10 +600,6 @@ const AdminLawyerVerificationPage = () => {
                     </h3>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Certificate Number</label>
-                        <p className="text-gray-900">{selectedApplication.certificateNumber}</p>
-                      </div>
-                      <div>
                         <label className="text-sm font-medium text-gray-600">Bar Admission Year</label>
                         <p className="text-gray-900">{selectedApplication.barAdmissionYear}</p>
                       </div>
@@ -728,30 +710,6 @@ const AdminLawyerVerificationPage = () => {
                           )}
                         </div>
                         <p className="text-gray-700 mb-3">{selectedApplication.verificationResults.message}</p>
-                        
-                        {selectedApplication.verificationResults.matchedLawyer && (
-                          <div className="bg-white p-3 rounded border">
-                            <h4 className="font-medium text-gray-900 mb-2">Matched Lawyer Record:</h4>
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <div>
-                                <span className="text-gray-600">Name:</span>
-                                <span className="ml-2 font-medium">{selectedApplication.verificationResults.matchedLawyer.name}</span>
-                              </div>
-                              <div>
-                                <span className="text-gray-600">Certificate:</span>
-                                <span className="ml-2 font-medium">{selectedApplication.verificationResults.matchedLawyer.certificate}</span>
-                              </div>
-                              <div>
-                                <span className="text-gray-600">Admission:</span>
-                                <span className="ml-2 font-medium">{selectedApplication.verificationResults.matchedLawyer.admissionYear}</span>
-                              </div>
-                              <div>
-                                <span className="text-gray-600">Status:</span>
-                                <span className="ml-2 font-medium text-green-600">{selectedApplication.verificationResults.matchedLawyer.status}</span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
                   )}

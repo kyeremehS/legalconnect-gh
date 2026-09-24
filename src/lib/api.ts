@@ -50,6 +50,11 @@ export const API_ENDPOINTS = {
   MARK_NOTIFICATION_READ: (id: string) => `/api/appointments/notifications/${id}/read`,
   // Dashboard endpoints
   GET_USER_DASHBOARD: (userId: string) => `/api/dashboard/user/${userId}`,
+  // Enquiry endpoints (lawyer onboarding)
+  SUBMIT_ENQUIRY: '/api/enquiries',
+  TRACK_ENQUIRY: (ref: string) => `/api/enquiries/status?ref=${encodeURIComponent(ref)}`,
+  // Invitation endpoints
+  VALIDATE_INVITATION: (token: string) => `/api/invitations/validate/${token}`,
 };
 
 // Types for API requests/responses
@@ -730,6 +735,26 @@ export class ApiClient {
     const result = await this.request(API_ENDPOINTS.GET_USER_DASHBOARD(userId));
     console.log('🌐 API Client: getUserDashboard response:', result);
     return result;
+  }
+
+  // ========================
+  // ENQUIRY + INVITATION API
+  // ========================
+
+  async submitEnquiry(data: Record<string, any>): Promise<ApiResponse<{ refToken: string; status: string }>> {
+    return this.request(API_ENDPOINTS.SUBMIT_ENQUIRY, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async trackEnquiry(ref: string): Promise<ApiResponse<any>> {
+    return this.request(API_ENDPOINTS.TRACK_ENQUIRY(ref));
+  }
+
+  async validateInvitation(token: string): Promise<ApiResponse<{ email: string; name: string | null; expiresAt: string }>> {
+    const res = await fetch(`${this.baseUrl}${API_ENDPOINTS.VALIDATE_INVITATION(token)}`);
+    return res.json();
   }
 }
 

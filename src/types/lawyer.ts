@@ -127,9 +127,6 @@ export interface BackendLawyer {
   lawDegreeUrl: string[];
   otherDocumentUrl: string[];
   videoUrl: string[];
-  certificateNumber: string;
-  certificateVerified: boolean;
-  certificateVerifiedAt: string | null;
   user: User;
 }
 
